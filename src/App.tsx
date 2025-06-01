@@ -13,7 +13,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalBody,
   ModalCloseButton,
   useDisclosure,
@@ -42,8 +41,8 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import type { MarketData, MarketInfo } from "./types/market";
-import fraxlendLogo from "./assets/Fraxlend.svg";
-import crvLogo from "./assets/crv-transparent.svg";
+const crvLogo = "/CRV-transparent.svg";
+const fraxlendLogo = "/Fraxlend.svg";
 
 // Protocol logos as SVG strings
 const CURVE_LOGO = crvLogo;
@@ -438,7 +437,7 @@ function App() {
                 </Tr>
               </Thead>
               <Tbody>
-                {getFilteredData().map((market, idx) => (
+                {getFilteredData().map((market) => (
                   <Tr key={`${market.marketName}-${market.contractAddress}`}>
                     <Td>
                       <Flex align="center" gap={1}>

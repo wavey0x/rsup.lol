@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   ChakraProvider,
   Box,
@@ -122,7 +122,6 @@ function App() {
   const [showDeprecated, setShowDeprecated] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [copied, setCopied] = useState<string | null>(null);
-  const initialModalFocusRef = useRef(null);
 
   const fetchData = async () => {
     try {
@@ -541,11 +540,7 @@ function App() {
           </Box>
         </Flex>
 
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          initialFocusRef={initialModalFocusRef}
-        >
+        <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay bg="blackAlpha.300" />
           <ModalContent
             bg="white"
@@ -575,15 +570,6 @@ function App() {
               _focus={{ boxShadow: "outline" }}
             />
             <ModalBody pb={1} px={1} w="100%">
-              <Box
-                ref={initialModalFocusRef}
-                tabIndex={-1}
-                position="absolute"
-                width={0}
-                height={0}
-                overflow="hidden"
-                aria-hidden
-              />
               <Box height="24px" />
               {selectedMarket && (
                 <Box fontSize="sm" m={0} p={0} fontFamily="monospace">

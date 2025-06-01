@@ -445,6 +445,7 @@ function App() {
                             src={market.depositTokenLogo}
                             boxSize="20px"
                             fallbackSrc={FALLBACK_IMAGE}
+                            borderRadius="full"
                           />
                           <Image
                             src={market.collateralTokenLogo}
@@ -454,6 +455,7 @@ function App() {
                             right="-10px"
                             zIndex={1}
                             fallbackSrc={FALLBACK_IMAGE}
+                            borderRadius="full"
                           />
                         </Box>
                         <Text
@@ -595,6 +597,7 @@ function App() {
                           src={selectedMarket.depositTokenLogo}
                           boxSize="20px"
                           fallbackSrc={FALLBACK_IMAGE}
+                          borderRadius="full"
                         />
                         <Image
                           src={selectedMarket.collateralTokenLogo}
@@ -604,6 +607,7 @@ function App() {
                           right="-10px"
                           zIndex={1}
                           fallbackSrc={FALLBACK_IMAGE}
+                          borderRadius="full"
                         />
                       </Box>
                       <Text mb={1} mt={0} fontFamily="monospace" ml={3}>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ChakraProvider,
   Box,
@@ -81,7 +81,7 @@ type SortConfig = {
 };
 
 const FALLBACK_IMAGE =
-  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2NjY2NjYyIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4eiIvPjwvc3ZnPg==";
+  "data:image/svg+xml,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23e9d8fd'/%3E%3Ctext x='12' y='17' text-anchor='middle' font-size='16' font-family='monospace' fill='%237d4cc9'%3E%3F%3C/text%3E%3C/svg%3E";
 
 // Extend MarketInfo for modal use
 interface MarketInfoModal extends MarketInfo {
@@ -122,6 +122,7 @@ function App() {
   const [showDeprecated, setShowDeprecated] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [copied, setCopied] = useState<string | null>(null);
+  const initialModalFocusRef = useRef(null);
 
   const fetchData = async () => {
     try {
@@ -155,16 +156,14 @@ function App() {
           throw new Error("Invalid market data format");
         }
 
-        const depositTokenLogo = `https://raw.githubusercontent.com/SmolDapp/tokenAssets/main/tokens/1/${market.deposit_token.toLowerCase()}/logo-32.png`;
-        const collateralTokenLogo = `https://raw.githubusercontent.com/SmolDapp/tokenAssets/main/tokens/1/${market.collat_token.toLowerCase()}/logo-32.png`;
         const resupplyBorrowLimit = Number(market.resupply_borrow_limit) || 0;
         const deprecated = resupplyBorrowLimit === 0;
 
         return {
           marketName: `${market.deposit_token_symbol}/${market.collateral_token_symbol}`,
           protocolId: Number(market.protocol_id) || 0,
-          depositTokenLogo,
-          collateralTokenLogo,
+          depositTokenLogo: market.deposit_token_logo,
+          collateralTokenLogo: market.collateral_token_logo,
           protocolLogo: market.protocol_id === 0 ? CURVE_LOGO : fraxlendLogo,
           utilization: Number(market.utilization) * 100 || 0,
           liquidity: Number(market.liquidity) || 0,
@@ -441,7 +440,7 @@ function App() {
                   <Tr key={`${market.marketName}-${market.contractAddress}`}>
                     <Td>
                       <Flex align="center" gap={1}>
-                        <Box position="relative" boxSize="20px">
+                        <Box position="relative" boxSize="24px">
                           <Image
                             src={market.depositTokenLogo}
                             boxSize="20px"
@@ -449,14 +448,20 @@ function App() {
                           />
                           <Image
                             src={market.collateralTokenLogo}
-                            boxSize="18px"
+                            boxSize="20px"
                             position="absolute"
-                            bottom="-3px"
-                            right="-3px"
+                            bottom="0px"
+                            right="-10px"
+                            zIndex={1}
                             fallbackSrc={FALLBACK_IMAGE}
                           />
                         </Box>
-                        <Text display="inline-flex" alignItems="center" gap={1}>
+                        <Text
+                          display="inline-flex"
+                          alignItems="center"
+                          gap={1}
+                          ml={3}
+                        >
                           {market.marketName}
                           <IconButton
                             aria-label="Market info"
@@ -534,7 +539,11 @@ function App() {
           </Box>
         </Flex>
 
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          initialFocusRef={initialModalFocusRef}
+        >
           <ModalOverlay bg="blackAlpha.300" />
           <ModalContent
             bg="white"
@@ -564,6 +573,16 @@ function App() {
               _focus={{ boxShadow: "outline" }}
             />
             <ModalBody pb={1} px={1} w="100%">
+              <Box
+                ref={initialModalFocusRef}
+                tabIndex={-1}
+                position="absolute"
+                width={0}
+                height={0}
+                overflow="hidden"
+                aria-hidden
+              />
+              <Box height="24px" />
               {selectedMarket && (
                 <Box fontSize="sm" m={0} p={0} fontFamily="monospace">
                   <Stack spacing={1} align="start">
@@ -571,7 +590,7 @@ function App() {
                       <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
                         Market:
                       </strong>
-                      <Box position="relative" boxSize="20px" ml={0} mr={0}>
+                      <Box position="relative" boxSize="24px">
                         <Image
                           src={selectedMarket.depositTokenLogo}
                           boxSize="20px"
@@ -579,14 +598,15 @@ function App() {
                         />
                         <Image
                           src={selectedMarket.collateralTokenLogo}
-                          boxSize="18px"
+                          boxSize="20px"
                           position="absolute"
-                          bottom="-3px"
-                          right="-3px"
+                          bottom="0px"
+                          right="-10px"
+                          zIndex={1}
                           fallbackSrc={FALLBACK_IMAGE}
                         />
                       </Box>
-                      <Text mb={1} mt={0} fontFamily="monospace">
+                      <Text mb={1} mt={0} fontFamily="monospace" ml={3}>
                         {selectedMarket.marketName}
                       </Text>
                     </Flex>

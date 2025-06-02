@@ -243,10 +243,20 @@ function App() {
 
   const SortIcon = ({ column }: { column: keyof MarketData }) => {
     if (sortConfig.key !== column) return null;
-    return sortConfig.direction === "asc" ? (
-      <ChevronUpIcon boxSize="3" ml={1} />
-    ) : (
-      <ChevronDownIcon boxSize="3" ml={1} />
+    return (
+      <Box
+        as="span"
+        position="absolute"
+        right="4px"
+        top="50%"
+        transform="translateY(-50%)"
+      >
+        {sortConfig.direction === "asc" ? (
+          <ChevronUpIcon boxSize="3" />
+        ) : (
+          <ChevronDownIcon boxSize="3" />
+        )}
+      </Box>
     );
   };
 
@@ -383,25 +393,32 @@ function App() {
                     onClick={() => handleSort("marketName")}
                     fontFamily="monospace"
                     fontSize={{ base: "xs", md: "sm" }}
+                    position="relative"
+                    minW={{ base: "140px", md: "200px" }}
+                    w={{ base: "140px", md: "200px" }}
                   >
                     Market
                     <SortIcon column="marketName" />
                   </Th>
                   <Th
                     onClick={() => handleSort("ltv")}
-                    minW={{ base: "30px", md: "40px" }}
+                    minW={{ base: "40px", md: "60px" }}
+                    w={{ base: "40px", md: "60px" }}
                     fontFamily="monospace"
                     fontSize={{ base: "xs", md: "sm" }}
+                    position="relative"
                   >
                     LTV
                     <SortIcon column="ltv" />
                   </Th>
                   <Th
                     onClick={() => handleSort("totalDebt")}
-                    minW={{ base: "50px", md: "80px" }}
+                    minW={{ base: "70px", md: "100px" }}
+                    w={{ base: "70px", md: "100px" }}
                     px={{ base: 1, md: 2 }}
                     fontFamily="monospace"
                     fontSize={{ base: "xs", md: "sm" }}
+                    position="relative"
                   >
                     <Box as="span" display="block">
                       Total
@@ -413,19 +430,23 @@ function App() {
                   <Th
                     onClick={() => handleSort("utilization")}
                     minW={{ base: "40px", md: "60px" }}
+                    w={{ base: "40px", md: "60px" }}
                     px={{ base: 1, md: 2 }}
                     fontFamily="monospace"
                     fontSize={{ base: "xs", md: "sm" }}
+                    position="relative"
                   >
                     Util
                     <SortIcon column="utilization" />
                   </Th>
                   <Th
                     onClick={() => handleSort("liquidity")}
-                    minW={{ base: "50px", md: "80px" }}
+                    minW={{ base: "70px", md: "100px" }}
+                    w={{ base: "70px", md: "100px" }}
                     px={{ base: 1, md: 2 }}
                     fontFamily="monospace"
                     fontSize={{ base: "2xs", md: "xs" }}
+                    position="relative"
                   >
                     <Box as="span" display="block">
                       Avail.
@@ -436,9 +457,11 @@ function App() {
                   </Th>
                   <Th
                     onClick={() => handleSort("borrowRate")}
-                    minW={{ base: "40px", md: "60px" }}
+                    minW={{ base: "50px", md: "80px" }}
+                    w={{ base: "50px", md: "80px" }}
                     fontFamily="monospace"
                     fontSize={{ base: "xs", md: "sm" }}
+                    position="relative"
                   >
                     <Box as="span" display="block">
                       Borrow
@@ -449,9 +472,11 @@ function App() {
                   </Th>
                   <Th
                     onClick={() => handleSort("lendRate")}
-                    minW={{ base: "40px", md: "60px" }}
+                    minW={{ base: "50px", md: "80px" }}
+                    w={{ base: "50px", md: "80px" }}
                     fontFamily="monospace"
                     fontSize={{ base: "xs", md: "sm" }}
+                    position="relative"
                   >
                     <Box as="span" display="block">
                       Lend

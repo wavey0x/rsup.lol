@@ -98,6 +98,8 @@ interface MarketInfoModal extends MarketInfo {
 const abbreviateAddress = (addr: string) =>
   addr ? `${addr.slice(0, 5)}...${addr.slice(-4)}` : "";
 
+const SORT_CONFIG_KEY = "resupply_sort_config";
+
 function App() {
   const [marketData, setMarketData] = useState<MarketData[]>([]);
   const [selectedMarket, setSelectedMarket] = useState<MarketInfoModal | null>(
@@ -110,9 +112,16 @@ function App() {
   const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [sortConfig, setSortConfig] = useState<SortConfig>({
-    key: null,
-    direction: "asc",
+  const [sortConfig, setSortConfig] = useState<SortConfig>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(SORT_CONFIG_KEY);
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch {}
+      }
+    }
+    return { key: null, direction: "asc" };
   });
   const [protocolFilter, setProtocolFilter] = useState<
     "all" | "curve" | "frax"
@@ -277,6 +286,13 @@ function App() {
     setCopied(address);
     setTimeout(() => setCopied(null), 1200);
   };
+
+  // Save sortConfig to localStorage whenever it changes
+  useEffect(() => {
+    if (sortConfig && typeof window !== "undefined") {
+      localStorage.setItem(SORT_CONFIG_KEY, JSON.stringify(sortConfig));
+    }
+  }, [sortConfig]);
 
   return (
     <ChakraProvider theme={customTheme}>

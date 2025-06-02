@@ -14,7 +14,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalBody,
-  ModalCloseButton,
   useDisclosure,
   Text,
   Link,
@@ -611,49 +610,11 @@ function App() {
             height="fit-content"
             position="relative"
           >
-            <ModalCloseButton
-              onClick={onClose}
-              zIndex={1700}
-              position="absolute"
-              top="8px"
-              right="8px"
-              size="sm"
-              borderRadius="full"
-              bg="white"
-              _hover={{ bg: "gray.100" }}
-              _focus={{ boxShadow: "outline" }}
-            />
             <ModalBody pb={1} px={1} w="100%">
               <Box height="24px" />
               {selectedMarket && (
                 <Box fontSize="sm" m={0} p={0} fontFamily="monospace">
                   <Stack spacing={1} align="start">
-                    <Flex align="center" gap={2} w="100%">
-                      <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
-                        Market:
-                      </strong>
-                      <Box position="relative" boxSize="24px">
-                        <Image
-                          src={selectedMarket.depositTokenLogo}
-                          boxSize="20px"
-                          fallbackSrc={FALLBACK_IMAGE}
-                          borderRadius="full"
-                        />
-                        <Image
-                          src={selectedMarket.collateralTokenLogo}
-                          boxSize="20px"
-                          position="absolute"
-                          bottom="0px"
-                          right="-10px"
-                          zIndex={1}
-                          fallbackSrc={FALLBACK_IMAGE}
-                          borderRadius="full"
-                        />
-                      </Box>
-                      <Text mb={1} mt={0} fontFamily="monospace" ml={3}>
-                        {selectedMarket.marketName}
-                      </Text>
-                    </Flex>
                     <Flex align="center" gap={2} w="100%">
                       <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
                         Protocol:
@@ -674,6 +635,38 @@ function App() {
                           ? "CurveLend"
                           : "FraxLend"}
                       </Text>
+                    </Flex>
+                    <Flex align="center" gap={2} w="100%">
+                      <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
+                        Market:
+                      </strong>
+                      <Link
+                        href={`https://etherscan.io/address/${selectedMarket.contractAddress}`}
+                        isExternal
+                        color="blue.500"
+                        wordBreak="break-all"
+                        fontFamily="monospace"
+                      >
+                        {abbreviateAddress(selectedMarket.contractAddress)}
+                      </Link>
+                      <Box
+                        as="button"
+                        ml={1}
+                        onClick={() =>
+                          handleCopy(selectedMarket.contractAddress)
+                        }
+                        p={0.5}
+                        borderRadius="sm"
+                        bg="white"
+                        _hover={{ bg: "gray.100" }}
+                        transition="all 0.2s"
+                      >
+                        {copied === selectedMarket.contractAddress ? (
+                          <CheckIcon color="green.400" boxSize={3} />
+                        ) : (
+                          <CopyIcon boxSize={3} />
+                        )}
+                      </Box>
                     </Flex>
                     <Flex align="center" gap={2} w="100%">
                       <strong style={{ minWidth: 90, fontFamily: "monospace" }}>

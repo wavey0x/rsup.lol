@@ -41,6 +41,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import type { MarketData, MarketInfo } from "./types/market";
+import { formatNumberWithAbbreviation } from "./utils/format";
 const crvLogo = "/CRV-transparent.svg";
 const fraxlendLogo = "/Fraxlend.svg";
 
@@ -81,7 +82,7 @@ type SortConfig = {
 };
 
 const FALLBACK_IMAGE =
-  "data:image/svg+xml,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23e9d8fd'/%3E%3Ctext x='12' y='17' text-anchor='middle' font-size='16' font-family='monospace' fill='%237d4cc9'%3E%3F%3C/text%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23ffffff'/%3E%3Ctext x='12' y='17' text-anchor='middle' font-size='16' font-family='monospace' fill='%23999'%3E%3F%3C/text%3E%3C/svg%3E";
 
 // Extend MarketInfo for modal use
 interface MarketInfoModal extends MarketInfo {
@@ -183,6 +184,7 @@ function App() {
           interestRateContract: market.interest_rate_contract,
           resupplyBorrowLimit,
           deprecated,
+          totalDebt: Number(market.total_debt) || 0,
         };
       });
 
@@ -272,6 +274,18 @@ function App() {
   return (
     <ChakraProvider theme={customTheme}>
       <Container maxW="container.xl" py={4}>
+        {/* Title */}
+        <Text
+          textAlign="center"
+          fontSize="lg"
+          color="gray.600"
+          mb={8}
+          fontFamily="monospace"
+          fontWeight="bold"
+        >
+          Resupply underlying markets
+        </Text>
+
         {/* Protocol Toggle */}
         <Flex justify="center" mb={4}>
           <ButtonGroup isAttached variant="ghost" size="sm">
@@ -374,6 +388,29 @@ function App() {
                     <SortIcon column="marketName" />
                   </Th>
                   <Th
+                    onClick={() => handleSort("ltv")}
+                    minW={{ base: "30px", md: "40px" }}
+                    fontFamily="monospace"
+                    fontSize={{ base: "xs", md: "sm" }}
+                  >
+                    LTV
+                    <SortIcon column="ltv" />
+                  </Th>
+                  <Th
+                    onClick={() => handleSort("totalDebt")}
+                    minW={{ base: "50px", md: "80px" }}
+                    px={{ base: 1, md: 2 }}
+                    fontFamily="monospace"
+                    fontSize={{ base: "xs", md: "sm" }}
+                  >
+                    <Box as="span" display="block">
+                      Total
+                      <br />
+                      Debt
+                    </Box>
+                    <SortIcon column="totalDebt" />
+                  </Th>
+                  <Th
                     onClick={() => handleSort("utilization")}
                     minW={{ base: "40px", md: "60px" }}
                     px={{ base: 1, md: 2 }}
@@ -422,15 +459,6 @@ function App() {
                       APR
                     </Box>
                     <SortIcon column="lendRate" />
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("ltv")}
-                    minW={{ base: "30px", md: "40px" }}
-                    fontFamily="monospace"
-                    fontSize={{ base: "xs", md: "sm" }}
-                  >
-                    LTV
-                    <SortIcon column="ltv" />
                   </Th>
                 </Tr>
               </Thead>
@@ -493,6 +521,8 @@ function App() {
                         </Text>
                       </Flex>
                     </Td>
+                    <Td>{Math.round(market.ltv)}%</Td>
+                    <Td>${formatNumberWithAbbreviation(market.totalDebt)}</Td>
                     <Td
                       fontFamily="monospace"
                       fontSize={{ base: "xs", md: "sm" }}
@@ -501,10 +531,9 @@ function App() {
                     >
                       {Math.round(market.utilization)}%
                     </Td>
-                    <Td>${Math.round(market.liquidity).toLocaleString()}</Td>
+                    <Td>${formatNumberWithAbbreviation(market.liquidity)}</Td>
                     <Td>{market.borrowRate.toFixed(2)}%</Td>
                     <Td>{market.lendRate.toFixed(2)}%</Td>
-                    <Td>{Math.round(market.ltv)}%</Td>
                   </Tr>
                 ))}
               </Tbody>

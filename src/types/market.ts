@@ -20,6 +20,7 @@ export interface MarketData {
   interestRateContract: string;
   resupplyBorrowLimit: number;
   deprecated: boolean;
+  totalDebt: number;
 }
 
 export interface MarketInfo {

@@ -9,7 +9,6 @@ import {
   Th,
   Td,
   Image,
-  IconButton,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -31,7 +30,6 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import {
-  InfoIcon,
   ChevronUpIcon,
   ChevronDownIcon,
   CopyIcon,
@@ -379,148 +377,143 @@ function App() {
             <Spinner size="xl" />
           </Center>
         ) : (
-          <Flex justify="center" w="100%" overflowX="auto">
-            <Table
-              variant="simple"
-              size="sm"
-              w={{ base: "max-content", md: "auto" }}
-              mx="auto"
-            >
-              <Thead>
-                <Tr>
-                  <Th
-                    onClick={() => handleSort("marketName")}
-                    fontFamily="monospace"
-                    fontSize={{ base: "xs", md: "sm" }}
-                    position="relative"
-                    minW={{ base: "140px", md: "200px" }}
-                    w={{ base: "140px", md: "200px" }}
-                  >
-                    Market
-                    <SortIcon column="marketName" />
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("ltv")}
-                    minW={{ base: "40px", md: "60px" }}
-                    w={{ base: "40px", md: "60px" }}
-                    fontFamily="monospace"
-                    fontSize={{ base: "xs", md: "sm" }}
-                    position="relative"
-                  >
-                    LTV
-                    <SortIcon column="ltv" />
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("totalDebt")}
-                    minW={{ base: "70px", md: "100px" }}
-                    w={{ base: "70px", md: "100px" }}
-                    px={{ base: 1, md: 2 }}
-                    fontFamily="monospace"
-                    fontSize={{ base: "xs", md: "sm" }}
-                    position="relative"
-                  >
-                    <Box as="span" display="block">
-                      Total
-                      <br />
-                      Debt
-                    </Box>
-                    <SortIcon column="totalDebt" />
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("utilization")}
-                    minW={{ base: "40px", md: "60px" }}
-                    w={{ base: "40px", md: "60px" }}
-                    px={{ base: 1, md: 2 }}
-                    fontFamily="monospace"
-                    fontSize={{ base: "xs", md: "sm" }}
-                    position="relative"
-                  >
-                    Util
-                    <SortIcon column="utilization" />
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("liquidity")}
-                    minW={{ base: "70px", md: "100px" }}
-                    w={{ base: "70px", md: "100px" }}
-                    px={{ base: 1, md: 2 }}
-                    fontFamily="monospace"
-                    fontSize={{ base: "2xs", md: "xs" }}
-                    position="relative"
-                  >
-                    <Box as="span" display="block">
-                      Avail.
-                      <br />
-                      Liq
-                    </Box>
-                    <SortIcon column="liquidity" />
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("borrowRate")}
-                    minW={{ base: "50px", md: "80px" }}
-                    w={{ base: "50px", md: "80px" }}
-                    fontFamily="monospace"
-                    fontSize={{ base: "xs", md: "sm" }}
-                    position="relative"
-                  >
-                    <Box as="span" display="block">
-                      Borrow
-                      <br />
-                      APR
-                    </Box>
-                    <SortIcon column="borrowRate" />
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("lendRate")}
-                    minW={{ base: "50px", md: "80px" }}
-                    w={{ base: "50px", md: "80px" }}
-                    fontFamily="monospace"
-                    fontSize={{ base: "xs", md: "sm" }}
-                    position="relative"
-                  >
-                    <Box as="span" display="block">
-                      Lend
-                      <br />
-                      APR
-                    </Box>
-                    <SortIcon column="lendRate" />
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {getFilteredData().map((market) => (
-                  <Tr key={`${market.marketName}-${market.contractAddress}`}>
-                    <Td>
-                      <Flex align="center" gap={1}>
-                        <Box position="relative" boxSize="24px">
-                          <Image
-                            src={market.depositTokenLogo}
-                            boxSize="20px"
-                            fallbackSrc={FALLBACK_IMAGE}
-                            borderRadius="full"
-                          />
-                          <Image
-                            src={market.collateralTokenLogo}
-                            boxSize="20px"
-                            position="absolute"
-                            bottom="0px"
-                            right="-10px"
-                            zIndex={1}
-                            fallbackSrc={FALLBACK_IMAGE}
-                            borderRadius="full"
-                          />
-                        </Box>
-                        <Text
-                          display="inline-flex"
-                          alignItems="center"
-                          gap={1}
-                          ml={3}
-                        >
-                          {market.marketName}
-                          <IconButton
-                            aria-label="Market info"
-                            icon={<InfoIcon boxSize="3" />}
-                            size="xs"
-                            variant="ghost"
+          <Flex justify="center" w="100%" overflowX="auto" px={0.2}>
+            <Box minW="100%" px={0.2}>
+              <Table
+                variant="simple"
+                size="sm"
+                w={{ base: "max-content", md: "auto" }}
+                mx="auto"
+              >
+                <Thead>
+                  <Tr>
+                    <Th
+                      onClick={() => handleSort("marketName")}
+                      fontFamily="monospace"
+                      fontSize={{ base: "xs", md: "sm" }}
+                      position="relative"
+                      minW={{ base: "140px", md: "200px" }}
+                      w={{ base: "140px", md: "200px" }}
+                    >
+                      Market
+                      <SortIcon column="marketName" />
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("ltv")}
+                      minW={{ base: "40px", md: "60px" }}
+                      w={{ base: "40px", md: "60px" }}
+                      fontFamily="monospace"
+                      fontSize={{ base: "xs", md: "sm" }}
+                      position="relative"
+                    >
+                      LTV
+                      <SortIcon column="ltv" />
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("totalDebt")}
+                      minW={{ base: "70px", md: "100px" }}
+                      w={{ base: "70px", md: "100px" }}
+                      px={{ base: 1, md: 2 }}
+                      fontFamily="monospace"
+                      fontSize={{ base: "xs", md: "sm" }}
+                      position="relative"
+                    >
+                      <Box as="span" display="block">
+                        Total
+                        <br />
+                        Debt
+                      </Box>
+                      <SortIcon column="totalDebt" />
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("utilization")}
+                      minW={{ base: "40px", md: "60px" }}
+                      w={{ base: "40px", md: "60px" }}
+                      px={{ base: 1, md: 2 }}
+                      fontFamily="monospace"
+                      fontSize={{ base: "xs", md: "sm" }}
+                      position="relative"
+                    >
+                      Util
+                      <SortIcon column="utilization" />
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("liquidity")}
+                      minW={{ base: "70px", md: "100px" }}
+                      w={{ base: "70px", md: "100px" }}
+                      px={{ base: 1, md: 2 }}
+                      fontFamily="monospace"
+                      fontSize={{ base: "2xs", md: "xs" }}
+                      position="relative"
+                    >
+                      <Box as="span" display="block">
+                        Avail.
+                        <br />
+                        Liq
+                      </Box>
+                      <SortIcon column="liquidity" />
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("borrowRate")}
+                      minW={{ base: "50px", md: "80px" }}
+                      w={{ base: "50px", md: "80px" }}
+                      fontFamily="monospace"
+                      fontSize={{ base: "xs", md: "sm" }}
+                      position="relative"
+                    >
+                      <Box as="span" display="block">
+                        Borrow
+                        <br />
+                        APR
+                      </Box>
+                      <SortIcon column="borrowRate" />
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("lendRate")}
+                      minW={{ base: "50px", md: "80px" }}
+                      w={{ base: "50px", md: "80px" }}
+                      fontFamily="monospace"
+                      fontSize={{ base: "xs", md: "sm" }}
+                      position="relative"
+                    >
+                      <Box as="span" display="block">
+                        Lend
+                        <br />
+                        APR
+                      </Box>
+                      <SortIcon column="lendRate" />
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {getFilteredData().map((market) => (
+                    <Tr key={`${market.marketName}-${market.contractAddress}`}>
+                      <Td>
+                        <Flex align="center" gap={1}>
+                          <Box position="relative" boxSize="24px">
+                            <Image
+                              src={market.depositTokenLogo}
+                              boxSize="20px"
+                              fallbackSrc={FALLBACK_IMAGE}
+                              borderRadius="full"
+                            />
+                            <Image
+                              src={market.collateralTokenLogo}
+                              boxSize="20px"
+                              position="absolute"
+                              bottom="0px"
+                              right="-10px"
+                              zIndex={1}
+                              fallbackSrc={FALLBACK_IMAGE}
+                              borderRadius="full"
+                            />
+                          </Box>
+                          <Text
+                            as="button"
+                            display="inline-flex"
+                            alignItems="center"
+                            gap={1}
+                            ml={3}
                             onClick={() =>
                               handleInfoClick({
                                 marketName: market.marketName,
@@ -541,27 +534,36 @@ function App() {
                                 collateralTokenLogo: market.collateralTokenLogo,
                               })
                             }
-                          />
-                        </Text>
-                      </Flex>
-                    </Td>
-                    <Td>{Math.round(market.ltv)}%</Td>
-                    <Td>${formatNumberWithAbbreviation(market.totalDebt)}</Td>
-                    <Td
-                      fontFamily="monospace"
-                      fontSize={{ base: "xs", md: "sm" }}
-                      px={1}
-                      py={0.5}
-                    >
-                      {Math.round(market.utilization)}%
-                    </Td>
-                    <Td>${formatNumberWithAbbreviation(market.liquidity)}</Td>
-                    <Td>{market.borrowRate.toFixed(2)}%</Td>
-                    <Td>{market.lendRate.toFixed(2)}%</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
+                            textDecoration="underline"
+                            color="black"
+                            fontFamily="monospace"
+                            bg="transparent"
+                            border="none"
+                            p={0}
+                            cursor="pointer"
+                          >
+                            {market.marketName}
+                          </Text>
+                        </Flex>
+                      </Td>
+                      <Td>{Math.round(market.ltv)}%</Td>
+                      <Td>${formatNumberWithAbbreviation(market.totalDebt)}</Td>
+                      <Td
+                        fontFamily="monospace"
+                        fontSize={{ base: "xs", md: "sm" }}
+                        px={1}
+                        py={0.5}
+                      >
+                        {Math.round(market.utilization)}%
+                      </Td>
+                      <Td>${formatNumberWithAbbreviation(market.liquidity)}</Td>
+                      <Td>{market.borrowRate.toFixed(2)}%</Td>
+                      <Td>{market.lendRate.toFixed(2)}%</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
           </Flex>
         )}
 

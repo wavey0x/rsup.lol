@@ -633,8 +633,41 @@ function App() {
               {selectedMarket && (
                 <Box fontSize="sm" m={0} p={0} fontFamily="monospace">
                   <Stack spacing={1} align="start">
-                    <Flex align="center" gap={2} w="100%">
-                      <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
+                    {/* Market name and logos at the top */}
+                    <Flex direction="column" align="center" w="100%" mb={3}>
+                      <Flex align="center" justify="center" gap={1} mb={1}>
+                        <Box position="relative" boxSize="32px">
+                          <Image
+                            src={selectedMarket.depositTokenLogo}
+                            boxSize="28px"
+                            fallbackSrc={FALLBACK_IMAGE}
+                            borderRadius="full"
+                          />
+                          <Image
+                            src={selectedMarket.collateralTokenLogo}
+                            boxSize="28px"
+                            position="absolute"
+                            bottom="0px"
+                            right="-12px"
+                            zIndex={1}
+                            fallbackSrc={FALLBACK_IMAGE}
+                            borderRadius="full"
+                          />
+                        </Box>
+                      </Flex>
+                      <Text
+                        fontWeight="bold"
+                        fontSize="md"
+                        fontFamily="monospace"
+                        color="black"
+                      >
+                        {selectedMarket.marketName}
+                      </Text>
+                    </Flex>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
                         Protocol:
                       </strong>
                       <Image
@@ -654,8 +687,10 @@ function App() {
                           : "FraxLend"}
                       </Text>
                     </Flex>
-                    <Flex align="center" gap={2} w="100%">
-                      <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
                         Market:
                       </strong>
                       <Link
@@ -686,8 +721,10 @@ function App() {
                         )}
                       </Box>
                     </Flex>
-                    <Flex align="center" gap={2} w="100%">
-                      <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
                         {selectedMarket.depositTokenSymbol}:
                       </strong>
                       <Link
@@ -718,8 +755,10 @@ function App() {
                         )}
                       </Box>
                     </Flex>
-                    <Flex align="center" gap={2} w="100%">
-                      <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
                         {selectedMarket.collateralTokenSymbol}:
                       </strong>
                       <Link
@@ -752,8 +791,10 @@ function App() {
                         )}
                       </Box>
                     </Flex>
-                    <Flex align="center" gap={2} w="100%">
-                      <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
                         Resupply:
                       </strong>
                       <Link
@@ -787,9 +828,9 @@ function App() {
                     {selectedMarket.controller &&
                       selectedMarket.controller !==
                         "0x0000000000000000000000000000000000000000" && (
-                        <Flex align="center" gap={2} w="100%">
+                        <Flex align="center" gap={4} w="100%">
                           <strong
-                            style={{ minWidth: 90, fontFamily: "monospace" }}
+                            style={{ minWidth: 110, fontFamily: "monospace" }}
                           >
                             Controller:
                           </strong>
@@ -822,8 +863,10 @@ function App() {
                           </Box>
                         </Flex>
                       )}
-                    <Flex align="center" gap={2} w="100%">
-                      <strong style={{ minWidth: 90, fontFamily: "monospace" }}>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
                         Rate Calc:
                       </strong>
                       <Link

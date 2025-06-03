@@ -365,10 +365,10 @@ function App() {
                   px={2}
                   borderWidth="1px"
                   borderColor="gray.200"
-                  bg={resupplyMode ? "gray.100" : "white"}
+                  bg={resupplyMode ? "white" : "gray.100"}
                   boxShadow={resupplyMode ? "sm" : "none"}
-                  _active={{ bg: "gray.200" }}
-                  _hover={{ bg: resupplyMode ? "gray.100" : "gray.50" }}
+                  _active={{ bg: resupplyMode ? "white" : "gray.200" }}
+                  _hover={{ bg: resupplyMode ? "white" : "gray.200" }}
                   fontFamily="monospace"
                 >
                   <Image
@@ -390,10 +390,10 @@ function App() {
                   px={2}
                   borderWidth="1px"
                   borderColor="gray.200"
-                  bg={!resupplyMode ? "gray.100" : "white"}
+                  bg={!resupplyMode ? "white" : "gray.100"}
                   boxShadow={!resupplyMode ? "sm" : "none"}
-                  _active={{ bg: "gray.200" }}
-                  _hover={{ bg: !resupplyMode ? "gray.100" : "gray.50" }}
+                  _active={{ bg: !resupplyMode ? "white" : "gray.200" }}
+                  _hover={{ bg: !resupplyMode ? "white" : "gray.200" }}
                   fontFamily="monospace"
                   fontWeight="bold"
                 >
@@ -421,11 +421,13 @@ function App() {
                   minW={"auto"}
                   borderWidth="1px"
                   borderColor="gray.200"
-                  bg={protocolFilter === "all" ? "gray.100" : "white"}
+                  bg={protocolFilter === "all" ? "white" : "gray.100"}
                   boxShadow={protocolFilter === "all" ? "sm" : "none"}
-                  _active={{ bg: "gray.200" }}
+                  _active={{
+                    bg: protocolFilter === "all" ? "white" : "gray.200",
+                  }}
                   _hover={{
-                    bg: protocolFilter === "all" ? "gray.100" : "gray.50",
+                    bg: protocolFilter === "all" ? "white" : "gray.200",
                   }}
                   fontFamily="monospace"
                 >
@@ -442,11 +444,13 @@ function App() {
                   minW={"auto"}
                   borderWidth="1px"
                   borderColor="gray.200"
-                  bg={protocolFilter === "curve" ? "gray.100" : "white"}
+                  bg={protocolFilter === "curve" ? "white" : "gray.100"}
                   boxShadow={protocolFilter === "curve" ? "sm" : "none"}
-                  _active={{ bg: "gray.200" }}
+                  _active={{
+                    bg: protocolFilter === "curve" ? "white" : "gray.200",
+                  }}
                   _hover={{
-                    bg: protocolFilter === "curve" ? "gray.100" : "gray.50",
+                    bg: protocolFilter === "curve" ? "white" : "gray.200",
                   }}
                   fontFamily="monospace"
                 >
@@ -468,11 +472,13 @@ function App() {
                   minW={"auto"}
                   borderWidth="1px"
                   borderColor="gray.200"
-                  bg={protocolFilter === "frax" ? "gray.100" : "white"}
+                  bg={protocolFilter === "frax" ? "white" : "gray.100"}
                   boxShadow={protocolFilter === "frax" ? "sm" : "none"}
-                  _active={{ bg: "gray.200" }}
+                  _active={{
+                    bg: protocolFilter === "frax" ? "white" : "gray.200",
+                  }}
                   _hover={{
-                    bg: protocolFilter === "frax" ? "gray.100" : "gray.50",
+                    bg: protocolFilter === "frax" ? "white" : "gray.200",
                   }}
                   fontFamily="monospace"
                 >

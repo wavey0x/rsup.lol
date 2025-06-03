@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ChakraProvider,
   Box,
@@ -28,6 +28,7 @@ import {
   ButtonGroup,
   Button,
   Stack,
+  Tooltip,
 } from "@chakra-ui/react";
 import {
   ChevronUpIcon,
@@ -38,7 +39,10 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import type { MarketData, MarketInfo } from "./types/market";
-import { formatNumberWithAbbreviation } from "./utils/format";
+import {
+  formatNumberWithAbbreviation,
+  formatPercent3Digits,
+} from "./utils/format";
 const crvLogo = "/CRV-transparent.svg";
 const fraxlendLogo = "/Fraxlend.svg";
 
@@ -99,6 +103,8 @@ const abbreviateAddress = (addr: string) =>
   addr ? `${addr.slice(0, 5)}...${addr.slice(-4)}` : "";
 
 const SORT_CONFIG_KEY = "resupply_sort_config";
+const RESUPPLY_MODE_KEY = "resupply_mode_toggle";
+const PROTOCOL_FILTER_KEY = "protocol_filter_toggle";
 
 function App() {
   const [marketData, setMarketData] = useState<MarketData[]>([]);
@@ -123,12 +129,27 @@ function App() {
     }
     return { key: null, direction: "asc" };
   });
+  const [resupplyMode, setResupplyMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(RESUPPLY_MODE_KEY);
+      if (saved !== null) return saved === "true";
+    }
+    return false;
+  });
   const [protocolFilter, setProtocolFilter] = useState<
     "all" | "curve" | "frax"
-  >("all");
+  >(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(PROTOCOL_FILTER_KEY);
+      if (saved === "curve" || saved === "frax" || saved === "all")
+        return saved;
+    }
+    return "all";
+  });
   const [showDeprecated, setShowDeprecated] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [copied, setCopied] = useState<string | null>(null);
+  const protocolGroupRef = useRef<HTMLDivElement | null>(null);
 
   const fetchData = async () => {
     try {
@@ -191,6 +212,13 @@ function App() {
           resupplyBorrowLimit,
           deprecated,
           totalDebt: Number(market.total_debt) || 0,
+          resupply_ltv: Number(market.resupply_ltv) * 100 || 0,
+          resupply_total_debt: Number(market.resupply_total_debt) || 0,
+          resupply_utilization: Number(market.resupply_utilization) * 100 || 0,
+          resupply_available_liquidity:
+            Number(market.resupply_available_liquidity) || 0,
+          resupply_borrow_rate: Number(market.resupply_borrow_rate) * 100 || 0,
+          resupply_lend_rate: Number(market.resupply_lend_rate) * 100 || 0,
         };
       });
 
@@ -294,93 +322,170 @@ function App() {
     }
   }, [sortConfig]);
 
+  // Helper to get the correct value based on resupplyMode
+  const getValue = (market: any, key: string, resupplyKey: string) => {
+    if (
+      resupplyMode &&
+      market[resupplyKey] !== undefined &&
+      market[resupplyKey] !== null
+    ) {
+      return market[resupplyKey];
+    }
+    return market[key];
+  };
+
+  // Persist resupplyMode and protocolFilter to localStorage
+  useEffect(() => {
+    localStorage.setItem(RESUPPLY_MODE_KEY, String(resupplyMode));
+  }, [resupplyMode]);
+  useEffect(() => {
+    localStorage.setItem(PROTOCOL_FILTER_KEY, protocolFilter);
+  }, [protocolFilter]);
+
   return (
     <ChakraProvider theme={customTheme}>
-      <Container maxW="container.xl" py={4}>
-        {/* Title */}
-        <Text
-          textAlign="center"
-          fontSize="lg"
-          color="gray.600"
-          mb={8}
-          fontFamily="monospace"
-          fontWeight="bold"
-        >
-          Resupply underlying markets
-        </Text>
-
-        {/* Protocol Toggle */}
-        <Flex justify="center" mb={4}>
-          <ButtonGroup isAttached variant="ghost" size="sm">
-            <Button
-              onClick={() => setProtocolFilter("all")}
-              borderRadius="md"
-              px={2}
-              py={1}
-              fontWeight="normal"
-              fontSize="sm"
-              minW={"auto"}
-              borderWidth="1px"
-              borderColor="gray.200"
-              bg={protocolFilter === "all" ? "gray.100" : "white"}
-              boxShadow={protocolFilter === "all" ? "sm" : "none"}
-              _active={{ bg: "gray.200" }}
-              _hover={{ bg: protocolFilter === "all" ? "gray.100" : "gray.50" }}
-              fontFamily="monospace"
-            >
-              All
-            </Button>
-            <Button
-              onClick={() => setProtocolFilter("curve")}
-              borderRadius="md"
-              px={2}
-              py={1}
-              fontWeight="normal"
-              fontSize="sm"
-              minW={"auto"}
-              borderWidth="1px"
-              borderColor="gray.200"
-              bg={protocolFilter === "curve" ? "gray.100" : "white"}
-              boxShadow={protocolFilter === "curve" ? "sm" : "none"}
-              _active={{ bg: "gray.200" }}
-              _hover={{
-                bg: protocolFilter === "curve" ? "gray.100" : "gray.50",
-              }}
-              fontFamily="monospace"
-            >
-              <Flex align="center" gap={1}>
-                <Image src={crvLogo} boxSize="16px" display="inline" />
-                <span style={{ marginLeft: 2, fontFamily: "monospace" }}>
-                  CurveLend
-                </span>
-              </Flex>
-            </Button>
-            <Button
-              onClick={() => setProtocolFilter("frax")}
-              borderRadius="md"
-              px={2}
-              py={1}
-              fontWeight="normal"
-              fontSize="sm"
-              minW={"auto"}
-              borderWidth="1px"
-              borderColor="gray.200"
-              bg={protocolFilter === "frax" ? "gray.100" : "white"}
-              boxShadow={protocolFilter === "frax" ? "sm" : "none"}
-              _active={{ bg: "gray.200" }}
-              _hover={{
-                bg: protocolFilter === "frax" ? "gray.100" : "gray.50",
-              }}
-              fontFamily="monospace"
-            >
-              <Flex align="center" gap={1}>
-                <Image src={fraxlendLogo} boxSize="16px" display="inline" />
-                <span style={{ marginLeft: 2, fontFamily: "monospace" }}>
-                  FraxLend
-                </span>
-              </Flex>
-            </Button>
-          </ButtonGroup>
+      <Container maxW="container.xl" py={4} minH="100vh">
+        {/* Resupply/Underlying Toggle */}
+        <Flex justify="center" mb={2} direction="column" align="center">
+          <Box display="inline-block" w="360px">
+            <Box display="flex" flexDirection="column" gap={2}>
+              <ButtonGroup
+                isAttached
+                variant="ghost"
+                size="sm"
+                h="40px"
+                w="360px"
+                display="inline-flex"
+              >
+                <Button
+                  onClick={() => setResupplyMode(true)}
+                  borderRadius="md"
+                  w="180px"
+                  h="40px"
+                  px={2}
+                  borderWidth="1px"
+                  borderColor="gray.200"
+                  bg={resupplyMode ? "gray.100" : "white"}
+                  boxShadow={resupplyMode ? "sm" : "none"}
+                  _active={{ bg: "gray.200" }}
+                  _hover={{ bg: resupplyMode ? "gray.100" : "gray.50" }}
+                  fontFamily="monospace"
+                >
+                  <Image
+                    src="/resupply-hippo.png"
+                    alt="Resupply Hippo"
+                    h="36px"
+                    w="100%"
+                    maxW="90%"
+                    objectFit="contain"
+                    mx="auto"
+                    display="block"
+                  />
+                </Button>
+                <Button
+                  onClick={() => setResupplyMode(false)}
+                  borderRadius="md"
+                  w="180px"
+                  h="40px"
+                  px={2}
+                  borderWidth="1px"
+                  borderColor="gray.200"
+                  bg={!resupplyMode ? "gray.100" : "white"}
+                  boxShadow={!resupplyMode ? "sm" : "none"}
+                  _active={{ bg: "gray.200" }}
+                  _hover={{ bg: !resupplyMode ? "gray.100" : "gray.50" }}
+                  fontFamily="monospace"
+                  fontWeight="bold"
+                >
+                  Underlying
+                </Button>
+              </ButtonGroup>
+              {/* Protocol Toggle (existing) */}
+              <ButtonGroup
+                isAttached
+                variant="ghost"
+                size="sm"
+                h="40px"
+                display="inline-flex"
+                w="100%"
+                ref={protocolGroupRef}
+              >
+                <Button
+                  onClick={() => setProtocolFilter("all")}
+                  borderRadius="md"
+                  w="120px"
+                  px={2}
+                  py={1}
+                  fontWeight="normal"
+                  fontSize="sm"
+                  minW={"auto"}
+                  borderWidth="1px"
+                  borderColor="gray.200"
+                  bg={protocolFilter === "all" ? "gray.100" : "white"}
+                  boxShadow={protocolFilter === "all" ? "sm" : "none"}
+                  _active={{ bg: "gray.200" }}
+                  _hover={{
+                    bg: protocolFilter === "all" ? "gray.100" : "gray.50",
+                  }}
+                  fontFamily="monospace"
+                >
+                  All
+                </Button>
+                <Button
+                  onClick={() => setProtocolFilter("curve")}
+                  borderRadius="md"
+                  w="120px"
+                  px={2}
+                  py={1}
+                  fontWeight="normal"
+                  fontSize="sm"
+                  minW={"auto"}
+                  borderWidth="1px"
+                  borderColor="gray.200"
+                  bg={protocolFilter === "curve" ? "gray.100" : "white"}
+                  boxShadow={protocolFilter === "curve" ? "sm" : "none"}
+                  _active={{ bg: "gray.200" }}
+                  _hover={{
+                    bg: protocolFilter === "curve" ? "gray.100" : "gray.50",
+                  }}
+                  fontFamily="monospace"
+                >
+                  <Flex align="center" gap={1}>
+                    <Image src={crvLogo} boxSize="16px" display="inline" />
+                    <span style={{ marginLeft: 2, fontFamily: "monospace" }}>
+                      CurveLend
+                    </span>
+                  </Flex>
+                </Button>
+                <Button
+                  onClick={() => setProtocolFilter("frax")}
+                  borderRadius="md"
+                  w="120px"
+                  px={2}
+                  py={1}
+                  fontWeight="normal"
+                  fontSize="sm"
+                  minW={"auto"}
+                  borderWidth="1px"
+                  borderColor="gray.200"
+                  bg={protocolFilter === "frax" ? "gray.100" : "white"}
+                  boxShadow={protocolFilter === "frax" ? "sm" : "none"}
+                  _active={{ bg: "gray.200" }}
+                  _hover={{
+                    bg: protocolFilter === "frax" ? "gray.100" : "gray.50",
+                  }}
+                  fontFamily="monospace"
+                >
+                  <Flex align="center" gap={1}>
+                    <Image src={fraxlendLogo} boxSize="16px" display="inline" />
+                    <span style={{ marginLeft: 2, fontFamily: "monospace" }}>
+                      FraxLend
+                    </span>
+                  </Flex>
+                </Button>
+              </ButtonGroup>
+            </Box>
+          </Box>
         </Flex>
         {error ? (
           <Alert status="error" mb={4}>
@@ -478,9 +583,19 @@ function App() {
                       position="relative"
                     >
                       <Box as="span" display="block">
-                        Borrow
-                        <br />
-                        APR
+                        {resupplyMode ? (
+                          <>
+                            Borrow
+                            <br />
+                            Cost
+                          </>
+                        ) : (
+                          <>
+                            Borrow
+                            <br />
+                            APR
+                          </>
+                        )}
                       </Box>
                       <SortIcon column="borrowRate" />
                     </Th>
@@ -493,90 +608,182 @@ function App() {
                       position="relative"
                     >
                       <Box as="span" display="block">
-                        Lend
-                        <br />
-                        APR
+                        {resupplyMode ? (
+                          <>
+                            Total
+                            <br />
+                            APR
+                          </>
+                        ) : (
+                          <>
+                            Lend
+                            <br />
+                            APR
+                          </>
+                        )}
                       </Box>
                       <SortIcon column="lendRate" />
                     </Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {getFilteredData().map((market) => (
-                    <Tr key={`${market.marketName}-${market.contractAddress}`}>
-                      <Td>
-                        <Flex align="center" gap={1}>
-                          <Box position="relative" boxSize="24px">
-                            <Image
-                              src={market.depositTokenLogo}
-                              boxSize="20px"
-                              fallbackSrc={FALLBACK_IMAGE}
-                              borderRadius="full"
-                            />
-                            <Image
-                              src={market.collateralTokenLogo}
-                              boxSize="20px"
-                              position="absolute"
-                              bottom="0px"
-                              right="-10px"
-                              zIndex={1}
-                              fallbackSrc={FALLBACK_IMAGE}
-                              borderRadius="full"
-                            />
-                          </Box>
-                          <Text
-                            as="button"
-                            display="inline-flex"
-                            alignItems="center"
-                            gap={1}
-                            ml={3}
-                            onClick={() =>
-                              handleInfoClick({
-                                marketName: market.marketName,
-                                protocolId: market.protocolId,
-                                contractAddress: market.contractAddress,
-                                protocolLink: market.protocolLink,
-                                depositTokenAddress: market.depositTokenAddress,
-                                collateralTokenAddress:
-                                  market.collateralTokenAddress,
-                                resupplyPairAddress: market.resupplyPairAddress,
-                                depositTokenSymbol: market.depositTokenSymbol,
-                                collateralTokenSymbol:
-                                  market.collateralTokenSymbol,
-                                controller: market.controller,
-                                interestRateContract:
-                                  market.interestRateContract,
-                                depositTokenLogo: market.depositTokenLogo,
-                                collateralTokenLogo: market.collateralTokenLogo,
-                              })
-                            }
-                            textDecoration="underline"
-                            color="black"
-                            fontFamily="monospace"
-                            bg="transparent"
-                            border="none"
-                            p={0}
-                            cursor="pointer"
-                          >
-                            {market.marketName}
-                          </Text>
-                        </Flex>
-                      </Td>
-                      <Td>{Math.round(market.ltv)}%</Td>
-                      <Td>${formatNumberWithAbbreviation(market.totalDebt)}</Td>
-                      <Td
-                        fontFamily="monospace"
-                        fontSize={{ base: "xs", md: "sm" }}
-                        px={1}
-                        py={0.5}
+                  {getFilteredData().map((market) => {
+                    const rewardsApr = Number(
+                      getValue(market, "lendRate", "resupply_lend_rate")
+                    );
+                    const underlyingApr = Number(market.lendRate);
+                    const totalApr = rewardsApr + underlyingApr;
+                    return (
+                      <Tr
+                        key={`${market.marketName}-${market.contractAddress}`}
                       >
-                        {Math.round(market.utilization)}%
-                      </Td>
-                      <Td>${formatNumberWithAbbreviation(market.liquidity)}</Td>
-                      <Td>{market.borrowRate.toFixed(2)}%</Td>
-                      <Td>{market.lendRate.toFixed(2)}%</Td>
-                    </Tr>
-                  ))}
+                        <Td>
+                          <Flex align="center" gap={1}>
+                            <Box position="relative" boxSize="24px">
+                              <Image
+                                src={market.depositTokenLogo}
+                                boxSize="20px"
+                                fallbackSrc={FALLBACK_IMAGE}
+                                borderRadius="full"
+                              />
+                              <Image
+                                src={market.collateralTokenLogo}
+                                boxSize="20px"
+                                position="absolute"
+                                bottom="0px"
+                                right="-10px"
+                                zIndex={1}
+                                fallbackSrc={FALLBACK_IMAGE}
+                                borderRadius="full"
+                              />
+                            </Box>
+                            <Text
+                              as="button"
+                              display="inline-flex"
+                              alignItems="center"
+                              gap={1}
+                              ml={3}
+                              onClick={() =>
+                                handleInfoClick({
+                                  marketName: market.marketName,
+                                  protocolId: market.protocolId,
+                                  contractAddress: market.contractAddress,
+                                  protocolLink: market.protocolLink,
+                                  depositTokenAddress:
+                                    market.depositTokenAddress,
+                                  collateralTokenAddress:
+                                    market.collateralTokenAddress,
+                                  resupplyPairAddress:
+                                    market.resupplyPairAddress,
+                                  depositTokenSymbol: market.depositTokenSymbol,
+                                  collateralTokenSymbol:
+                                    market.collateralTokenSymbol,
+                                  controller: market.controller,
+                                  interestRateContract:
+                                    market.interestRateContract,
+                                  depositTokenLogo: market.depositTokenLogo,
+                                  collateralTokenLogo:
+                                    market.collateralTokenLogo,
+                                })
+                              }
+                              textDecoration="underline"
+                              color="black"
+                              fontFamily="monospace"
+                              bg="transparent"
+                              border="none"
+                              p={0}
+                              cursor="pointer"
+                            >
+                              {market.marketName}
+                            </Text>
+                          </Flex>
+                        </Td>
+                        <Td>
+                          {Math.round(getValue(market, "ltv", "resupply_ltv"))}%
+                        </Td>
+                        <Td>
+                          $
+                          {formatNumberWithAbbreviation(
+                            getValue(market, "totalDebt", "resupply_total_debt")
+                          )}
+                        </Td>
+                        <Td
+                          fontFamily="monospace"
+                          fontSize={{ base: "xs", md: "sm" }}
+                          px={1}
+                          py={0.5}
+                        >
+                          {formatPercent3Digits(
+                            getValue(
+                              market,
+                              "utilization",
+                              "resupply_utilization"
+                            )
+                          )}
+                        </Td>
+                        <Td>
+                          $
+                          {formatNumberWithAbbreviation(
+                            getValue(
+                              market,
+                              "liquidity",
+                              "resupply_available_liquidity"
+                            )
+                          )}
+                        </Td>
+                        <Td>
+                          {resupplyMode
+                            ? `${Number(
+                                getValue(
+                                  market,
+                                  "borrowRate",
+                                  "resupply_borrow_rate"
+                                )
+                              ).toFixed(2)}%`
+                            : `${Number(
+                                getValue(market, "borrowRate", "borrowRate")
+                              ).toFixed(2)}%`}
+                        </Td>
+                        <Td>
+                          {resupplyMode ? (
+                            <Tooltip
+                              label={
+                                <Box
+                                  fontFamily="monospace"
+                                  fontSize="xs"
+                                  color="white"
+                                  bg="gray.800"
+                                  borderRadius="md"
+                                  px={2}
+                                  py={1}
+                                >
+                                  <div>rewards: {rewardsApr.toFixed(2)}%</div>
+                                  <div>
+                                    underlying: {underlyingApr.toFixed(2)}%
+                                  </div>
+                                </Box>
+                              }
+                              fontSize="xs"
+                              hasArrow
+                              placement="top"
+                              bg="gray.800"
+                              color="white"
+                              borderRadius="md"
+                              p={0}
+                            >
+                              <span style={{ fontFamily: "monospace" }}>
+                                {totalApr.toFixed(2)}%
+                              </span>
+                            </Tooltip>
+                          ) : (
+                            `${Number(
+                              getValue(market, "lendRate", "lendRate")
+                            ).toFixed(2)}%`
+                          )}
+                        </Td>
+                      </Tr>
+                    );
+                  })}
                 </Tbody>
               </Table>
             </Box>

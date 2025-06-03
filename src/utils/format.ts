@@ -31,3 +31,10 @@ export function formatNumberWithAbbreviation(value: number): string {
     return scaledValue.toFixed(decimals) + suffixes[suffixIndex];
   }
 }
+
+export function formatPercent3Digits(value: number): string {
+  if (value === 100) return "100%";
+  if (value >= 10) return value.toFixed(1) + "%";
+  if (value > 0) return value.toFixed(2) + "%";
+  return "0.00%";
+}

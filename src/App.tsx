@@ -582,30 +582,43 @@ function App() {
                     </Th>
                     <Th
                       onClick={() => handleSort("ltv")}
-                      minW={{ base: "40px", md: "60px" }}
-                      w={{ base: "40px", md: "60px" }}
+                      minW={{ base: "32px", md: "40px" }}
+                      w={{ base: "32px", md: "40px" }}
                       fontFamily="monospace"
-                      fontSize={{ base: "xs", md: "sm" }}
+                      fontSize={{ base: "2xs", md: "xs" }}
+                      px={{ base: 1, md: 2 }}
+                      py={{ base: 0.5, md: 1 }}
                       position="relative"
                     >
-                      LTV
-                      <SortIcon column="ltv" />
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        LTV
+                        <SortIcon column="ltv" />
+                      </Box>
                     </Th>
                     <Th
                       onClick={() => handleSort("totalDebt")}
-                      minW={{ base: "70px", md: "100px" }}
-                      w={{ base: "70px", md: "100px" }}
-                      px={{ base: 1, md: 2 }}
+                      minW={{ base: "48px", md: "64px" }}
+                      w={{ base: "48px", md: "64px" }}
+                      px={{ base: 1, md: 1 }}
                       fontFamily="monospace"
-                      fontSize={{ base: "xs", md: "sm" }}
+                      fontSize={{ base: "2xs", md: "xs" }}
+                      py={{ base: 0.5, md: 1 }}
                       position="relative"
                     >
-                      <Box as="span" display="block">
-                        Total
-                        <br />
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
                         Debt
+                        <SortIcon column="totalDebt" />
                       </Box>
-                      <SortIcon column="totalDebt" />
                     </Th>
                     <Th
                       onClick={() => handleSort("utilization")}
@@ -621,26 +634,32 @@ function App() {
                     </Th>
                     <Th
                       onClick={() => handleSort("liquidity")}
-                      minW={{ base: "70px", md: "100px" }}
-                      w={{ base: "70px", md: "100px" }}
-                      px={{ base: 1, md: 2 }}
+                      minW={{ base: "48px", md: "64px" }}
+                      w={{ base: "48px", md: "64px" }}
+                      px={{ base: 1, md: 1 }}
                       fontFamily="monospace"
                       fontSize={{ base: "2xs", md: "xs" }}
+                      py={{ base: 0.5, md: 1 }}
                       position="relative"
                     >
-                      <Box as="span" display="block">
-                        Avail.
-                        <br />
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
                         Liq
+                        <SortIcon column="liquidity" />
                       </Box>
-                      <SortIcon column="liquidity" />
                     </Th>
                     <Th
                       onClick={() => handleSort("borrowRate")}
-                      minW={{ base: "50px", md: "80px" }}
-                      w={{ base: "50px", md: "80px" }}
+                      minW={{ base: "32px", md: "48px" }}
+                      w={{ base: "40px", md: "64px" }}
                       fontFamily="monospace"
-                      fontSize={{ base: "xs", md: "sm" }}
+                      fontSize={{ base: "2xs", md: "sm" }}
+                      px={{ base: 1, md: 2 }}
+                      py={{ base: 0.5, md: 1 }}
                       position="relative"
                     >
                       <Box as="span" display="block">
@@ -657,15 +676,17 @@ function App() {
                             APR
                           </>
                         )}
+                        <SortIcon column="borrowRate" />
                       </Box>
-                      <SortIcon column="borrowRate" />
                     </Th>
                     <Th
                       onClick={() => handleSort("lendRate")}
-                      minW={{ base: "50px", md: "80px" }}
-                      w={{ base: "50px", md: "80px" }}
+                      minW={{ base: "32px", md: "48px" }}
+                      w={{ base: "40px", md: "64px" }}
                       fontFamily="monospace"
-                      fontSize={{ base: "xs", md: "sm" }}
+                      fontSize={{ base: "2xs", md: "sm" }}
+                      px={{ base: 1, md: 2 }}
+                      py={{ base: 0.5, md: 1 }}
                       position="relative"
                     >
                       <Box as="span" display="block">
@@ -682,8 +703,8 @@ function App() {
                             APR
                           </>
                         )}
+                        <SortIcon column="lendRate" />
                       </Box>
-                      <SortIcon column="lendRate" />
                     </Th>
                   </Tr>
                 </Thead>

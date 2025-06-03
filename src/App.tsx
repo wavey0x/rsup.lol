@@ -331,19 +331,24 @@ function App() {
   };
 
   const SortIcon = ({ column }: { column: keyof MarketData }) => {
-    if (sortConfig.key !== column) return null;
     return (
       <Box
         as="span"
-        position="absolute"
-        right="4px"
-        top="50%"
-        transform="translateY(-50%)"
+        mt={0}
+        display="flex"
+        justifyContent="center"
+        minH="10px"
+        alignItems="center"
       >
-        {sortConfig.direction === "asc" ? (
-          <ChevronUpIcon boxSize="3" />
+        {sortConfig.key === column ? (
+          sortConfig.direction === "asc" ? (
+            <ChevronUpIcon boxSize="2" />
+          ) : (
+            <ChevronDownIcon boxSize="2" />
+          )
         ) : (
-          <ChevronDownIcon boxSize="3" />
+          // Empty box to reserve space for the arrow
+          <Box boxSize="10px" />
         )}
       </Box>
     );
@@ -472,7 +477,7 @@ function App() {
                   px={2}
                   py={1}
                   fontWeight="normal"
-                  fontSize="sm"
+                  fontSize={{ base: "10px", md: "sm" }}
                   minW={"auto"}
                   borderWidth="1px"
                   borderColor="gray.200"
@@ -495,7 +500,7 @@ function App() {
                   px={2}
                   py={1}
                   fontWeight="normal"
-                  fontSize="sm"
+                  fontSize={{ base: "10px", md: "sm" }}
                   minW={"auto"}
                   borderWidth="1px"
                   borderColor="gray.200"
@@ -523,7 +528,7 @@ function App() {
                   px={2}
                   py={1}
                   fontWeight="normal"
-                  fontSize="sm"
+                  fontSize={{ base: "10px", md: "sm" }}
                   minW={"auto"}
                   borderWidth="1px"
                   borderColor="gray.200"
@@ -572,22 +577,29 @@ function App() {
                     <Th
                       onClick={() => handleSort("marketName")}
                       fontFamily="monospace"
-                      fontSize={{ base: "xs", md: "sm" }}
+                      fontSize={{ base: "2xs", md: "sm" }}
                       position="relative"
-                      minW={{ base: "140px", md: "200px" }}
-                      w={{ base: "140px", md: "200px" }}
+                      minW={{ base: "80px", md: "200px" }}
+                      w={{ base: "100px", md: "200px" }}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
                     >
-                      Market
-                      <SortIcon column="marketName" />
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <span>Market</span>
+                        <SortIcon column="marketName" />
+                      </Box>
                     </Th>
                     <Th
                       onClick={() => handleSort("ltv")}
-                      minW={{ base: "32px", md: "40px" }}
-                      w={{ base: "32px", md: "40px" }}
-                      fontFamily="monospace"
-                      fontSize={{ base: "2xs", md: "xs" }}
-                      px={{ base: 1, md: 2 }}
-                      py={{ base: 0.5, md: 1 }}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
                       position="relative"
                     >
                       <Box
@@ -596,18 +608,15 @@ function App() {
                         alignItems="center"
                         justifyContent="center"
                       >
-                        LTV
+                        <span>LTV</span>
                         <SortIcon column="ltv" />
                       </Box>
                     </Th>
                     <Th
                       onClick={() => handleSort("totalDebt")}
-                      minW={{ base: "48px", md: "64px" }}
-                      w={{ base: "48px", md: "64px" }}
-                      px={{ base: 1, md: 1 }}
-                      fontFamily="monospace"
-                      fontSize={{ base: "2xs", md: "xs" }}
-                      py={{ base: 0.5, md: 1 }}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
                       position="relative"
                     >
                       <Box
@@ -616,30 +625,15 @@ function App() {
                         alignItems="center"
                         justifyContent="center"
                       >
-                        Debt
+                        <span>Debt</span>
                         <SortIcon column="totalDebt" />
                       </Box>
                     </Th>
                     <Th
                       onClick={() => handleSort("utilization")}
-                      minW={{ base: "40px", md: "60px" }}
-                      w={{ base: "40px", md: "60px" }}
-                      px={{ base: 1, md: 2 }}
-                      fontFamily="monospace"
-                      fontSize={{ base: "xs", md: "sm" }}
-                      position="relative"
-                    >
-                      Util
-                      <SortIcon column="utilization" />
-                    </Th>
-                    <Th
-                      onClick={() => handleSort("liquidity")}
-                      minW={{ base: "48px", md: "64px" }}
-                      w={{ base: "48px", md: "64px" }}
-                      px={{ base: 1, md: 1 }}
-                      fontFamily="monospace"
-                      fontSize={{ base: "2xs", md: "xs" }}
-                      py={{ base: 0.5, md: 1 }}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
                       position="relative"
                     >
                       <Box
@@ -648,18 +642,35 @@ function App() {
                         alignItems="center"
                         justifyContent="center"
                       >
-                        Liq
+                        <span>Util</span>
+                        <SortIcon column="utilization" />
+                      </Box>
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("liquidity")}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                      position="relative"
+                    >
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <span>Liq</span>
                         <SortIcon column="liquidity" />
                       </Box>
                     </Th>
                     <Th
                       onClick={() => handleSort("borrowRate")}
-                      minW={{ base: "32px", md: "48px" }}
-                      w={{ base: "40px", md: "64px" }}
-                      fontFamily="monospace"
-                      fontSize={{ base: "2xs", md: "sm" }}
-                      px={{ base: 1, md: 2 }}
-                      py={{ base: 0.5, md: 1 }}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                      fontSize={{ base: "8px", md: "sm" }}
+                      whiteSpace="normal"
+                      maxW={{ base: "48px", md: "none" }}
                       position="relative"
                     >
                       <Box as="span" display="block">
@@ -681,28 +692,41 @@ function App() {
                     </Th>
                     <Th
                       onClick={() => handleSort("lendRate")}
-                      minW={{ base: "32px", md: "48px" }}
-                      w={{ base: "40px", md: "64px" }}
-                      fontFamily="monospace"
-                      fontSize={{ base: "2xs", md: "sm" }}
-                      px={{ base: 1, md: 2 }}
-                      py={{ base: 0.5, md: 1 }}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                      whiteSpace="normal"
+                      minW={{ base: "64px", md: "96px" }}
+                      maxW={{ base: "64px", md: "96px" }}
+                      w={{ base: "64px", md: "96px" }}
                       position="relative"
                     >
-                      <Box as="span" display="block">
-                        {resupplyMode ? (
-                          <>
-                            Total
-                            <br />
-                            APR
-                          </>
-                        ) : (
-                          <>
-                            Lend
-                            <br />
-                            APR
-                          </>
-                        )}
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Box
+                          as="span"
+                          fontSize={{ base: "8px", md: "sm" }}
+                          lineHeight={1}
+                          display="block"
+                        >
+                          {resupplyMode ? (
+                            <>
+                              Total
+                              <br />
+                              APR
+                            </>
+                          ) : (
+                            <>
+                              Lend
+                              <br />
+                              APR
+                            </>
+                          )}
+                        </Box>
                         <SortIcon column="lendRate" />
                       </Box>
                     </Th>
@@ -781,7 +805,10 @@ function App() {
                           </Flex>
                         </Td>
                         <Td>
-                          {Math.round(getValue(market, "ltv", "resupply_ltv"))}%
+                          {Number(
+                            getValue(market, "ltv", "resupply_ltv")
+                          ).toFixed(1)}
+                          %
                         </Td>
                         <Td>
                           $
@@ -791,9 +818,10 @@ function App() {
                         </Td>
                         <Td
                           fontFamily="monospace"
-                          fontSize={{ base: "xs", md: "sm" }}
-                          px={1}
-                          py={0.5}
+                          fontSize={{ base: "10px", md: "sm" }}
+                          px={{ base: 1, md: 5 }}
+                          py={{ base: 0.5, md: 2 }}
+                          textAlign="center"
                         >
                           {formatPercent3Digits(
                             getValue(
@@ -803,7 +831,13 @@ function App() {
                             )
                           )}
                         </Td>
-                        <Td>
+                        <Td
+                          fontFamily="monospace"
+                          fontSize={{ base: "10px", md: "sm" }}
+                          px={{ base: 1, md: 5 }}
+                          py={{ base: 0.5, md: 2 }}
+                          textAlign="center"
+                        >
                           $
                           {formatNumberWithAbbreviation(
                             getValue(

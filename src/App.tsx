@@ -255,15 +255,70 @@ function App() {
     if (!sortConfig.key) return marketData;
 
     return [...marketData].sort((a, b) => {
+      // Special case: sort by total APR in resupply mode
+      if (sortConfig.key === "lendRate" && resupplyMode) {
+        const aRewards =
+          Number(getValue(a, "lendRate", "resupply_lend_rate")) || 0;
+        const aUnderlying = Number(a.lendRate || 0);
+        const bRewards =
+          Number(getValue(b, "lendRate", "resupply_lend_rate")) || 0;
+        const bUnderlying = Number(b.lendRate || 0);
+        const aTotal = aRewards + aUnderlying;
+        const bTotal = bRewards + bUnderlying;
+        return sortConfig.direction === "asc"
+          ? aTotal - bTotal
+          : bTotal - aTotal;
+      }
+      // Special case: sort by resupply values for utilization and liquidity in resupply mode
+      if (resupplyMode && sortConfig.key === "utilization") {
+        const aValue =
+          Number(getValue(a, "utilization", "resupply_utilization")) || 0;
+        const bValue =
+          Number(getValue(b, "utilization", "resupply_utilization")) || 0;
+        return sortConfig.direction === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+      if (resupplyMode && sortConfig.key === "liquidity") {
+        const aValue =
+          Number(getValue(a, "liquidity", "resupply_available_liquidity")) || 0;
+        const bValue =
+          Number(getValue(b, "liquidity", "resupply_available_liquidity")) || 0;
+        return sortConfig.direction === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+      // Always sort by raw number for liquidity and totalDebt
+      if (sortConfig.key === "liquidity" || sortConfig.key === "totalDebt") {
+        const aValue = Number(a[sortConfig.key!]) || 0;
+        const bValue = Number(b[sortConfig.key!]) || 0;
+        return sortConfig.direction === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+      // Always sort by raw number for numeric columns
+      const numericKeys = [
+        "ltv",
+        "totalDebt",
+        "utilization",
+        "liquidity",
+        "borrowRate",
+        "lendRate",
+      ];
+      if (numericKeys.includes(sortConfig.key as string)) {
+        const aValue = Number(a[sortConfig.key!]) || 0;
+        const bValue = Number(b[sortConfig.key!]) || 0;
+        return sortConfig.direction === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
       const aValue = a[sortConfig.key!];
       const bValue = b[sortConfig.key!];
-
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortConfig.direction === "asc"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
-
       return sortConfig.direction === "asc"
         ? Number(aValue) - Number(bValue)
         : Number(bValue) - Number(aValue);
@@ -763,10 +818,38 @@ function App() {
                                   px={2}
                                   py={1}
                                 >
-                                  <div>rewards: {rewardsApr.toFixed(2)}%</div>
-                                  <div>
-                                    underlying: {underlyingApr.toFixed(2)}%
-                                  </div>
+                                  <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    gap={2}
+                                  >
+                                    <span>rewards:</span>
+                                    <span
+                                      style={{
+                                        minWidth: 40,
+                                        textAlign: "right",
+                                        display: "inline-block",
+                                      }}
+                                    >
+                                      {rewardsApr.toFixed(2)}%
+                                    </span>
+                                  </Box>
+                                  <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    gap={2}
+                                  >
+                                    <span>underlying:</span>
+                                    <span
+                                      style={{
+                                        minWidth: 40,
+                                        textAlign: "right",
+                                        display: "inline-block",
+                                      }}
+                                    >
+                                      {underlyingApr.toFixed(2)}%
+                                    </span>
+                                  </Box>
                                 </Box>
                               }
                               fontSize="xs"

@@ -289,6 +289,16 @@ function App() {
           ? aValue - bValue
           : bValue - aValue;
       }
+      // Always sort by raw number for borrowRate
+      if (sortConfig.key === "borrowRate") {
+        const aValue =
+          Number(getValue(a, "borrowRate", "resupply_borrow_rate")) || 0;
+        const bValue =
+          Number(getValue(b, "borrowRate", "resupply_borrow_rate")) || 0;
+        return sortConfig.direction === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
       // Always sort by raw number for liquidity and totalDebt
       if (sortConfig.key === "liquidity" || sortConfig.key === "totalDebt") {
         const aValue = Number(a[sortConfig.key!]) || 0;
@@ -303,12 +313,17 @@ function App() {
         "totalDebt",
         "utilization",
         "liquidity",
-        "borrowRate",
         "lendRate",
       ];
       if (numericKeys.includes(sortConfig.key as string)) {
-        const aValue = Number(a[sortConfig.key!]) || 0;
-        const bValue = Number(b[sortConfig.key!]) || 0;
+        const aValue =
+          Number(
+            getValue(a, sortConfig.key as string, `resupply_${sortConfig.key}`)
+          ) || 0;
+        const bValue =
+          Number(
+            getValue(b, sortConfig.key as string, `resupply_${sortConfig.key}`)
+          ) || 0;
         return sortConfig.direction === "asc"
           ? aValue - bValue
           : bValue - aValue;

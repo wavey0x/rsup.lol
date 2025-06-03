@@ -28,6 +28,7 @@ import {
   ButtonGroup,
   Button,
   Stack,
+  Tooltip,
 } from "@chakra-ui/react";
 import {
   ChevronUpIcon,
@@ -422,12 +423,18 @@ function App() {
                   w="180px"
                   h="40px"
                   px={2}
-                  borderWidth="1px"
-                  borderColor="gray.200"
                   bg={resupplyMode ? "white" : "gray.100"}
-                  boxShadow={resupplyMode ? "sm" : "none"}
+                  borderWidth={resupplyMode ? "1px" : "0"}
+                  borderColor={resupplyMode ? "black" : "transparent"}
+                  boxShadow="none"
                   _active={{ bg: resupplyMode ? "white" : "gray.200" }}
-                  _hover={{ bg: resupplyMode ? "white" : "gray.200" }}
+                  _hover={{
+                    bg: resupplyMode ? "white" : "gray.200",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
                   fontFamily="monospace"
                 >
                   <Image
@@ -447,12 +454,18 @@ function App() {
                   w="180px"
                   h="40px"
                   px={2}
-                  borderWidth="1px"
-                  borderColor="gray.200"
                   bg={!resupplyMode ? "white" : "gray.100"}
-                  boxShadow={!resupplyMode ? "sm" : "none"}
+                  borderWidth={!resupplyMode ? "1px" : "0"}
+                  borderColor={!resupplyMode ? "black" : "transparent"}
+                  boxShadow="none"
                   _active={{ bg: !resupplyMode ? "white" : "gray.200" }}
-                  _hover={{ bg: !resupplyMode ? "white" : "gray.200" }}
+                  _hover={{
+                    bg: !resupplyMode ? "white" : "gray.200",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
                   fontFamily="monospace"
                   fontWeight="bold"
                 >
@@ -478,16 +491,20 @@ function App() {
                   fontWeight="normal"
                   fontSize={{ base: "10px", md: "sm" }}
                   minW={"auto"}
-                  borderWidth="1px"
-                  borderColor="gray.200"
                   bg={protocolFilter === "all" ? "white" : "gray.100"}
-                  boxShadow={protocolFilter === "all" ? "sm" : "none"}
+                  borderWidth={protocolFilter === "all" ? "1px" : "0"}
+                  borderColor={
+                    protocolFilter === "all" ? "black" : "transparent"
+                  }
+                  boxShadow="none"
                   _active={{
                     bg: protocolFilter === "all" ? "white" : "gray.200",
                   }}
                   _hover={{
                     bg: protocolFilter === "all" ? "white" : "gray.200",
                   }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
                   fontFamily="monospace"
                 >
                   All
@@ -501,16 +518,20 @@ function App() {
                   fontWeight="normal"
                   fontSize={{ base: "10px", md: "sm" }}
                   minW={"auto"}
-                  borderWidth="1px"
-                  borderColor="gray.200"
                   bg={protocolFilter === "curve" ? "white" : "gray.100"}
-                  boxShadow={protocolFilter === "curve" ? "sm" : "none"}
+                  borderWidth={protocolFilter === "curve" ? "1px" : "0"}
+                  borderColor={
+                    protocolFilter === "curve" ? "black" : "transparent"
+                  }
+                  boxShadow="none"
                   _active={{
                     bg: protocolFilter === "curve" ? "white" : "gray.200",
                   }}
                   _hover={{
                     bg: protocolFilter === "curve" ? "white" : "gray.200",
                   }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
                   fontFamily="monospace"
                 >
                   <Flex align="center" gap={1}>
@@ -529,16 +550,20 @@ function App() {
                   fontWeight="normal"
                   fontSize={{ base: "10px", md: "sm" }}
                   minW={"auto"}
-                  borderWidth="1px"
-                  borderColor="gray.200"
                   bg={protocolFilter === "frax" ? "white" : "gray.100"}
-                  boxShadow={protocolFilter === "frax" ? "sm" : "none"}
+                  borderWidth={protocolFilter === "frax" ? "1px" : "0"}
+                  borderColor={
+                    protocolFilter === "frax" ? "black" : "transparent"
+                  }
+                  boxShadow="none"
                   _active={{
                     bg: protocolFilter === "frax" ? "white" : "gray.200",
                   }}
                   _hover={{
                     bg: protocolFilter === "frax" ? "white" : "gray.200",
                   }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
                   fontFamily="monospace"
                 >
                   <Flex align="center" gap={1}>
@@ -861,11 +886,74 @@ function App() {
                               ).toFixed(2)}%`}
                         </Td>
                         <Td>
-                          {resupplyMode
-                            ? `${totalApr.toFixed(2)}%`
-                            : `${Number(
-                                getValue(market, "lendRate", "lendRate")
-                              ).toFixed(2)}%`}
+                          {resupplyMode ? (
+                            <Tooltip
+                              label={
+                                <Box
+                                  fontFamily="monospace"
+                                  fontSize="xs"
+                                  color="white"
+                                  bg="gray.800"
+                                  borderRadius="md"
+                                  px={2}
+                                  py={1}
+                                >
+                                  <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    gap={2}
+                                  >
+                                    <span>rewards:</span>
+                                    <span
+                                      style={{
+                                        minWidth: 40,
+                                        textAlign: "right",
+                                        display: "inline-block",
+                                      }}
+                                    >
+                                      {rewardsApr.toFixed(2)}%
+                                    </span>
+                                  </Box>
+                                  <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    gap={2}
+                                  >
+                                    <span>underlying:</span>
+                                    <span
+                                      style={{
+                                        minWidth: 40,
+                                        textAlign: "right",
+                                        display: "inline-block",
+                                      }}
+                                    >
+                                      {underlyingApr.toFixed(2)}%
+                                    </span>
+                                  </Box>
+                                </Box>
+                              }
+                              fontSize="xs"
+                              hasArrow
+                              placement="top"
+                              bg="gray.800"
+                              color="white"
+                              borderRadius="md"
+                              p={0}
+                            >
+                              <span
+                                style={{
+                                  fontFamily: "monospace",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {totalApr.toFixed(2)}%
+                              </span>
+                            </Tooltip>
+                          ) : (
+                            `${Number(
+                              getValue(market, "lendRate", "lendRate")
+                            ).toFixed(2)}%`
+                          )}
                         </Td>
                       </Tr>
                     );

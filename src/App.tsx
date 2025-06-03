@@ -43,7 +43,7 @@ import {
   formatNumberWithAbbreviation,
   formatPercent3Digits,
 } from "./utils/format";
-import { useBreakpointValue } from "@chakra-ui/react";
+
 const crvLogo = "/CRV-transparent.svg";
 const fraxlendLogo = "/Fraxlend.svg";
 
@@ -151,7 +151,6 @@ function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [copied, setCopied] = useState<string | null>(null);
   const protocolGroupRef = useRef<HTMLDivElement | null>(null);
-  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const fetchData = async () => {
     try {

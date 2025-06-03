@@ -28,7 +28,6 @@ import {
   ButtonGroup,
   Button,
   Stack,
-  Tooltip,
 } from "@chakra-ui/react";
 import {
   ChevronUpIcon,
@@ -799,6 +798,7 @@ function App() {
                               border="none"
                               p={0}
                               cursor="pointer"
+                              fontSize={{ base: "8px", md: "sm" }}
                             >
                               {market.marketName}
                             </Text>
@@ -861,69 +861,11 @@ function App() {
                               ).toFixed(2)}%`}
                         </Td>
                         <Td>
-                          {resupplyMode ? (
-                            <Tooltip
-                              label={
-                                <Box
-                                  fontFamily="monospace"
-                                  fontSize="xs"
-                                  color="white"
-                                  bg="gray.800"
-                                  borderRadius="md"
-                                  px={2}
-                                  py={1}
-                                >
-                                  <Box
-                                    display="flex"
-                                    justifyContent="space-between"
-                                    gap={2}
-                                  >
-                                    <span>rewards:</span>
-                                    <span
-                                      style={{
-                                        minWidth: 40,
-                                        textAlign: "right",
-                                        display: "inline-block",
-                                      }}
-                                    >
-                                      {rewardsApr.toFixed(2)}%
-                                    </span>
-                                  </Box>
-                                  <Box
-                                    display="flex"
-                                    justifyContent="space-between"
-                                    gap={2}
-                                  >
-                                    <span>underlying:</span>
-                                    <span
-                                      style={{
-                                        minWidth: 40,
-                                        textAlign: "right",
-                                        display: "inline-block",
-                                      }}
-                                    >
-                                      {underlyingApr.toFixed(2)}%
-                                    </span>
-                                  </Box>
-                                </Box>
-                              }
-                              fontSize="xs"
-                              hasArrow
-                              placement="top"
-                              bg="gray.800"
-                              color="white"
-                              borderRadius="md"
-                              p={0}
-                            >
-                              <span style={{ fontFamily: "monospace" }}>
-                                {totalApr.toFixed(2)}%
-                              </span>
-                            </Tooltip>
-                          ) : (
-                            `${Number(
-                              getValue(market, "lendRate", "lendRate")
-                            ).toFixed(2)}%`
-                          )}
+                          {resupplyMode
+                            ? `${totalApr.toFixed(2)}%`
+                            : `${Number(
+                                getValue(market, "lendRate", "lendRate")
+                              ).toFixed(2)}%`}
                         </Td>
                       </Tr>
                     );

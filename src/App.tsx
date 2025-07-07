@@ -107,6 +107,8 @@ const SORT_CONFIG_KEY = "resupply_sort_config";
 const RESUPPLY_MODE_KEY = "resupply_mode_toggle";
 const PROTOCOL_FILTER_KEY = "protocol_filter_toggle";
 
+export { customTheme, FALLBACK_IMAGE };
+
 function App() {
   const [marketData, setMarketData] = useState<MarketData[]>([]);
   const [selectedMarket, setSelectedMarket] = useState<MarketInfoModal | null>(

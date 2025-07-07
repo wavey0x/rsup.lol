@@ -17,7 +17,6 @@ import {
   Flex,
   Stack,
 } from "@chakra-ui/react";
-import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import { customTheme, FALLBACK_IMAGE } from "./App";
 
@@ -25,11 +24,11 @@ const LOGO = "/retention-logo.png";
 const PAGE_SIZE = 15;
 
 function abbreviateAddress(addr: string) {
-  return addr ? `${addr.slice(0, 5)}...${addr.slice(-4)}` : "";
+  return addr ? `${addr.slice(0, 5)}...${addr.slice(-3)}` : "";
 }
 
 function abbreviateHash(hash: string) {
-  return hash ? `${hash.slice(0, 6)}...${hash.slice(-4)}` : "";
+  return hash ? `${hash.slice(0, 5)}...${hash.slice(-3)}` : "";
 }
 
 function formatDate(ts: number | string) {
@@ -158,8 +157,8 @@ function RetentionProgram() {
               color="black"
               textAlign="center"
               mt={0}
-              mb={0}
-              style={{ marginTop: 0, marginBottom: 0 }}
+              mb={2}
+              style={{ marginTop: 0, marginBottom: 8 }}
             >
               Retention Program
             </Text>
@@ -200,7 +199,7 @@ function RetentionProgram() {
                               textAlign: "right",
                               padding: "2px 8px",
                               fontFamily: "monospace",
-                              fontSize: "16px",
+                              fontSize: "15px",
                               whiteSpace: "nowrap",
                             }}
                           >
@@ -240,9 +239,13 @@ function RetentionProgram() {
                         colorScheme="blackAlpha"
                         borderWidth="1px"
                         borderColor="black"
-                        minWidth="420px"
+                        minWidth="374px"
                         width="auto"
-                        style={{ textAlign: "center", fontSize: "13px" }}
+                        style={{
+                          textAlign: "center",
+                          fontSize: "13px",
+                          borderSpacing: 0,
+                        }}
                       >
                         <Thead>
                           <Tr>
@@ -252,10 +255,13 @@ function RetentionProgram() {
                               borderColor="black"
                               fontSize="xs"
                               textAlign="center"
-                              px={1}
-                              py={0.5}
+                              px={2}
+                              py={0}
+                              minWidth="70px"
+                              maxWidth="70px"
+                              whiteSpace="nowrap"
                             >
-                              UTC
+                              Date
                             </Th>
                             <Th
                               fontFamily="monospace"
@@ -263,8 +269,11 @@ function RetentionProgram() {
                               borderColor="black"
                               fontSize="sm"
                               textAlign="center"
-                              px={1}
-                              py={0.5}
+                              px={2}
+                              py={0}
+                              minWidth="83px"
+                              maxWidth="83px"
+                              whiteSpace="nowrap"
                             >
                               User
                             </Th>
@@ -274,8 +283,11 @@ function RetentionProgram() {
                               borderColor="black"
                               fontSize="sm"
                               textAlign="center"
-                              px={1}
-                              py={0.5}
+                              px={2}
+                              py={0}
+                              minWidth="83px"
+                              maxWidth="83px"
+                              whiteSpace="nowrap"
                             >
                               Txn
                             </Th>
@@ -285,8 +297,11 @@ function RetentionProgram() {
                               borderColor="black"
                               fontSize="sm"
                               textAlign="center"
-                              px={1}
-                              py={0.5}
+                              px={2}
+                              py={0}
+                              minWidth="93px"
+                              maxWidth="93px"
+                              whiteSpace="nowrap"
                             >
                               Amt
                             </Th>
@@ -303,8 +318,12 @@ function RetentionProgram() {
                                   borderColor="black"
                                   fontSize="xs"
                                   textAlign="left"
-                                  px={1}
-                                  py={0.5}
+                                  px={2}
+                                  py={0}
+                                  minWidth="85px"
+                                  maxWidth="85px"
+                                  overflow="hidden"
+                                  whiteSpace="nowrap"
                                 >
                                   {ts ? formatDate(ts) : "-"}
                                 </Td>
@@ -314,8 +333,12 @@ function RetentionProgram() {
                                   borderColor="black"
                                   fontSize="xs"
                                   textAlign="left"
-                                  px={1}
-                                  py={0.5}
+                                  px={2}
+                                  py={0}
+                                  minWidth="83px"
+                                  maxWidth="83px"
+                                  overflow="hidden"
+                                  whiteSpace="nowrap"
                                 >
                                   <a
                                     href={`https://etherscan.io/address/${row.user}`}
@@ -335,8 +358,12 @@ function RetentionProgram() {
                                   borderColor="black"
                                   fontSize="xs"
                                   textAlign="left"
-                                  px={1}
-                                  py={0.5}
+                                  px={2}
+                                  py={0}
+                                  minWidth="83px"
+                                  maxWidth="83px"
+                                  overflow="hidden"
+                                  whiteSpace="nowrap"
                                 >
                                   <a
                                     href={`https://etherscan.io/tx/${row.txn_hash}`}
@@ -356,8 +383,12 @@ function RetentionProgram() {
                                   borderColor="black"
                                   fontSize="sm"
                                   textAlign="right"
-                                  px={1}
-                                  py={0.5}
+                                  px={2}
+                                  py={0}
+                                  minWidth="93px"
+                                  maxWidth="93px"
+                                  overflow="hidden"
+                                  whiteSpace="nowrap"
                                 >
                                   {row.amount !== undefined
                                     ? Number(row.amount).toLocaleString(
@@ -383,7 +414,7 @@ function RetentionProgram() {
                         fontFamily="monospace"
                         aria-label="Previous Page"
                       >
-                        <ArrowLeftIcon />
+                        {"<"}
                       </Button>
                       <Text fontFamily="monospace" fontSize="sm">
                         {page + 1} / {pageCount}
@@ -397,7 +428,7 @@ function RetentionProgram() {
                         fontFamily="monospace"
                         aria-label="Next Page"
                       >
-                        <ArrowRightIcon />
+                        {">"}
                       </Button>
                     </Flex>
                   </Box>

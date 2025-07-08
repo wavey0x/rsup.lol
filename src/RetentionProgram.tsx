@@ -68,6 +68,7 @@ function RetentionProgram() {
   );
   const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showAprTooltip, setShowAprTooltip] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,7 +115,7 @@ function RetentionProgram() {
 
   const topData = [
     {
-      label: "Current APR",
+      label: "Expected APR",
       value: data ? `${(Number(data.apr) * 100).toFixed(2)}%` : "-",
     },
     {
@@ -299,7 +300,58 @@ function RetentionProgram() {
                               whiteSpace: "nowrap",
                             }}
                           >
-                            {item.label}
+                            {item.label === "Expected APR" ? (
+                              <span
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                {item.label}
+                                <Box
+                                  as="span"
+                                  position="relative"
+                                  ml={1}
+                                  display="inline-block"
+                                  onMouseEnter={() => setShowAprTooltip(true)}
+                                  onMouseLeave={() => setShowAprTooltip(false)}
+                                >
+                                  <InfoIcon
+                                    boxSize="13px"
+                                    color="black"
+                                    cursor="pointer"
+                                    _hover={{ color: "gray.500" }}
+                                    mt="-2px"
+                                  />
+                                  {showAprTooltip && (
+                                    <Box
+                                      position="absolute"
+                                      top="100%"
+                                      left="50%"
+                                      transform="translateX(-50%)"
+                                      mt={-1}
+                                      bg="gray.800"
+                                      color="white"
+                                      borderRadius="md"
+                                      px={2}
+                                      py={1}
+                                      maxW="240px"
+                                      zIndex={1000}
+                                      fontFamily="monospace"
+                                      fontSize="xs"
+                                      boxShadow="lg"
+                                      textAlign="center"
+                                    >
+                                      This APR is strictly for the <br />
+                                      Retention Program and does not <br />
+                                      include base IP APR.
+                                    </Box>
+                                  )}
+                                </Box>
+                              </span>
+                            ) : (
+                              item.label
+                            )}
                           </td>
                           <td
                             style={{

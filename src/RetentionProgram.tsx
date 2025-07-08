@@ -118,17 +118,29 @@ function RetentionProgram() {
       value: data ? `${(Number(data.apr) * 100).toFixed(2)}%` : "-",
     },
     {
-      label: "Eligible reUSD Remaining",
-      value: `${Math.floor(remaining).toLocaleString()} (${remainingPct.toFixed(
-        2
-      )}%)`,
+      label: "Eligible Remaining",
+      value: (
+        <>
+          {Math.floor(remaining).toLocaleString()}
+          <span style={{ fontSize: "12px" }}>
+            {" "}
+            ({remainingPct.toFixed(2)}%)
+          </span>
+        </>
+      ),
       smallLabel: true,
     },
     {
-      label: "Eligible reUSD Withdrawn",
-      value: `${Math.floor(withdrawn).toLocaleString()} (${withdrawnPct.toFixed(
-        2
-      )}%)`,
+      label: "Eligible Withdrawn",
+      value: (
+        <>
+          {Math.floor(withdrawn).toLocaleString()}
+          <span style={{ fontSize: "12px" }}>
+            {" "}
+            ({withdrawnPct.toFixed(2)}%)
+          </span>
+        </>
+      ),
       smallLabel: true,
     },
   ];

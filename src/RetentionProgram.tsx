@@ -16,7 +16,10 @@ import {
   Button,
   Flex,
   Stack,
+  Link,
 } from "@chakra-ui/react";
+import { InfoIcon } from "@chakra-ui/icons";
+import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import { customTheme, FALLBACK_IMAGE } from "./App";
 
@@ -59,6 +62,12 @@ function RetentionProgram() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [lastUpdateFromApi, setLastUpdateFromApi] = useState<string | null>(
+    null
+  );
+  const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,7 +76,21 @@ function RetentionProgram() {
         const response = await axios.get(
           "https://raw.githubusercontent.com/wavey0x/open-data/master/resupply_market_data.json"
         );
+
+        // Set last update from API if available
+        if (response.data.last_update) {
+          setLastUpdateFromApi(response.data.last_update);
+          // If it's a number or numeric string, treat as unix timestamp (seconds)
+          const ts = Number(response.data.last_update);
+          if (!isNaN(ts) && ts > 1000000000) {
+            setLastUpdateDate(new Date(ts * 1000));
+          } else {
+            setLastUpdateDate(null);
+          }
+        }
+
         setData(response.data?.retention_program || null);
+        setLastUpdated(new Date());
         setError(null);
       } catch (e) {
         setError("Failed to load retention program data");
@@ -95,20 +118,18 @@ function RetentionProgram() {
       value: data ? `${(Number(data.apr) * 100).toFixed(2)}%` : "-",
     },
     {
-      label: "Remaining RSUP",
-      value: Number(data?.remaining_rsup).toLocaleString(),
-    },
-    {
-      label: "Supply Remaining",
+      label: "Eligible reUSD Remaining",
       value: `${Math.floor(remaining).toLocaleString()} (${remainingPct.toFixed(
         2
       )}%)`,
+      smallLabel: true,
     },
     {
-      label: "Total Withdrawn",
+      label: "Eligible reUSD Withdrawn",
       value: `${Math.floor(withdrawn).toLocaleString()} (${withdrawnPct.toFixed(
         2
       )}%)`,
+      smallLabel: true,
     },
   ];
 
@@ -150,18 +171,81 @@ function RetentionProgram() {
               mb={0}
               style={{ marginTop: 0, marginBottom: 0 }}
             />
-            <Text
-              fontFamily="monospace"
-              fontSize="2xl"
-              fontWeight="bold"
-              color="black"
-              textAlign="center"
-              mt={0}
-              mb={2}
-              style={{ marginTop: 0, marginBottom: 8 }}
-            >
-              Retention Program
-            </Text>
+            <Flex align="center" justify="center" gap={2}>
+              <Text
+                fontFamily="monospace"
+                fontSize="2xl"
+                fontWeight="bold"
+                color="black"
+                textAlign="center"
+                mt={0}
+                mb={2}
+                style={{ marginTop: 0, marginBottom: 8 }}
+              >
+                Retention Program
+              </Text>
+              <Box
+                position="relative"
+                ml={1}
+                display="inline-block"
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+              >
+                <InfoIcon
+                  boxSize="16px"
+                  color="black"
+                  cursor="pointer"
+                  _hover={{ color: "gray.500" }}
+                  mt="-7px"
+                />
+                {showTooltip && (
+                  <Box
+                    position="absolute"
+                    top="100%"
+                    left="50%"
+                    transform="translateX(-50%)"
+                    mt={-1}
+                    bg="gray.800"
+                    color="white"
+                    borderRadius="md"
+                    px={3}
+                    py={2}
+                    maxW="350px"
+                    zIndex={1000}
+                    fontFamily="monospace"
+                    fontSize="xs"
+                    boxShadow="lg"
+                  >
+                    <Text mb={2}>
+                      This program is eligible only to Insurance Pool depositors
+                      who were slashed. More information here:
+                    </Text>
+                    <Link
+                      href="https://gov.resupply.fi/t/resupply-recovery-plan-phase-2-activate-ip-retention-program/63"
+                      isExternal
+                      color="blue.300"
+                      textDecoration="underline"
+                      _hover={{ color: "blue.200" }}
+                    >
+                      https://gov.resupply.fi/t/resupply-recovery-plan-phase-2-activate-ip-retention-program/63
+                    </Link>
+                    <Text mt={2}>
+                      Original list of depositors can be found on the snapshot
+                      here:
+                    </Text>
+                    <Link
+                      href="https://github.com/resupplyfi/resupply/blob/main/deployment/data/ip_retention_snapshot.json"
+                      isExternal
+                      color="blue.300"
+                      textDecoration="underline"
+                      _hover={{ color: "blue.200" }}
+                    >
+                      https://github.com/resupplyfi/resupply/blob/main/deployment/data/ip_retention_snapshot.json
+                    </Link>
+                  </Box>
+                )}
+              </Box>
+            </Flex>
             {loading ? (
               <Center py={8} w="100%">
                 <Spinner size="lg" />
@@ -199,7 +283,7 @@ function RetentionProgram() {
                               textAlign: "right",
                               padding: "2px 8px",
                               fontFamily: "monospace",
-                              fontSize: "15px",
+                              fontSize: item.smallLabel ? "14px" : "15px",
                               whiteSpace: "nowrap",
                             }}
                           >
@@ -437,6 +521,24 @@ function RetentionProgram() {
             ) : null}
           </Stack>
         </Container>
+
+        <Box
+          position="fixed"
+          bottom={0}
+          left={0}
+          right={0}
+          bg="gray.100"
+          p={1}
+          textAlign="center"
+        >
+          <Text fontSize="xs" color="gray.600" fontFamily="monospace">
+            Last updated:{" "}
+            {lastUpdateDate
+              ? formatDistanceToNow(lastUpdateDate, { addSuffix: true })
+              : lastUpdateFromApi ||
+                formatDistanceToNow(lastUpdated, { addSuffix: true })}
+          </Text>
+        </Box>
       </Flex>
     </ChakraProvider>
   );

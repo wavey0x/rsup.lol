@@ -17,11 +17,17 @@ import {
   Flex,
   Stack,
   Link,
+  Tabs,
+  TabList,
+  TabPanels,
+  TabPanel,
+  Tab,
 } from "@chakra-ui/react";
-import { InfoIcon } from "@chakra-ui/icons";
+import { InfoIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import { customTheme, FALLBACK_IMAGE } from "./App";
+import { CopyIcon, CheckIcon } from "@chakra-ui/icons";
 
 const LOGO = "/retention-logo.png";
 const PAGE_SIZE = 15;
@@ -69,6 +75,7 @@ function RetentionProgram() {
   const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showAprBreakdown, setShowAprBreakdown] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -219,6 +226,12 @@ function RetentionProgram() {
       smallLabel: true,
     },
   ];
+
+  const handleCopy = (address: string) => {
+    navigator.clipboard.writeText(address);
+    setCopied(address);
+    setTimeout(() => setCopied(null), 1200);
+  };
 
   return (
     <ChakraProvider theme={customTheme}>
@@ -396,214 +409,406 @@ function RetentionProgram() {
                 </Flex>
                 {feed.length > 0 && (
                   <Box mt={6} w="100%">
-                    <Text
-                      fontWeight="bold"
-                      mb={2}
-                      fontSize="lg"
-                      textAlign="center"
-                    >
-                      Withdrawal Feed
-                    </Text>
-                    <Flex justify="center" overflowX="auto">
-                      <Table
-                        variant="simple"
-                        size="sm"
-                        fontFamily="monospace"
-                        colorScheme="blackAlpha"
-                        borderWidth="1px"
-                        borderColor="black"
-                        minWidth="374px"
-                        width="auto"
-                        style={{
-                          textAlign: "center",
-                          fontSize: "13px",
-                          borderSpacing: 0,
-                        }}
-                      >
-                        <Thead>
-                          <Tr>
-                            <Th
-                              fontFamily="monospace"
-                              color="black"
-                              borderColor="black"
-                              fontSize="xs"
-                              textAlign="center"
-                              px={2}
-                              py={0}
-                              minWidth="70px"
-                              maxWidth="70px"
-                              whiteSpace="nowrap"
+                    <Box minWidth="374px" width="auto" mx="auto">
+                      <Tabs variant="unstyled" align="center">
+                        <TabList
+                          display="flex"
+                          border="1px solid black"
+                          borderRadius="10px 10px 0 0"
+                          overflow="hidden"
+                          p={0}
+                          m={0}
+                          minWidth="374px"
+                          width="auto"
+                        >
+                          <Tab
+                            fontFamily="monospace"
+                            fontWeight="normal"
+                            fontSize="sm"
+                            flex="1"
+                            borderRight="1px solid black"
+                            borderRadius="10px 0 0 0"
+                            bg="#f3f3f3"
+                            color="gray.500"
+                            _selected={{
+                              bg: "white",
+                              color: "black",
+                              fontWeight: "bold",
+                              borderBottom: "2px solid white",
+                            }}
+                            px={0}
+                            py={1}
+                            minW={0}
+                          >
+                            Withdrawal Feed
+                          </Tab>
+                          <Tab
+                            fontFamily="monospace"
+                            fontWeight="normal"
+                            fontSize="sm"
+                            flex="1"
+                            borderRadius="0 10px 0 0"
+                            bg="#f3f3f3"
+                            color="gray.500"
+                            _selected={{
+                              bg: "white",
+                              color: "black",
+                              fontWeight: "bold",
+                              borderBottom: "2px solid white",
+                            }}
+                            px={0}
+                            py={1}
+                            minW={0}
+                          >
+                            Info
+                          </Tab>
+                        </TabList>
+                        <TabPanels>
+                          <TabPanel px={0} py={4}>
+                            <Flex justify="center" overflowX="auto">
+                              <Table
+                                variant="simple"
+                                size="sm"
+                                fontFamily="monospace"
+                                colorScheme="blackAlpha"
+                                borderWidth="1px"
+                                borderColor="black"
+                                minWidth="374px"
+                                width="auto"
+                                style={{
+                                  textAlign: "center",
+                                  fontSize: "13px",
+                                  borderSpacing: 0,
+                                }}
+                              >
+                                <Thead>
+                                  <Tr>
+                                    <Th
+                                      fontFamily="monospace"
+                                      color="black"
+                                      borderColor="black"
+                                      fontSize="xs"
+                                      textAlign="center"
+                                      px={2}
+                                      py={0}
+                                      minWidth="70px"
+                                      maxWidth="70px"
+                                      whiteSpace="nowrap"
+                                    >
+                                      Date
+                                    </Th>
+                                    <Th
+                                      fontFamily="monospace"
+                                      color="black"
+                                      borderColor="black"
+                                      fontSize="sm"
+                                      textAlign="center"
+                                      px={2}
+                                      py={0}
+                                      minWidth="83px"
+                                      maxWidth="83px"
+                                      whiteSpace="nowrap"
+                                    >
+                                      User
+                                    </Th>
+                                    <Th
+                                      fontFamily="monospace"
+                                      color="black"
+                                      borderColor="black"
+                                      fontSize="sm"
+                                      textAlign="center"
+                                      px={2}
+                                      py={0}
+                                      minWidth="83px"
+                                      maxWidth="83px"
+                                      whiteSpace="nowrap"
+                                    >
+                                      Txn
+                                    </Th>
+                                    <Th
+                                      fontFamily="monospace"
+                                      color="black"
+                                      borderColor="black"
+                                      fontSize="sm"
+                                      textAlign="center"
+                                      px={2}
+                                      py={0}
+                                      minWidth="93px"
+                                      maxWidth="93px"
+                                      whiteSpace="nowrap"
+                                    >
+                                      Amt
+                                    </Th>
+                                  </Tr>
+                                </Thead>
+                                <Tbody>
+                                  {pagedFeed.map((row: any, i: number) => {
+                                    const ts = getTimestamp(row);
+                                    return (
+                                      <Tr key={i}>
+                                        <Td
+                                          fontFamily="monospace"
+                                          color="black"
+                                          borderColor="black"
+                                          fontSize="xs"
+                                          textAlign="left"
+                                          px={2}
+                                          py={0}
+                                          minWidth="85px"
+                                          maxWidth="85px"
+                                          overflow="hidden"
+                                          whiteSpace="nowrap"
+                                        >
+                                          {ts ? formatDate(ts) : "-"}
+                                        </Td>
+                                        <Td
+                                          fontFamily="monospace"
+                                          color="black"
+                                          borderColor="black"
+                                          fontSize="xs"
+                                          textAlign="left"
+                                          px={2}
+                                          py={0}
+                                          minWidth="83px"
+                                          maxWidth="83px"
+                                          overflow="hidden"
+                                          whiteSpace="nowrap"
+                                        >
+                                          <a
+                                            href={`https://etherscan.io/address/${row.user}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{
+                                              color: "#3182ce",
+                                              textDecoration: "underline",
+                                            }}
+                                          >
+                                            {abbreviateAddress(row.user)}
+                                          </a>
+                                        </Td>
+                                        <Td
+                                          fontFamily="monospace"
+                                          color="black"
+                                          borderColor="black"
+                                          fontSize="xs"
+                                          textAlign="left"
+                                          px={2}
+                                          py={0}
+                                          minWidth="83px"
+                                          maxWidth="83px"
+                                          overflow="hidden"
+                                          whiteSpace="nowrap"
+                                        >
+                                          <a
+                                            href={`https://etherscan.io/tx/${row.txn_hash}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{
+                                              color: "#3182ce",
+                                              textDecoration: "underline",
+                                            }}
+                                          >
+                                            {abbreviateHash(row.txn_hash)}
+                                          </a>
+                                        </Td>
+                                        <Td
+                                          fontFamily="monospace"
+                                          color="black"
+                                          borderColor="black"
+                                          fontSize="sm"
+                                          textAlign="right"
+                                          px={2}
+                                          py={0}
+                                          minWidth="93px"
+                                          maxWidth="93px"
+                                          overflow="hidden"
+                                          whiteSpace="nowrap"
+                                        >
+                                          {row.amount !== undefined
+                                            ? Number(row.amount).toLocaleString(
+                                                undefined,
+                                                {
+                                                  minimumFractionDigits: 2,
+                                                  maximumFractionDigits: 2,
+                                                }
+                                              )
+                                            : "-"}
+                                        </Td>
+                                      </Tr>
+                                    );
+                                  })}
+                                </Tbody>
+                              </Table>
+                            </Flex>
+                            <Flex
+                              justify="center"
+                              align="center"
+                              mt={2}
+                              gap={2}
                             >
-                              Date
-                            </Th>
-                            <Th
-                              fontFamily="monospace"
-                              color="black"
-                              borderColor="black"
-                              fontSize="sm"
-                              textAlign="center"
-                              px={2}
-                              py={0}
-                              minWidth="83px"
-                              maxWidth="83px"
-                              whiteSpace="nowrap"
+                              <Button
+                                size="xs"
+                                onClick={() =>
+                                  setPage((p) => Math.max(0, p - 1))
+                                }
+                                disabled={page === 0}
+                                fontFamily="monospace"
+                                aria-label="Previous Page"
+                              >
+                                {"<"}
+                              </Button>
+                              <Text fontFamily="monospace" fontSize="sm">
+                                {page + 1} / {pageCount}
+                              </Text>
+                              <Button
+                                size="xs"
+                                onClick={() =>
+                                  setPage((p) => Math.min(pageCount - 1, p + 1))
+                                }
+                                disabled={page >= pageCount - 1}
+                                fontFamily="monospace"
+                                aria-label="Next Page"
+                              >
+                                {">"}
+                              </Button>
+                            </Flex>
+                          </TabPanel>
+                          <TabPanel px={0} py={4}>
+                            <Box
+                              border="1px solid black"
+                              borderRadius="0 0 10px 10px"
+                              minWidth="374px"
+                              width="auto"
+                              px={4}
+                              py={3}
+                              bg="white"
                             >
-                              User
-                            </Th>
-                            <Th
-                              fontFamily="monospace"
-                              color="black"
-                              borderColor="black"
-                              fontSize="sm"
-                              textAlign="center"
-                              px={2}
-                              py={0}
-                              minWidth="83px"
-                              maxWidth="83px"
-                              whiteSpace="nowrap"
-                            >
-                              Txn
-                            </Th>
-                            <Th
-                              fontFamily="monospace"
-                              color="black"
-                              borderColor="black"
-                              fontSize="sm"
-                              textAlign="center"
-                              px={2}
-                              py={0}
-                              minWidth="93px"
-                              maxWidth="93px"
-                              whiteSpace="nowrap"
-                            >
-                              Amt
-                            </Th>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          {pagedFeed.map((row: any, i: number) => {
-                            const ts = getTimestamp(row);
-                            return (
-                              <Tr key={i}>
-                                <Td
-                                  fontFamily="monospace"
-                                  color="black"
-                                  borderColor="black"
-                                  fontSize="xs"
-                                  textAlign="left"
-                                  px={2}
-                                  py={0}
-                                  minWidth="85px"
-                                  maxWidth="85px"
-                                  overflow="hidden"
-                                  whiteSpace="nowrap"
-                                >
-                                  {ts ? formatDate(ts) : "-"}
-                                </Td>
-                                <Td
-                                  fontFamily="monospace"
-                                  color="black"
-                                  borderColor="black"
-                                  fontSize="xs"
-                                  textAlign="left"
-                                  px={2}
-                                  py={0}
-                                  minWidth="83px"
-                                  maxWidth="83px"
-                                  overflow="hidden"
-                                  whiteSpace="nowrap"
-                                >
-                                  <a
-                                    href={`https://etherscan.io/address/${row.user}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{
-                                      color: "#3182ce",
-                                      textDecoration: "underline",
-                                    }}
+                              <Stack
+                                spacing={3}
+                                align="center"
+                                fontFamily="monospace"
+                                fontSize="sm"
+                              >
+                                <Box w="100%">
+                                  <Flex
+                                    alignItems="center"
+                                    justifyContent="space-between"
+                                    gap={2}
+                                    mb={1}
                                   >
-                                    {abbreviateAddress(row.user)}
-                                  </a>
-                                </Td>
-                                <Td
-                                  fontFamily="monospace"
-                                  color="black"
-                                  borderColor="black"
-                                  fontSize="xs"
-                                  textAlign="left"
-                                  px={2}
-                                  py={0}
-                                  minWidth="83px"
-                                  maxWidth="83px"
-                                  overflow="hidden"
-                                  whiteSpace="nowrap"
-                                >
-                                  <a
-                                    href={`https://etherscan.io/tx/${row.txn_hash}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{
-                                      color: "#3182ce",
-                                      textDecoration: "underline",
-                                    }}
-                                  >
-                                    {abbreviateHash(row.txn_hash)}
-                                  </a>
-                                </Td>
-                                <Td
-                                  fontFamily="monospace"
-                                  color="black"
-                                  borderColor="black"
-                                  fontSize="sm"
-                                  textAlign="right"
-                                  px={2}
-                                  py={0}
-                                  minWidth="93px"
-                                  maxWidth="93px"
-                                  overflow="hidden"
-                                  whiteSpace="nowrap"
-                                >
-                                  {row.amount !== undefined
-                                    ? Number(row.amount).toLocaleString(
-                                        undefined,
-                                        {
-                                          minimumFractionDigits: 2,
-                                          maximumFractionDigits: 2,
+                                    <Text minW="140px">Retention Program:</Text>
+                                    <Flex alignItems="center" gap={1}>
+                                      <Link
+                                        href="https://etherscan.io/address/0xB9415639618e70aBb71A0F4F8bbB2643Bf337892"
+                                        isExternal
+                                        color="blue.500"
+                                        wordBreak="break-all"
+                                      >
+                                        {abbreviateAddress(
+                                          "0xB9415639618e70aBb71A0F4F8bbB2643Bf337892"
+                                        )}
+                                      </Link>
+                                      <Box
+                                        as="button"
+                                        ml={1}
+                                        onClick={() =>
+                                          handleCopy(
+                                            "0xB9415639618e70aBb71A0F4F8bbB2643Bf337892"
+                                          )
                                         }
-                                      )
-                                    : "-"}
-                                </Td>
-                              </Tr>
-                            );
-                          })}
-                        </Tbody>
-                      </Table>
-                    </Flex>
-                    <Flex justify="center" align="center" mt={2} gap={2}>
-                      <Button
-                        size="xs"
-                        onClick={() => setPage((p) => Math.max(0, p - 1))}
-                        disabled={page === 0}
-                        fontFamily="monospace"
-                        aria-label="Previous Page"
-                      >
-                        {"<"}
-                      </Button>
-                      <Text fontFamily="monospace" fontSize="sm">
-                        {page + 1} / {pageCount}
-                      </Text>
-                      <Button
-                        size="xs"
-                        onClick={() =>
-                          setPage((p) => Math.min(pageCount - 1, p + 1))
-                        }
-                        disabled={page >= pageCount - 1}
-                        fontFamily="monospace"
-                        aria-label="Next Page"
-                      >
-                        {">"}
-                      </Button>
-                    </Flex>
+                                        p={0.5}
+                                        borderRadius="sm"
+                                        bg="white"
+                                        _hover={{ bg: "gray.100" }}
+                                        transition="all 0.2s"
+                                      >
+                                        {copied ===
+                                        "0xB9415639618e70aBb71A0F4F8bbB2643Bf337892" ? (
+                                          <CheckIcon
+                                            color="green.400"
+                                            boxSize={3}
+                                          />
+                                        ) : (
+                                          <CopyIcon boxSize={3} />
+                                        )}
+                                      </Box>
+                                    </Flex>
+                                  </Flex>
+                                  <Flex
+                                    alignItems="center"
+                                    justifyContent="space-between"
+                                    gap={2}
+                                    mb={1}
+                                  >
+                                    <Text minW="140px">Program Receiver:</Text>
+                                    <Flex alignItems="center" gap={1}>
+                                      <Link
+                                        href="https://etherscan.io/address/0x6E7D5dade33f76F480EA38E3c47f870de74906F1"
+                                        isExternal
+                                        color="blue.500"
+                                        wordBreak="break-all"
+                                      >
+                                        {abbreviateAddress(
+                                          "0x6E7D5dade33f76F480EA38E3c47f870de74906F1"
+                                        )}
+                                      </Link>
+                                      <Box
+                                        as="button"
+                                        ml={1}
+                                        onClick={() =>
+                                          handleCopy(
+                                            "0x6E7D5dade33f76F480EA38E3c47f870de74906F1"
+                                          )
+                                        }
+                                        p={0.5}
+                                        borderRadius="sm"
+                                        bg="white"
+                                        _hover={{ bg: "gray.100" }}
+                                        transition="all 0.2s"
+                                      >
+                                        {copied ===
+                                        "0x6E7D5dade33f76F480EA38E3c47f870de74906F1" ? (
+                                          <CheckIcon
+                                            color="green.400"
+                                            boxSize={3}
+                                          />
+                                        ) : (
+                                          <CopyIcon boxSize={3} />
+                                        )}
+                                      </Box>
+                                    </Flex>
+                                  </Flex>
+                                </Box>
+                                <Box w="100%">
+                                  <Flex
+                                    alignItems="center"
+                                    justifyContent="space-between"
+                                    gap={2}
+                                    mb={1}
+                                  >
+                                    <Text minW="140px">More Info:</Text>
+                                    <Flex alignItems="center" gap={1}>
+                                      <Link
+                                        href="https://gov.resupply.fi/t/resupply-recovery-plan-phase-2-activate-ip-retention-program/63"
+                                        isExternal
+                                        color="blue.500"
+                                        textDecoration="underline"
+                                      >
+                                        governance proposal
+                                      </Link>
+                                      <ExternalLinkIcon
+                                        boxSize={3}
+                                        color="blue.500"
+                                      />
+                                    </Flex>
+                                  </Flex>
+                                </Box>
+                              </Stack>
+                            </Box>
+                          </TabPanel>
+                        </TabPanels>
+                      </Tabs>
+                    </Box>
                   </Box>
                 )}
               </Box>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   ChakraProvider,
   Box,
@@ -76,6 +76,34 @@ function RetentionProgram() {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showAprBreakdown, setShowAprBreakdown] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+
+  // Countdown timer for proposal live
+  const PROPOSAL_END_TIMESTAMP = 1752116399 + 604800 + 86400; // 1 week + 1 day in seconds
+  const [countdown, setCountdown] = useState(
+    PROPOSAL_END_TIMESTAMP - Math.floor(Date.now() / 1000)
+  );
+  const intervalRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setCountdown(PROPOSAL_END_TIMESTAMP - Math.floor(Date.now() / 1000));
+    }, 1000);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  function formatCountdown(seconds: number) {
+    if (seconds <= 0) return "00d 00h 00m 00s";
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${String(days).padStart(2, "0")}d ${String(hours).padStart(
+      2,
+      "0"
+    )}h ${String(minutes).padStart(2, "0")}m ${String(secs).padStart(2, "0")}s`;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -235,6 +263,43 @@ function RetentionProgram() {
 
   return (
     <ChakraProvider theme={customTheme}>
+      {/* Fixed header countdown, only show if countdown > 0 */}
+      {countdown > 0 && (
+        <Box
+          position="fixed"
+          top={0}
+          left={0}
+          right={0}
+          bg="gray.100"
+          borderBottom="1px solid #ccc"
+          zIndex={100}
+          py={0.25}
+          px={2}
+          textAlign="center"
+        >
+          <Text
+            fontSize="xs"
+            color="gray.600"
+            fontFamily="monospace"
+            display="block"
+            mb={0}
+            mt={0}
+          >
+            Program goes live in...
+          </Text>
+          <Text
+            fontSize="sm"
+            fontWeight="normal"
+            color="gray.600"
+            fontFamily="monospace"
+            display="block"
+            mt={0}
+            mb={0}
+          >
+            {formatCountdown(countdown)}
+          </Text>
+        </Box>
+      )}
       <Flex
         direction="column"
         align="center"
@@ -242,7 +307,8 @@ function RetentionProgram() {
         minH="0"
         w="100vw"
         bg="white"
-        pt={0}
+        // Add padding to prevent overlap with fixed header and provide extra separation
+        pt={10}
         mt={0}
         mb={0}
       >
@@ -689,6 +755,7 @@ function RetentionProgram() {
                                 fontFamily="monospace"
                                 fontSize="sm"
                               >
+                                {/* Countdown removed from Info tab */}
                                 <Box w="100%">
                                   <Flex
                                     alignItems="center"

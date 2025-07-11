@@ -68,7 +68,7 @@ function RetentionProgram() {
   );
   const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [showAprTooltip, setShowAprTooltip] = useState(false);
+  const [showAprBreakdown, setShowAprBreakdown] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,10 +113,84 @@ function RetentionProgram() {
   const remainingPct = original ? (remaining / original) * 100 : 0;
   const withdrawnPct = original ? (withdrawn / original) * 100 : 0;
 
+  const baseApr = Number(data?.base_apr) * 100 || 0;
+  const retentionApr = Number(data?.apr) * 100 || 0;
+  const totalApr = baseApr + retentionApr;
+
   const topData = [
     {
       label: "Expected APR",
-      value: data ? `${(Number(data.apr) * 100).toFixed(2)}%` : "-",
+      value: data ? (
+        <>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              color: "#000",
+              fontSize: "16px",
+            }}
+          >
+            {totalApr.toFixed(2)}%
+            <Box
+              as="span"
+              position="relative"
+              ml={1}
+              display="inline-block"
+              onMouseEnter={() => setShowAprBreakdown(true)}
+              onMouseLeave={() => setShowAprBreakdown(false)}
+            >
+              <InfoIcon
+                boxSize="13px"
+                color="black"
+                cursor="pointer"
+                _hover={{ color: "gray.500" }}
+                mt="-2px"
+              />
+              {showAprBreakdown && (
+                <Box
+                  position="absolute"
+                  top="100%"
+                  left="50%"
+                  transform="translateX(-50%)"
+                  mt={-1}
+                  bg="gray.800"
+                  color="white"
+                  borderRadius="md"
+                  px={3}
+                  py={2}
+                  maxW="220px"
+                  zIndex={1000}
+                  fontFamily="monospace"
+                  fontSize="xs"
+                  boxShadow="lg"
+                  textAlign="left"
+                >
+                  <div>{baseApr.toFixed(2)}% base apr</div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                      color: "#fff",
+                    }}
+                  >
+                    <span>{retentionApr.toFixed(2)}% ❤️ retention program</span>
+                    <span
+                      style={{
+                        fontSize: "15px",
+                        marginLeft: 4,
+                        color: "#e53935",
+                      }}
+                    ></span>
+                  </div>
+                </Box>
+              )}
+            </Box>
+          </span>
+        </>
+      ) : (
+        "-"
+      ),
     },
     {
       label: "Eligible Remaining",
@@ -231,8 +305,10 @@ function RetentionProgram() {
                   >
                     <Text mb={2}>
                       This program is eligible only to Insurance Pool depositors
-                      who were slashed. More information here:
+                      who were slashed. Withdrawal at any time permanently
+                      forefeits eligibility for the retention program.
                     </Text>
+                    <Text>More information here:</Text>
                     <Link
                       href="https://gov.resupply.fi/t/resupply-recovery-plan-phase-2-activate-ip-retention-program/63"
                       isExternal
@@ -300,58 +376,7 @@ function RetentionProgram() {
                               whiteSpace: "nowrap",
                             }}
                           >
-                            {item.label === "Expected APR" ? (
-                              <span
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                {item.label}
-                                <Box
-                                  as="span"
-                                  position="relative"
-                                  ml={1}
-                                  display="inline-block"
-                                  onMouseEnter={() => setShowAprTooltip(true)}
-                                  onMouseLeave={() => setShowAprTooltip(false)}
-                                >
-                                  <InfoIcon
-                                    boxSize="13px"
-                                    color="black"
-                                    cursor="pointer"
-                                    _hover={{ color: "gray.500" }}
-                                    mt="-2px"
-                                  />
-                                  {showAprTooltip && (
-                                    <Box
-                                      position="absolute"
-                                      top="100%"
-                                      left="50%"
-                                      transform="translateX(-50%)"
-                                      mt={-1}
-                                      bg="gray.800"
-                                      color="white"
-                                      borderRadius="md"
-                                      px={2}
-                                      py={1}
-                                      maxW="240px"
-                                      zIndex={1000}
-                                      fontFamily="monospace"
-                                      fontSize="xs"
-                                      boxShadow="lg"
-                                      textAlign="center"
-                                    >
-                                      This APR is strictly for the <br />
-                                      Retention Program and does not <br />
-                                      include base IP APR.
-                                    </Box>
-                                  )}
-                                </Box>
-                              </span>
-                            ) : (
-                              item.label
-                            )}
+                            {item.label}
                           </td>
                           <td
                             style={{

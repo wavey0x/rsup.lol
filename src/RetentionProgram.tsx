@@ -142,8 +142,8 @@ function RetentionProgram() {
   const pagedFeed = feed.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   // Top data calculations
-  const original = Number(data?.total_supply_original) || 0;
-  const remaining = Number(data?.total_supply_remaining) || 0;
+  const original = Number(data?.total_assets_original) || 0;
+  const remaining = Number(data?.total_assets_remaining) || 0;
   const withdrawn = original - remaining;
   const remainingPct = original ? (remaining / original) * 100 : 0;
   const withdrawnPct = original ? (withdrawn / original) * 100 : 0;

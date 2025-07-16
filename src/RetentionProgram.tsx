@@ -84,6 +84,25 @@ function RetentionProgram() {
   );
   const intervalRef = useRef<number | null>(null);
 
+  // Track when program went live for the 3-day celebration period
+  const [programWentLive, setProgramWentLive] = useState<number | null>(null);
+  const THREE_DAYS_IN_SECONDS = 3 * 24 * 60 * 60; // 3 days in seconds
+
+  // Check if we should show the celebration header
+  const shouldShowCelebration =
+    programWentLive &&
+    Math.floor(Date.now() / 1000) - programWentLive < THREE_DAYS_IN_SECONDS;
+
+  // Update programWentLive when countdown hits 0
+  useEffect(() => {
+    if (countdown <= 0 && !programWentLive) {
+      setProgramWentLive(Math.floor(Date.now() / 1000));
+    }
+  }, [countdown, programWentLive]);
+
+  // Determine if header should be shown
+  const shouldShowHeader = countdown > 0 || shouldShowCelebration;
+
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setCountdown(PROPOSAL_END_TIMESTAMP - Math.floor(Date.now() / 1000));
@@ -264,7 +283,7 @@ function RetentionProgram() {
   return (
     <ChakraProvider theme={customTheme}>
       {/* Fixed header countdown, only show if countdown > 0 */}
-      {countdown > 0 && (
+      {shouldShowHeader && (
         <Box
           position="fixed"
           top={0}
@@ -277,27 +296,43 @@ function RetentionProgram() {
           px={2}
           textAlign="center"
         >
-          <Text
-            fontSize="xs"
-            color="gray.600"
-            fontFamily="monospace"
-            display="block"
-            mb={0}
-            mt={0}
-          >
-            Program goes live in...
-          </Text>
-          <Text
-            fontSize="sm"
-            fontWeight="normal"
-            color="gray.600"
-            fontFamily="monospace"
-            display="block"
-            mt={0}
-            mb={0}
-          >
-            {formatCountdown(countdown)}
-          </Text>
+          {countdown > 0 ? (
+            <>
+              <Text
+                fontSize="xs"
+                color="gray.600"
+                fontFamily="monospace"
+                display="block"
+                mb={0}
+                mt={0}
+              >
+                Program goes live in...
+              </Text>
+              <Text
+                fontSize="sm"
+                fontWeight="normal"
+                color="gray.600"
+                fontFamily="monospace"
+                display="block"
+                mt={0}
+                mb={0}
+              >
+                {formatCountdown(countdown)}
+              </Text>
+            </>
+          ) : (
+            <Text
+              fontSize="sm"
+              fontWeight="normal"
+              color="gray.600"
+              fontFamily="monospace"
+              display="block"
+              mb={0}
+              mt={0}
+            >
+              ❤️ Retention Program is now live!
+            </Text>
+          )}
         </Box>
       )}
       <Flex

@@ -280,8 +280,17 @@ function RetentionProgram() {
     setTimeout(() => setCopied(null), 1200);
   };
 
+  // CSS for marquee animation
+  const marqueeStyle = `
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+  `;
+
   return (
     <ChakraProvider theme={customTheme}>
+      <style>{marqueeStyle}</style>
       {/* Fixed header countdown, only show if countdown > 0 */}
       {shouldShowHeader && (
         <Box
@@ -324,13 +333,18 @@ function RetentionProgram() {
             <Text
               fontSize="sm"
               fontWeight="normal"
-              color="gray.600"
+              color="red.500"
               fontFamily="monospace"
               display="block"
               mb={0}
               mt={0}
+              style={{
+                animation: "marquee 16s linear infinite",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+              }}
             >
-              ❤️ Retention Program is now live!
+              Retention Program is now live!
             </Text>
           )}
         </Box>

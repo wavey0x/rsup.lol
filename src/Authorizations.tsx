@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useLayoutEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -14,13 +14,13 @@ import {
   Tr,
   Th,
   Td,
-  Portal,
   ChakraProvider,
   Tabs,
   TabList,
   TabPanels,
   TabPanel,
   Tab,
+  Button,
 } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
@@ -55,6 +55,16 @@ function Authorizations() {
   // Track which selector tooltip is open (by row index)
   const [openSelectorTooltip, setOpenSelectorTooltip] = useState<number | null>(
     null
+  );
+  const PAGE_SIZE = 15;
+  const [page, setPage] = useState(0);
+  const activeAuths = Array.isArray(data?.authorizations?.active)
+    ? data.authorizations.active
+    : [];
+  const pageCount = Math.ceil(activeAuths.length / PAGE_SIZE);
+  const pagedAuths = activeAuths.slice(
+    page * PAGE_SIZE,
+    (page + 1) * PAGE_SIZE
   );
 
   useEffect(() => {
@@ -134,10 +144,11 @@ function Authorizations() {
                 textAlign="center"
               >
                 <Box
-                  px={{ base: 2, md: 0 }}
+                  width={{ base: "380px", md: "448px" }}
                   minWidth={{ base: "380px", md: "448px" }}
-                  width={{ base: "100%", md: "auto" }}
                   mx="auto"
+                  px={0}
+                  py={0}
                 >
                   <Tabs variant="unstyled" align="center" mb={0} mt={0}>
                     <TabList
@@ -147,8 +158,8 @@ function Authorizations() {
                       overflow="hidden"
                       p={0}
                       m={0}
-                      minWidth="374px"
-                      width="auto"
+                      minWidth={{ base: "380px", md: "448px" }}
+                      width={{ base: "380px", md: "448px" }}
                     >
                       <Tab
                         fontFamily="monospace"
@@ -201,6 +212,7 @@ function Authorizations() {
                             w="100%"
                             minWidth={{ base: "380px", md: "448px" }}
                             width={{ base: "100%", md: "auto" }}
+                            mt={1}
                           >
                             <Table
                               variant="simple"
@@ -280,150 +292,241 @@ function Authorizations() {
                                 </Tr>
                               </Thead>
                               <Tbody>
-                                {data.authorizations.active.map(
-                                  (auth: any, i: number) => (
-                                    <Tr key={i}>
-                                      <Td
-                                        fontFamily="monospace"
-                                        textAlign="left"
-                                        style={{ position: "relative" }}
-                                      >
-                                        {Array.isArray(auth.selector) &&
-                                        auth.selector[1] ? (
-                                          <span
-                                            style={{
-                                              fontFamily: "monospace",
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              display: "inline-block",
-                                            }}
-                                            data-selector-tooltip-anchor
-                                            onMouseEnter={() =>
-                                              setOpenSelectorTooltip(i)
-                                            }
-                                            onMouseLeave={() =>
-                                              setOpenSelectorTooltip((cur) =>
-                                                cur === i ? null : cur
-                                              )
-                                            }
-                                          >
-                                            {truncateSelectorName(
-                                              getFunctionName(auth.selector[1])
-                                            )}
-                                            {openSelectorTooltip === i && (
-                                              <Portal>
-                                                <TooltipBoxSelector
-                                                  i={i}
-                                                  setOpenSelectorTooltip={
-                                                    setOpenSelectorTooltip
-                                                  }
-                                                  selector1={auth.selector[1]}
-                                                  selector0={auth.selector[0]}
-                                                />
-                                              </Portal>
-                                            )}
-                                          </span>
-                                        ) : Array.isArray(auth.selector) &&
-                                          auth.selector[0] ? (
-                                          <span
-                                            style={{
-                                              fontFamily: "monospace",
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              display: "inline-block",
-                                            }}
-                                            data-selector-tooltip-anchor
-                                            onMouseEnter={() =>
-                                              setOpenSelectorTooltip(i)
-                                            }
-                                            onMouseLeave={() =>
-                                              setOpenSelectorTooltip((cur) =>
-                                                cur === i ? null : cur
-                                              )
-                                            }
-                                          >
-                                            {truncateSelectorName(
-                                              auth.selector[0]
-                                            )}
-                                            {openSelectorTooltip === i && (
-                                              <Portal>
-                                                <TooltipBoxSelector
-                                                  i={i}
-                                                  setOpenSelectorTooltip={
-                                                    setOpenSelectorTooltip
-                                                  }
-                                                  selector1={null}
-                                                  selector0={auth.selector[0]}
-                                                />
-                                              </Portal>
-                                            )}
-                                          </span>
-                                        ) : (
-                                          <span>-</span>
-                                        )}
-                                      </Td>
-                                      <Td
-                                        fontFamily="monospace"
-                                        textAlign="center"
-                                        fontSize="xs"
-                                      >
-                                        {auth.target === ADDRESS_ZERO ? (
-                                          <span>*</span>
-                                        ) : (
-                                          <Link
-                                            href={`https://etherscan.io/address/${auth.target}`}
-                                            isExternal
-                                            color="blue.600"
-                                            textDecoration="underline"
-                                          >
-                                            {abbreviateAddress(auth.target)}
-                                          </Link>
-                                        )}
-                                      </Td>
-                                      <Td
-                                        fontFamily="monospace"
-                                        textAlign="center"
-                                        fontSize="xs"
-                                      >
+                                {pagedAuths.map((auth: any, i: number) => (
+                                  <Tr key={i}>
+                                    <Td
+                                      fontFamily="monospace"
+                                      textAlign="left"
+                                      style={{ position: "relative" }}
+                                    >
+                                      {Array.isArray(auth.selector) &&
+                                      auth.selector[1] ? (
+                                        <span
+                                          style={{
+                                            fontFamily: "monospace",
+                                            cursor: "pointer",
+                                            position: "relative",
+                                            display: "inline-block",
+                                          }}
+                                          data-selector-tooltip-anchor
+                                          onMouseEnter={() =>
+                                            setOpenSelectorTooltip(i)
+                                          }
+                                          onMouseLeave={() =>
+                                            setOpenSelectorTooltip((cur) =>
+                                              cur === i ? null : cur
+                                            )
+                                          }
+                                        >
+                                          {truncateSelectorName(
+                                            getFunctionName(auth.selector[1])
+                                          )}
+                                          {openSelectorTooltip === i && (
+                                            <Box
+                                              position="absolute"
+                                              top="100%"
+                                              left={0}
+                                              mt={-1}
+                                              zIndex={2000}
+                                              bg="gray.800"
+                                              color="white"
+                                              borderRadius="md"
+                                              px={3}
+                                              py={2}
+                                              fontFamily="monospace"
+                                              fontSize="xs"
+                                              boxShadow="lg"
+                                              textAlign="left"
+                                              minW="220px"
+                                              maxW="260px"
+                                              pointerEvents="auto"
+                                              onMouseEnter={() =>
+                                                setOpenSelectorTooltip(i)
+                                              }
+                                              onMouseLeave={() =>
+                                                setOpenSelectorTooltip(null)
+                                              }
+                                            >
+                                              {auth.selector[1] && (
+                                                <Box>{auth.selector[1]}</Box>
+                                              )}
+                                              <Box>{auth.selector[0]}</Box>
+                                              <Box mt={1}>
+                                                <Link
+                                                  href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
+                                                  isExternal
+                                                  color="blue.200"
+                                                  textDecoration="underline"
+                                                  fontSize="xs"
+                                                  fontFamily="monospace"
+                                                >
+                                                  4byte.directory ↗
+                                                </Link>
+                                              </Box>
+                                            </Box>
+                                          )}
+                                        </span>
+                                      ) : Array.isArray(auth.selector) &&
+                                        auth.selector[0] ? (
+                                        <span
+                                          style={{
+                                            fontFamily: "monospace",
+                                            cursor: "pointer",
+                                            position: "relative",
+                                            display: "inline-block",
+                                          }}
+                                          data-selector-tooltip-anchor
+                                          onMouseEnter={() =>
+                                            setOpenSelectorTooltip(i)
+                                          }
+                                          onMouseLeave={() =>
+                                            setOpenSelectorTooltip((cur) =>
+                                              cur === i ? null : cur
+                                            )
+                                          }
+                                        >
+                                          {truncateSelectorName(
+                                            auth.selector[0]
+                                          )}
+                                          {openSelectorTooltip === i && (
+                                            <Box
+                                              position="absolute"
+                                              top="100%"
+                                              left={0}
+                                              mt={-1}
+                                              zIndex={2000}
+                                              bg="gray.800"
+                                              color="white"
+                                              borderRadius="md"
+                                              px={3}
+                                              py={2}
+                                              fontFamily="monospace"
+                                              fontSize="xs"
+                                              boxShadow="lg"
+                                              textAlign="left"
+                                              minW="220px"
+                                              maxW="260px"
+                                              pointerEvents="auto"
+                                              onMouseEnter={() =>
+                                                setOpenSelectorTooltip(i)
+                                              }
+                                              onMouseLeave={() =>
+                                                setOpenSelectorTooltip(null)
+                                              }
+                                            >
+                                              <Box>{auth.selector[0]}</Box>
+                                              <Box mt={1}>
+                                                <Link
+                                                  href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
+                                                  isExternal
+                                                  color="blue.200"
+                                                  textDecoration="underline"
+                                                  fontSize="xs"
+                                                  fontFamily="monospace"
+                                                >
+                                                  4byte.directory ↗
+                                                </Link>
+                                              </Box>
+                                            </Box>
+                                          )}
+                                        </span>
+                                      ) : (
+                                        <span>-</span>
+                                      )}
+                                    </Td>
+                                    <Td
+                                      fontFamily="monospace"
+                                      textAlign="center"
+                                      fontSize="xs"
+                                    >
+                                      {auth.target === ADDRESS_ZERO ? (
+                                        <span>*</span>
+                                      ) : (
                                         <Link
-                                          href={`https://etherscan.io/address/${auth.caller}`}
+                                          href={`https://etherscan.io/address/${auth.target}`}
                                           isExternal
                                           color="blue.600"
                                           textDecoration="underline"
                                         >
-                                          {abbreviateAddress(auth.caller)}
+                                          {abbreviateAddress(auth.target)}
                                         </Link>
-                                      </Td>
-                                      <Td
-                                        fontFamily="monospace"
-                                        textAlign="center"
-                                        fontSize="xs"
-                                        minWidth="60px"
-                                        maxWidth="60px"
-                                        style={{
-                                          overflow: "hidden",
-                                          textOverflow: "ellipsis",
-                                          whiteSpace: "nowrap",
-                                        }}
+                                      )}
+                                    </Td>
+                                    <Td
+                                      fontFamily="monospace"
+                                      textAlign="center"
+                                      fontSize="xs"
+                                    >
+                                      <Link
+                                        href={`https://etherscan.io/address/${auth.caller}`}
+                                        isExternal
+                                        color="blue.600"
+                                        textDecoration="underline"
                                       >
-                                        {auth.auth_hook === ADDRESS_ZERO ? (
-                                          <span>None</span>
-                                        ) : (
-                                          <Link
-                                            href={`https://etherscan.io/address/${auth.auth_hook}`}
-                                            isExternal
-                                            color="blue.600"
-                                            textDecoration="underline"
-                                          >
-                                            {abbreviateAddress(auth.auth_hook)}
-                                          </Link>
-                                        )}
-                                      </Td>
-                                    </Tr>
-                                  )
-                                )}
+                                        {abbreviateAddress(auth.caller)}
+                                      </Link>
+                                    </Td>
+                                    <Td
+                                      fontFamily="monospace"
+                                      textAlign="center"
+                                      fontSize="xs"
+                                      minWidth="60px"
+                                      maxWidth="60px"
+                                      style={{
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                      }}
+                                    >
+                                      {auth.auth_hook === ADDRESS_ZERO ? (
+                                        <span>None</span>
+                                      ) : (
+                                        <Link
+                                          href={`https://etherscan.io/address/${auth.auth_hook}`}
+                                          isExternal
+                                          color="blue.600"
+                                          textDecoration="underline"
+                                        >
+                                          {abbreviateAddress(auth.auth_hook)}
+                                        </Link>
+                                      )}
+                                    </Td>
+                                  </Tr>
+                                ))}
                               </Tbody>
                             </Table>
+                            <Flex
+                              justify="center"
+                              align="center"
+                              mt={2}
+                              gap={2}
+                            >
+                              <Button
+                                size="xs"
+                                onClick={() =>
+                                  setPage((p) => Math.max(0, p - 1))
+                                }
+                                disabled={page === 0}
+                                fontFamily="monospace"
+                                aria-label="Previous Page"
+                              >
+                                {"<"}
+                              </Button>
+                              <Text fontFamily="monospace" fontSize="sm">
+                                {page + 1} / {pageCount}
+                              </Text>
+                              <Button
+                                size="xs"
+                                onClick={() =>
+                                  setPage((p) => Math.min(pageCount - 1, p + 1))
+                                }
+                                disabled={page >= pageCount - 1}
+                                fontFamily="monospace"
+                                aria-label="Next Page"
+                              >
+                                {">"}
+                              </Button>
+                            </Flex>
                           </Box>
                         ) : (
                           <Text>No authorizations found.</Text>
@@ -434,17 +537,17 @@ function Authorizations() {
                           border="1px solid black"
                           borderTopWidth={0}
                           borderRadius="0 0 10px 10px"
-                          minWidth={{ base: "396px", md: "448px" }}
-                          width={{ base: "100%", md: "auto" }}
-                          px={4}
-                          py={3}
+                          px={0}
+                          py={0}
                           bg="white"
+                          mt={0}
                         >
                           <Stack
                             spacing={3}
                             align="center"
                             fontFamily="monospace"
                             fontSize="xs"
+                            mt={1}
                           >
                             <Text textAlign="left">
                               Resupply Core is the owner of all protocol
@@ -486,76 +589,3 @@ function Authorizations() {
 }
 
 export default Authorizations;
-
-// TooltipBoxSelector component for portal rendering
-type TooltipBoxSelectorProps = {
-  i: number;
-  setOpenSelectorTooltip: (i: number | null) => void;
-  selector1: string | null;
-  selector0: string;
-};
-
-function TooltipBoxSelector({
-  i,
-  setOpenSelectorTooltip,
-  selector1,
-  selector0,
-}: TooltipBoxSelectorProps) {
-  const tooltipRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ top: number; left: number }>({
-    top: 0,
-    left: 0,
-  });
-
-  useLayoutEffect(() => {
-    // Find the anchor element (the selector span)
-    const anchor = document.querySelectorAll("[data-selector-tooltip-anchor]")[
-      i
-    ] as HTMLElement | undefined;
-    if (anchor) {
-      const rect = anchor.getBoundingClientRect();
-      setPos({
-        top: rect.bottom + window.scrollY + 1,
-        left: rect.left + window.scrollX,
-      });
-    }
-  }, [i]);
-
-  return (
-    <Box
-      ref={tooltipRef}
-      position="absolute"
-      top={pos.top}
-      left={pos.left}
-      zIndex={2000}
-      bg="gray.800"
-      color="white"
-      borderRadius="md"
-      px={3}
-      py={2}
-      fontFamily="monospace"
-      fontSize="xs"
-      boxShadow="lg"
-      textAlign="left"
-      minW="220px"
-      onMouseEnter={() => setOpenSelectorTooltip(i)}
-      onMouseLeave={() => setOpenSelectorTooltip(null)}
-      pointerEvents="auto"
-    >
-      {selector1 && <Box>{selector1}</Box>}
-      <Box>{selector0}</Box>
-      <Box mt={1}>
-        <Link
-          href={`https://www.4byte.directory/signatures/?bytes4_signature=${selector0}`}
-          isExternal
-          color="blue.200"
-          textDecoration="underline"
-          fontSize="xs"
-          fontFamily="monospace"
-        >
-          4byte.directory ↗
-        </Link>
-      </Box>
-    </Box>
-  );
-}

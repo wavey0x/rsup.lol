@@ -404,6 +404,7 @@ function Markets() {
         py={4}
         minH="100vh"
         pt={24}
+        mt={8}
         px={2}
         mx="auto"
       >

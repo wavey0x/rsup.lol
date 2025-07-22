@@ -98,7 +98,7 @@ function Authorizations() {
         w="100vw"
         bg="white"
         pt={24}
-        mt={0}
+        mt={8}
         mb={0}
       >
         <Container

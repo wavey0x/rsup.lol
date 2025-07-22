@@ -7,6 +7,7 @@ import {
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -46,9 +47,22 @@ export function Navigation() {
   const navigate = useNavigate();
   const currentPage = PATH_TO_PAGE[location.pathname] || "markets";
   const currentPageData = pages.find((page) => page.id === currentPage);
+  const navRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        onToggle();
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [isOpen, onToggle]);
 
   return (
     <Box
+      ref={navRef}
       position="fixed"
       top={2}
       left="50%"

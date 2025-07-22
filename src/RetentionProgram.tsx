@@ -134,7 +134,9 @@ function RetentionProgram() {
               fontSize: "16px",
             }}
           >
-            {totalApr.toFixed(2)}%
+            <Text as="span" fontWeight="bold" color="green.500">
+              {totalApr.toFixed(2)}%
+            </Text>
             <Box
               as="span"
               position="relative"

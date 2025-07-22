@@ -1,9 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   ChakraProvider,
   Box,
   Text,
-  Image,
   Table,
   Thead,
   Tbody,
@@ -26,10 +25,9 @@ import {
 import { InfoIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
-import { customTheme, FALLBACK_IMAGE } from "./App";
+import { customTheme } from "./Markets";
 import { CopyIcon, CheckIcon } from "@chakra-ui/icons";
 
-const LOGO = "/retention-logo.png";
 const PAGE_SIZE = 15;
 
 function abbreviateAddress(addr: string) {
@@ -73,56 +71,8 @@ function RetentionProgram() {
     null
   );
   const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
-  const [showTooltip, setShowTooltip] = useState(false);
   const [showAprBreakdown, setShowAprBreakdown] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
-
-  // Countdown timer for proposal live
-  const PROPOSAL_END_TIMESTAMP = 1752116399 + 604800 + 86400; // 1 week + 1 day in seconds
-  const [countdown, setCountdown] = useState(
-    PROPOSAL_END_TIMESTAMP - Math.floor(Date.now() / 1000)
-  );
-  const intervalRef = useRef<number | null>(null);
-
-  // Track when program went live for the 3-day celebration period
-  const [programWentLive, setProgramWentLive] = useState<number | null>(null);
-  const THREE_DAYS_IN_SECONDS = 3 * 24 * 60 * 60; // 3 days in seconds
-
-  // Check if we should show the celebration header
-  const shouldShowCelebration =
-    programWentLive &&
-    Math.floor(Date.now() / 1000) - programWentLive < THREE_DAYS_IN_SECONDS;
-
-  // Update programWentLive when countdown hits 0
-  useEffect(() => {
-    if (countdown <= 0 && !programWentLive) {
-      setProgramWentLive(Math.floor(Date.now() / 1000));
-    }
-  }, [countdown, programWentLive]);
-
-  // Determine if header should be shown
-  const shouldShowHeader = countdown > 0 || shouldShowCelebration;
-
-  useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setCountdown(PROPOSAL_END_TIMESTAMP - Math.floor(Date.now() / 1000));
-    }, 1000);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
-
-  function formatCountdown(seconds: number) {
-    if (seconds <= 0) return "00d 00h 00m 00s";
-    const days = Math.floor(seconds / 86400);
-    const hours = Math.floor((seconds % 86400) / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${String(days).padStart(2, "0")}d ${String(hours).padStart(
-      2,
-      "0"
-    )}h ${String(minutes).padStart(2, "0")}m ${String(secs).padStart(2, "0")}s`;
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -280,75 +230,8 @@ function RetentionProgram() {
     setTimeout(() => setCopied(null), 1200);
   };
 
-  // CSS for marquee animation
-  const marqueeStyle = `
-    @keyframes marquee {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-  `;
-
   return (
     <ChakraProvider theme={customTheme}>
-      <style>{marqueeStyle}</style>
-      {/* Fixed header countdown, only show if countdown > 0 */}
-      {shouldShowHeader && (
-        <Box
-          position="fixed"
-          top={0}
-          left={0}
-          right={0}
-          bg="gray.100"
-          borderBottom="1px solid #ccc"
-          zIndex={100}
-          py={0.25}
-          px={2}
-          textAlign="center"
-        >
-          {countdown > 0 ? (
-            <>
-              <Text
-                fontSize="xs"
-                color="gray.600"
-                fontFamily="monospace"
-                display="block"
-                mb={0}
-                mt={0}
-              >
-                Program goes live in...
-              </Text>
-              <Text
-                fontSize="sm"
-                fontWeight="normal"
-                color="gray.600"
-                fontFamily="monospace"
-                display="block"
-                mt={0}
-                mb={0}
-              >
-                {formatCountdown(countdown)}
-              </Text>
-            </>
-          ) : (
-            <Text
-              fontSize="sm"
-              fontWeight="normal"
-              color="red.500"
-              fontFamily="monospace"
-              display="block"
-              mb={0}
-              mt={0}
-              style={{
-                animation: "marquee 16s linear infinite",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-              }}
-            >
-              Retention Program is now live!
-            </Text>
-          )}
-        </Box>
-      )}
       <Flex
         direction="column"
         align="center"
@@ -356,8 +239,7 @@ function RetentionProgram() {
         minH="0"
         w="100vw"
         bg="white"
-        // Add padding to prevent overlap with fixed header and provide extra separation
-        pt={10}
+        pt={24}
         mt={0}
         mb={0}
       >
@@ -376,93 +258,6 @@ function RetentionProgram() {
             mb={0}
             style={{ marginTop: 0, marginBottom: 0 }}
           >
-            <Image
-              src={LOGO}
-              alt="Retention Logo"
-              boxSize="100px"
-              fallbackSrc={FALLBACK_IMAGE}
-              mx="auto"
-              mt={0}
-              mb={0}
-              style={{ marginTop: 0, marginBottom: 0 }}
-            />
-            <Flex align="center" justify="center" gap={2}>
-              <Text
-                fontFamily="monospace"
-                fontSize="2xl"
-                fontWeight="bold"
-                color="black"
-                textAlign="center"
-                mt={0}
-                mb={2}
-                style={{ marginTop: 0, marginBottom: 8 }}
-              >
-                Retention Program
-              </Text>
-              <Box
-                position="relative"
-                ml={1}
-                display="inline-block"
-                onMouseEnter={() => setShowTooltip(true)}
-                onMouseLeave={() => setShowTooltip(false)}
-              >
-                <InfoIcon
-                  boxSize="16px"
-                  color="black"
-                  cursor="pointer"
-                  _hover={{ color: "gray.500" }}
-                  mt="-7px"
-                />
-                {showTooltip && (
-                  <Box
-                    position="absolute"
-                    top="100%"
-                    left="50%"
-                    transform="translateX(-50%)"
-                    mt={-1}
-                    bg="gray.800"
-                    color="white"
-                    borderRadius="md"
-                    px={3}
-                    py={2}
-                    maxW="350px"
-                    zIndex={1000}
-                    fontFamily="monospace"
-                    fontSize="xs"
-                    boxShadow="lg"
-                  >
-                    <Text mb={2}>
-                      This program is eligible only to Insurance Pool depositors
-                      who were slashed. Withdrawal at any time permanently
-                      forefeits eligibility for the retention program.
-                    </Text>
-                    <Text>More information here:</Text>
-                    <Link
-                      href="https://gov.resupply.fi/t/resupply-recovery-plan-phase-2-activate-ip-retention-program/63"
-                      isExternal
-                      color="blue.300"
-                      textDecoration="underline"
-                      _hover={{ color: "blue.200" }}
-                    >
-                      https://gov.resupply.fi/t/resupply-recovery-plan-phase-2-activate-ip-retention-program/63
-                    </Link>
-                    <Text mt={2}>
-                      Original list of depositors can be found on the snapshot
-                      here:
-                    </Text>
-                    <Link
-                      href="https://github.com/resupplyfi/resupply/blob/main/deployment/data/ip_retention_snapshot.json"
-                      isExternal
-                      color="blue.300"
-                      textDecoration="underline"
-                      _hover={{ color: "blue.200" }}
-                    >
-                      https://github.com/resupplyfi/resupply/blob/main/deployment/data/ip_retention_snapshot.json
-                    </Link>
-                  </Box>
-                )}
-              </Box>
-            </Flex>
             {loading ? (
               <Center py={8} w="100%">
                 <Spinner size="lg" />

@@ -341,7 +341,7 @@ function TooltipBoxSelector({
     if (anchor) {
       const rect = anchor.getBoundingClientRect();
       setPos({
-        top: rect.bottom + window.scrollY + 4,
+        top: rect.bottom + window.scrollY + 1,
         left: rect.left + window.scrollX,
       });
     }

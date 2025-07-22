@@ -63,6 +63,7 @@ export function Navigation({ currentPage, onPageChange }: NavigationProps) {
           onClick={onToggle}
           _hover={{ bg: "gray.50" }}
           borderRadius="lg"
+          minW="220px"
         >
           <Image
             src={currentPageData?.logo}
@@ -75,6 +76,8 @@ export function Navigation({ currentPage, onPageChange }: NavigationProps) {
             fontSize="lg"
             fontWeight="bold"
             color="gray.800"
+            minW="160px"
+            textAlign="center"
           >
             {currentPageData?.name}
           </Text>
@@ -112,6 +115,7 @@ export function Navigation({ currentPage, onPageChange }: NavigationProps) {
                     _hover={{ bg: "gray.50" }}
                     borderBottom="1px solid"
                     borderColor="gray.100"
+                    minW="220px"
                   >
                     <Image
                       src={page.logo}
@@ -119,7 +123,13 @@ export function Navigation({ currentPage, onPageChange }: NavigationProps) {
                       boxSize="32px"
                       mr={2}
                     />
-                    <Text fontFamily="monospace" fontSize="sm" color="gray.600">
+                    <Text
+                      fontFamily="monospace"
+                      fontSize="sm"
+                      color="gray.600"
+                      minW="160px"
+                      textAlign="left"
+                    >
                       {page.name}
                     </Text>
                   </Flex>

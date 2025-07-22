@@ -8,11 +8,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-
-interface NavigationProps {
-  currentPage: string;
-  onPageChange: (page: string) => void;
-}
+import { useLocation, useNavigate } from "react-router-dom";
 
 const pages = [
   {
@@ -32,8 +28,23 @@ const pages = [
   },
 ];
 
-export function Navigation({ currentPage, onPageChange }: NavigationProps) {
+const PAGE_TO_PATH: { [key: string]: string } = {
+  markets: "/markets",
+  retention: "/retention",
+  authorizations: "/authorizations",
+};
+const PATH_TO_PAGE: { [key: string]: string } = {
+  "/": "markets",
+  "/markets": "markets",
+  "/retention": "retention",
+  "/authorizations": "authorizations",
+};
+
+export function Navigation() {
   const { isOpen, onToggle } = useDisclosure();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPage = PATH_TO_PAGE[location.pathname] || "markets";
   const currentPageData = pages.find((page) => page.id === currentPage);
 
   return (
@@ -109,7 +120,7 @@ export function Navigation({ currentPage, onPageChange }: NavigationProps) {
                     p={2}
                     cursor="pointer"
                     onClick={() => {
-                      onPageChange(page.id);
+                      navigate(PAGE_TO_PATH[page.id]);
                       onToggle();
                     }}
                     _hover={{ bg: "gray.50" }}

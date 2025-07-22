@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  ChakraProvider,
   Box,
   Text,
   Table,
@@ -21,6 +20,7 @@ import {
   TabPanels,
   TabPanel,
   Tab,
+  ChakraProvider,
 } from "@chakra-ui/react";
 import { InfoIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
@@ -244,7 +244,8 @@ function RetentionProgram() {
         mb={0}
       >
         <Container
-          maxW="md"
+          maxW={{ base: "100vw", md: "md" }}
+          px={{ base: 0, md: 0 }}
           py={0}
           my={0}
           centerContent
@@ -318,9 +319,9 @@ function RetentionProgram() {
                   </Box>
                 </Flex>
                 {feed.length > 0 && (
-                  <Box mt={6} w="100%">
+                  <Box w="100%" minWidth="0">
                     <Box minWidth="374px" width="auto" mx="auto">
-                      <Tabs variant="unstyled" align="center">
+                      <Tabs variant="unstyled" align="center" mb={0} mt={0}>
                         <TabList
                           display="flex"
                           border="1px solid black"
@@ -374,7 +375,7 @@ function RetentionProgram() {
                           </Tab>
                         </TabList>
                         <TabPanels>
-                          <TabPanel px={0} py={4}>
+                          <TabPanel px={0} py={0}>
                             <Flex justify="center" overflowX="auto">
                               <Table
                                 variant="simple"
@@ -383,6 +384,7 @@ function RetentionProgram() {
                                 colorScheme="blackAlpha"
                                 borderWidth="1px"
                                 borderColor="black"
+                                borderTopWidth={0}
                                 minWidth="374px"
                                 width="auto"
                                 style={{
@@ -586,12 +588,14 @@ function RetentionProgram() {
                           <TabPanel px={0} py={4}>
                             <Box
                               border="1px solid black"
+                              borderTopWidth={0}
                               borderRadius="0 0 10px 10px"
                               minWidth="374px"
                               width="auto"
                               px={4}
                               py={3}
                               bg="white"
+                              mt={0}
                             >
                               <Stack
                                 spacing={3}

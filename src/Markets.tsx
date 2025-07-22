@@ -28,6 +28,7 @@ import {
   Button,
   Stack,
   Tooltip,
+  ChakraProvider,
 } from "@chakra-ui/react";
 import {
   ChevronUpIcon,
@@ -397,878 +398,914 @@ function Markets() {
   };
 
   return (
-    <Container maxW="container.xl" py={4} minH="100vh" pt={24} px={2} mx="auto">
-      {/* Resupply/Underlying Toggle and Protocol Filter - restored above table */}
-      <Flex justify="center" mb={2} direction="column" align="center">
-        <Box display="inline-block" w="360px">
-          <Box display="flex" flexDirection="column" gap={2}>
-            <ButtonGroup
-              isAttached
-              variant="ghost"
-              size="sm"
-              h="40px"
-              w="360px"
-              display="inline-flex"
-            >
-              <Button
-                onClick={() => setResupplyMode(true)}
-                borderRadius="md"
-                w="180px"
+    <ChakraProvider theme={customTheme}>
+      <Container
+        maxW="container.xl"
+        py={4}
+        minH="100vh"
+        pt={24}
+        px={2}
+        mx="auto"
+      >
+        {/* Resupply/Underlying Toggle and Protocol Filter - restored above table */}
+        <Flex justify="center" mb={2} direction="column" align="center">
+          <Box display="inline-block" w="360px">
+            <Box display="flex" flexDirection="column" gap={2}>
+              <ButtonGroup
+                isAttached
+                variant="ghost"
+                size="sm"
                 h="40px"
-                px={2}
-                bg={resupplyMode ? "white" : "gray.100"}
-                borderWidth={resupplyMode ? "1px" : "0"}
-                borderColor={resupplyMode ? "black" : "transparent"}
-                boxShadow="none"
-                _active={{ bg: resupplyMode ? "white" : "gray.200" }}
-                _hover={{
-                  bg: resupplyMode ? "white" : "gray.200",
-                  boxShadow: "none",
-                  outline: "none",
-                }}
-                _focus={{ boxShadow: "none", outline: "none" }}
-                _focusVisible={{ boxShadow: "none", outline: "none" }}
-                fontFamily="monospace"
+                w="360px"
+                display="inline-flex"
               >
-                <Image
-                  src="/resupply-hippo.png"
-                  alt="Resupply Hippo"
-                  h="36px"
-                  w="100%"
-                  maxW="90%"
-                  objectFit="contain"
-                  mx="auto"
-                  display="block"
-                />
-              </Button>
-              <Button
-                onClick={() => setResupplyMode(false)}
-                borderRadius="md"
-                w="180px"
+                <Button
+                  onClick={() => setResupplyMode(true)}
+                  borderRadius="md"
+                  w="180px"
+                  h="40px"
+                  px={2}
+                  bg={resupplyMode ? "white" : "gray.100"}
+                  borderWidth={resupplyMode ? "1px" : "0"}
+                  borderColor={resupplyMode ? "black" : "transparent"}
+                  boxShadow="none"
+                  _active={{ bg: resupplyMode ? "white" : "gray.200" }}
+                  _hover={{
+                    bg: resupplyMode ? "white" : "gray.200",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
+                  fontFamily="monospace"
+                >
+                  <Image
+                    src="/resupply-hippo.png"
+                    alt="Resupply Hippo"
+                    h="36px"
+                    w="100%"
+                    maxW="90%"
+                    objectFit="contain"
+                    mx="auto"
+                    display="block"
+                  />
+                </Button>
+                <Button
+                  onClick={() => setResupplyMode(false)}
+                  borderRadius="md"
+                  w="180px"
+                  h="40px"
+                  px={2}
+                  bg={!resupplyMode ? "white" : "gray.100"}
+                  borderWidth={!resupplyMode ? "1px" : "0"}
+                  borderColor={!resupplyMode ? "black" : "transparent"}
+                  boxShadow="none"
+                  _active={{ bg: !resupplyMode ? "white" : "gray.200" }}
+                  _hover={{
+                    bg: !resupplyMode ? "white" : "gray.200",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
+                  fontFamily="monospace"
+                  fontWeight="bold"
+                >
+                  Underlying
+                </Button>
+              </ButtonGroup>
+              {/* Protocol Toggle (existing) */}
+              <ButtonGroup
+                isAttached
+                variant="ghost"
+                size="sm"
                 h="40px"
-                px={2}
-                bg={!resupplyMode ? "white" : "gray.100"}
-                borderWidth={!resupplyMode ? "1px" : "0"}
-                borderColor={!resupplyMode ? "black" : "transparent"}
-                boxShadow="none"
-                _active={{ bg: !resupplyMode ? "white" : "gray.200" }}
-                _hover={{
-                  bg: !resupplyMode ? "white" : "gray.200",
-                  boxShadow: "none",
-                  outline: "none",
-                }}
-                _focus={{ boxShadow: "none", outline: "none" }}
-                _focusVisible={{ boxShadow: "none", outline: "none" }}
-                fontFamily="monospace"
-                fontWeight="bold"
+                display="inline-flex"
+                w="100%"
+                ref={protocolGroupRef}
               >
-                Underlying
-              </Button>
-            </ButtonGroup>
-            {/* Protocol Toggle (existing) */}
-            <ButtonGroup
-              isAttached
-              variant="ghost"
-              size="sm"
-              h="40px"
-              display="inline-flex"
-              w="100%"
-              ref={protocolGroupRef}
-            >
-              <Button
-                onClick={() => setProtocolFilter("all")}
-                borderRadius="md"
-                w="120px"
-                px={2}
-                py={1}
-                fontWeight="normal"
-                fontSize={{ base: "10px", md: "sm" }}
-                minW={"auto"}
-                bg={protocolFilter === "all" ? "white" : "gray.100"}
-                borderWidth={protocolFilter === "all" ? "1px" : "0"}
-                borderColor={protocolFilter === "all" ? "black" : "transparent"}
-                boxShadow="none"
-                _active={{
-                  bg: protocolFilter === "all" ? "white" : "gray.200",
-                }}
-                _hover={{
-                  bg: protocolFilter === "all" ? "white" : "gray.200",
-                }}
-                _focus={{ boxShadow: "none", outline: "none" }}
-                _focusVisible={{ boxShadow: "none", outline: "none" }}
-                fontFamily="monospace"
-              >
-                All
-              </Button>
-              <Button
-                onClick={() => setProtocolFilter("curve")}
-                borderRadius="md"
-                w="120px"
-                px={2}
-                py={1}
-                fontWeight="normal"
-                fontSize={{ base: "10px", md: "sm" }}
-                minW={"auto"}
-                bg={protocolFilter === "curve" ? "white" : "gray.100"}
-                borderWidth={protocolFilter === "curve" ? "1px" : "0"}
-                borderColor={
-                  protocolFilter === "curve" ? "black" : "transparent"
-                }
-                boxShadow="none"
-                _active={{
-                  bg: protocolFilter === "curve" ? "white" : "gray.200",
-                }}
-                _hover={{
-                  bg: protocolFilter === "curve" ? "white" : "gray.200",
-                }}
-                _focus={{ boxShadow: "none", outline: "none" }}
-                _focusVisible={{ boxShadow: "none", outline: "none" }}
-                fontFamily="monospace"
-              >
-                <Flex align="center" gap={1}>
-                  <Image src={crvLogo} boxSize="16px" display="inline" />
-                  <span style={{ marginLeft: 2, fontFamily: "monospace" }}>
-                    CurveLend
-                  </span>
-                </Flex>
-              </Button>
-              <Button
-                onClick={() => setProtocolFilter("frax")}
-                borderRadius="md"
-                w="120px"
-                px={2}
-                py={1}
-                fontWeight="normal"
-                fontSize={{ base: "10px", md: "sm" }}
-                minW={"auto"}
-                bg={protocolFilter === "frax" ? "white" : "gray.100"}
-                borderWidth={protocolFilter === "frax" ? "1px" : "0"}
-                borderColor={
-                  protocolFilter === "frax" ? "black" : "transparent"
-                }
-                boxShadow="none"
-                _active={{
-                  bg: protocolFilter === "frax" ? "white" : "gray.200",
-                }}
-                _hover={{
-                  bg: protocolFilter === "frax" ? "white" : "gray.200",
-                }}
-                _focus={{ boxShadow: "none", outline: "none" }}
-                _focusVisible={{ boxShadow: "none", outline: "none" }}
-                fontFamily="monospace"
-              >
-                <Flex align="center" gap={1}>
-                  <Image src={fraxlendLogo} boxSize="16px" display="inline" />
-                  <span style={{ marginLeft: 2, fontFamily: "monospace" }}>
-                    FraxLend
-                  </span>
-                </Flex>
-              </Button>
-            </ButtonGroup>
-          </Box>
-        </Box>
-      </Flex>
-      {error ? (
-        <Alert status="error" mb={4}>
-          <AlertIcon />
-          <AlertTitle>Error!</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : isLoading ? (
-        <Center py={8}>
-          <Spinner size="xl" />
-        </Center>
-      ) : (
-        <Flex justify="center" w="100%" overflowX="auto" px={0.2}>
-          <Box minW="100%" px={0.2}>
-            <Table
-              variant="simple"
-              size="sm"
-              w={{ base: "max-content", md: "auto" }}
-              mx="auto"
-            >
-              <Thead>
-                <Tr>
-                  <Th
-                    onClick={() => handleSort("marketName")}
-                    fontFamily="monospace"
-                    fontSize={{ base: "2xs", md: "sm" }}
-                    position="relative"
-                    minW={{ base: "80px", md: "200px" }}
-                    w={{ base: "100px", md: "200px" }}
-                    px={{ base: 1, md: 5 }}
-                    py={{ base: 0.5, md: 2 }}
-                    textAlign="center"
-                  >
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <span>Market</span>
-                      <SortIcon column="marketName" />
-                    </Box>
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("ltv")}
-                    px={{ base: 1, md: 5 }}
-                    py={{ base: 0.5, md: 2 }}
-                    textAlign="center"
-                    position="relative"
-                  >
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <span>LTV</span>
-                      <SortIcon column="ltv" />
-                    </Box>
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("totalDebt")}
-                    px={{ base: 1, md: 5 }}
-                    py={{ base: 0.5, md: 2 }}
-                    textAlign="center"
-                    position="relative"
-                  >
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <span>Debt</span>
-                      <SortIcon column="totalDebt" />
-                    </Box>
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("utilization")}
-                    px={{ base: 1, md: 5 }}
-                    py={{ base: 0.5, md: 2 }}
-                    textAlign="center"
-                    position="relative"
-                  >
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <span>Util</span>
-                      <SortIcon column="utilization" />
-                    </Box>
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("liquidity")}
-                    px={{ base: 1, md: 5 }}
-                    py={{ base: 0.5, md: 2 }}
-                    textAlign="center"
-                    position="relative"
-                  >
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <span>Liq</span>
-                      <SortIcon column="liquidity" />
-                    </Box>
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("borrowRate")}
-                    px={{ base: 1, md: 5 }}
-                    py={{ base: 0.5, md: 2 }}
-                    textAlign="center"
-                    fontSize={{ base: "8px", md: "sm" }}
-                    whiteSpace="normal"
-                    maxW={{ base: "48px", md: "none" }}
-                    position="relative"
-                  >
-                    <Box as="span" display="block">
-                      {resupplyMode ? (
-                        <>
-                          Borrow
-                          <br />
-                          Cost
-                        </>
-                      ) : (
-                        <>
-                          Borrow
-                          <br />
-                          APR
-                        </>
-                      )}
-                      <SortIcon column="borrowRate" />
-                    </Box>
-                  </Th>
-                  <Th
-                    onClick={() => handleSort("lendRate")}
-                    px={{ base: 1, md: 5 }}
-                    py={{ base: 0.5, md: 2 }}
-                    textAlign="center"
-                    whiteSpace="normal"
-                    minW={{ base: "64px", md: "96px" }}
-                    maxW={{ base: "64px", md: "96px" }}
-                    w={{ base: "64px", md: "96px" }}
-                    position="relative"
-                  >
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Box
-                        as="span"
-                        fontSize={{ base: "8px", md: "sm" }}
-                        lineHeight={1}
-                        display="block"
-                      >
-                        {resupplyMode ? (
-                          <>
-                            Total
-                            <br />
-                            APR
-                          </>
-                        ) : (
-                          <>
-                            Lend
-                            <br />
-                            APR
-                          </>
-                        )}
-                      </Box>
-                      <SortIcon column="lendRate" />
-                    </Box>
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {getFilteredData().map((market) => {
-                  const rewardsApr = Number(
-                    getValue(market, "lendRate", "resupply_lend_rate")
-                  );
-                  const underlyingApr = Number(market.lendRate);
-                  const totalApr = rewardsApr + underlyingApr;
-                  return (
-                    <Tr key={`${market.marketName}-${market.contractAddress}`}>
-                      <Td>
-                        <Flex align="center" gap={1}>
-                          <Box position="relative" boxSize="24px">
-                            <Image
-                              src={market.depositTokenLogo}
-                              boxSize="20px"
-                              fallbackSrc={FALLBACK_IMAGE}
-                              borderRadius="full"
-                            />
-                            <Image
-                              src={market.collateralTokenLogo}
-                              boxSize="20px"
-                              position="absolute"
-                              bottom="0px"
-                              right="-10px"
-                              zIndex={1}
-                              fallbackSrc={FALLBACK_IMAGE}
-                              borderRadius="full"
-                            />
-                          </Box>
-                          <Text
-                            as="button"
-                            display="inline-flex"
-                            alignItems="center"
-                            gap={1}
-                            ml={3}
-                            onClick={() =>
-                              handleInfoClick({
-                                marketName: market.marketName,
-                                protocolId: market.protocolId,
-                                contractAddress: market.contractAddress,
-                                protocolLink: market.protocolLink,
-                                depositTokenAddress: market.depositTokenAddress,
-                                collateralTokenAddress:
-                                  market.collateralTokenAddress,
-                                resupplyPairAddress: market.resupplyPairAddress,
-                                depositTokenSymbol: market.depositTokenSymbol,
-                                collateralTokenSymbol:
-                                  market.collateralTokenSymbol,
-                                controller: market.controller,
-                                interestRateContract:
-                                  market.interestRateContract,
-                                depositTokenLogo: market.depositTokenLogo,
-                                collateralTokenLogo: market.collateralTokenLogo,
-                              })
-                            }
-                            textDecoration="underline"
-                            color="black"
-                            fontFamily="monospace"
-                            bg="transparent"
-                            border="none"
-                            p={0}
-                            cursor="pointer"
-                            fontSize={{ base: "8px", md: "sm" }}
-                          >
-                            {market.marketName}
-                          </Text>
-                        </Flex>
-                      </Td>
-                      <Td>
-                        {Number(
-                          getValue(market, "ltv", "resupply_ltv")
-                        ).toFixed(1)}
-                        %
-                      </Td>
-                      <Td>
-                        $
-                        {formatNumberWithAbbreviation(
-                          getValue(market, "totalDebt", "resupply_total_debt")
-                        )}
-                      </Td>
-                      <Td
-                        fontFamily="monospace"
-                        fontSize={{ base: "10px", md: "sm" }}
-                        px={{ base: 1, md: 5 }}
-                        py={{ base: 0.5, md: 2 }}
-                        textAlign="center"
-                      >
-                        {formatPercent3Digits(
-                          getValue(
-                            market,
-                            "utilization",
-                            "resupply_utilization"
-                          )
-                        )}
-                      </Td>
-                      <Td
-                        fontFamily="monospace"
-                        fontSize={{ base: "10px", md: "sm" }}
-                        px={{ base: 1, md: 5 }}
-                        py={{ base: 0.5, md: 2 }}
-                        textAlign="center"
-                      >
-                        $
-                        {formatNumberWithAbbreviation(
-                          getValue(
-                            market,
-                            "liquidity",
-                            "resupply_available_liquidity"
-                          )
-                        )}
-                      </Td>
-                      <Td>
-                        {resupplyMode
-                          ? `${Number(
-                              getValue(
-                                market,
-                                "borrowRate",
-                                "resupply_borrow_rate"
-                              )
-                            ).toFixed(2)}%`
-                          : `${Number(
-                              getValue(market, "borrowRate", "borrowRate")
-                            ).toFixed(2)}%`}
-                      </Td>
-                      <Td>
-                        {resupplyMode ? (
-                          <Tooltip
-                            label={
-                              <Box
-                                fontFamily="monospace"
-                                fontSize="xs"
-                                color="white"
-                                bg="gray.800"
-                                borderRadius="md"
-                                px={2}
-                                py={1}
-                              >
-                                <Box
-                                  display="flex"
-                                  justifyContent="space-between"
-                                  gap={2}
-                                >
-                                  <span>rewards:</span>
-                                  <span
-                                    style={{
-                                      minWidth: 40,
-                                      textAlign: "right",
-                                      display: "inline-block",
-                                    }}
-                                  >
-                                    {rewardsApr.toFixed(2)}%
-                                  </span>
-                                </Box>
-                                <Box
-                                  display="flex"
-                                  justifyContent="space-between"
-                                  gap={2}
-                                >
-                                  <span>underlying:</span>
-                                  <span
-                                    style={{
-                                      minWidth: 40,
-                                      textAlign: "right",
-                                      display: "inline-block",
-                                    }}
-                                  >
-                                    {underlyingApr.toFixed(2)}%
-                                  </span>
-                                </Box>
-                              </Box>
-                            }
-                            fontSize="xs"
-                            hasArrow
-                            placement="top"
-                            bg="gray.800"
-                            color="white"
-                            borderRadius="md"
-                            p={0}
-                          >
-                            <span
-                              style={{
-                                fontFamily: "monospace",
-                                cursor: "pointer",
-                              }}
-                            >
-                              {totalApr.toFixed(2)}%
-                            </span>
-                          </Tooltip>
-                        ) : (
-                          `${Number(
-                            getValue(market, "lendRate", "lendRate")
-                          ).toFixed(2)}%`
-                        )}
-                      </Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
+                <Button
+                  onClick={() => setProtocolFilter("all")}
+                  borderRadius="md"
+                  w="120px"
+                  px={2}
+                  py={1}
+                  fontWeight="normal"
+                  fontSize={{ base: "10px", md: "sm" }}
+                  minW={"auto"}
+                  bg={protocolFilter === "all" ? "white" : "gray.100"}
+                  borderWidth={protocolFilter === "all" ? "1px" : "0"}
+                  borderColor={
+                    protocolFilter === "all" ? "black" : "transparent"
+                  }
+                  boxShadow="none"
+                  _active={{
+                    bg: protocolFilter === "all" ? "white" : "gray.200",
+                  }}
+                  _hover={{
+                    bg: protocolFilter === "all" ? "white" : "gray.200",
+                  }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
+                  fontFamily="monospace"
+                >
+                  All
+                </Button>
+                <Button
+                  onClick={() => setProtocolFilter("curve")}
+                  borderRadius="md"
+                  w="120px"
+                  px={2}
+                  py={1}
+                  fontWeight="normal"
+                  fontSize={{ base: "10px", md: "sm" }}
+                  minW={"auto"}
+                  bg={protocolFilter === "curve" ? "white" : "gray.100"}
+                  borderWidth={protocolFilter === "curve" ? "1px" : "0"}
+                  borderColor={
+                    protocolFilter === "curve" ? "black" : "transparent"
+                  }
+                  boxShadow="none"
+                  _active={{
+                    bg: protocolFilter === "curve" ? "white" : "gray.200",
+                  }}
+                  _hover={{
+                    bg: protocolFilter === "curve" ? "white" : "gray.200",
+                  }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
+                  fontFamily="monospace"
+                >
+                  <Flex align="center" gap={1}>
+                    <Image src={crvLogo} boxSize="16px" display="inline" />
+                    <span style={{ marginLeft: 2, fontFamily: "monospace" }}>
+                      CurveLend
+                    </span>
+                  </Flex>
+                </Button>
+                <Button
+                  onClick={() => setProtocolFilter("frax")}
+                  borderRadius="md"
+                  w="120px"
+                  px={2}
+                  py={1}
+                  fontWeight="normal"
+                  fontSize={{ base: "10px", md: "sm" }}
+                  minW={"auto"}
+                  bg={protocolFilter === "frax" ? "white" : "gray.100"}
+                  borderWidth={protocolFilter === "frax" ? "1px" : "0"}
+                  borderColor={
+                    protocolFilter === "frax" ? "black" : "transparent"
+                  }
+                  boxShadow="none"
+                  _active={{
+                    bg: protocolFilter === "frax" ? "white" : "gray.200",
+                  }}
+                  _hover={{
+                    bg: protocolFilter === "frax" ? "white" : "gray.200",
+                  }}
+                  _focus={{ boxShadow: "none", outline: "none" }}
+                  _focusVisible={{ boxShadow: "none", outline: "none" }}
+                  fontFamily="monospace"
+                >
+                  <Flex align="center" gap={1}>
+                    <Image src={fraxlendLogo} boxSize="16px" display="inline" />
+                    <span style={{ marginLeft: 2, fontFamily: "monospace" }}>
+                      FraxLend
+                    </span>
+                  </Flex>
+                </Button>
+              </ButtonGroup>
+            </Box>
           </Box>
         </Flex>
-      )}
-
-      {/* Subtle checkbox for deprecated markets */}
-      <Flex justify="center" mt={2} mb={1}>
-        <Box fontSize="xs" color="gray.500">
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-              cursor: "pointer",
-              fontFamily: "monospace",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={showDeprecated}
-              onChange={(e) => setShowDeprecated(e.target.checked)}
-              style={{
-                accentColor: "#bbb",
-                width: 12,
-                height: 12,
-                marginRight: 4,
-              }}
-            />
-            Show deprecated markets
-          </label>
-        </Box>
-      </Flex>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay bg="blackAlpha.300" />
-        <ModalContent
-          bg="white"
-          boxShadow="xl"
-          borderRadius="md"
-          p={1}
-          minW="0"
-          w="max-content"
-          maxW="95vw"
-          m="0 auto"
-          top="10vh"
-          h="auto"
-          minH="0"
-          height="fit-content"
-          position="relative"
-        >
-          <ModalBody pb={1} px={1} w="100%">
-            <Box height="24px" />
-            {selectedMarket && (
-              <Box fontSize="sm" m={0} p={0} fontFamily="monospace">
-                <Stack spacing={1} align="start">
-                  {/* Market name and logos at the top */}
-                  <Flex direction="column" align="center" w="100%" mb={3}>
-                    <Flex align="center" justify="center" gap={1} mb={1}>
-                      <Box position="relative" boxSize="32px">
-                        <Image
-                          src={selectedMarket.depositTokenLogo}
-                          boxSize="28px"
-                          fallbackSrc={FALLBACK_IMAGE}
-                          borderRadius="full"
-                        />
-                        <Image
-                          src={selectedMarket.collateralTokenLogo}
-                          boxSize="28px"
-                          position="absolute"
-                          bottom="0px"
-                          right="-12px"
-                          zIndex={1}
-                          fallbackSrc={FALLBACK_IMAGE}
-                          borderRadius="full"
-                        />
+        {error ? (
+          <Alert status="error" mb={4}>
+            <AlertIcon />
+            <AlertTitle>Error!</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        ) : isLoading ? (
+          <Center py={8}>
+            <Spinner size="xl" />
+          </Center>
+        ) : (
+          <Flex justify="center" w="100%" overflowX="auto" px={0.2}>
+            <Box minW="100%" px={0.2}>
+              <Table
+                variant="simple"
+                size="sm"
+                w={{ base: "max-content", md: "auto" }}
+                mx="auto"
+              >
+                <Thead>
+                  <Tr>
+                    <Th
+                      onClick={() => handleSort("marketName")}
+                      fontFamily="monospace"
+                      fontSize={{ base: "2xs", md: "sm" }}
+                      position="relative"
+                      minW={{ base: "80px", md: "200px" }}
+                      w={{ base: "100px", md: "200px" }}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                    >
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <span>Market</span>
+                        <SortIcon column="marketName" />
                       </Box>
-                    </Flex>
-                    <Text
-                      fontWeight="bold"
-                      fontSize="md"
-                      fontFamily="monospace"
-                      color="black"
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("ltv")}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                      position="relative"
                     >
-                      {selectedMarket.marketName}
-                    </Text>
-                  </Flex>
-                  <Flex align="center" gap={4} w="100%">
-                    <strong style={{ minWidth: 110, fontFamily: "monospace" }}>
-                      Protocol:
-                    </strong>
-                    <Image
-                      src={
-                        selectedMarket.protocolId === 0 ? crvLogo : fraxlendLogo
-                      }
-                      boxSize="18px"
-                      fallbackSrc={FALLBACK_IMAGE}
-                      ml={0}
-                      mr={0}
-                    />
-                    <Text mb={1} mt={0} fontFamily="monospace">
-                      {selectedMarket.protocolId === 0
-                        ? "CurveLend"
-                        : "FraxLend"}
-                    </Text>
-                  </Flex>
-                  <Flex align="center" gap={4} w="100%">
-                    <strong style={{ minWidth: 110, fontFamily: "monospace" }}>
-                      Market:
-                    </strong>
-                    <Link
-                      href={`https://etherscan.io/address/${selectedMarket.contractAddress}`}
-                      isExternal
-                      color="blue.500"
-                      wordBreak="break-all"
-                      fontFamily="monospace"
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <span>LTV</span>
+                        <SortIcon column="ltv" />
+                      </Box>
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("totalDebt")}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                      position="relative"
                     >
-                      {abbreviateAddress(selectedMarket.contractAddress)}
-                    </Link>
-                    <Box
-                      as="button"
-                      ml={1}
-                      onClick={() => handleCopy(selectedMarket.contractAddress)}
-                      p={0.5}
-                      borderRadius="sm"
-                      bg="white"
-                      _hover={{ bg: "gray.100" }}
-                      transition="all 0.2s"
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <span>Debt</span>
+                        <SortIcon column="totalDebt" />
+                      </Box>
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("utilization")}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                      position="relative"
                     >
-                      {copied === selectedMarket.contractAddress ? (
-                        <CheckIcon color="green.400" boxSize={3} />
-                      ) : (
-                        <CopyIcon boxSize={3} />
-                      )}
-                    </Box>
-                  </Flex>
-                  <Flex align="center" gap={4} w="100%">
-                    <strong style={{ minWidth: 110, fontFamily: "monospace" }}>
-                      {selectedMarket.depositTokenSymbol}:
-                    </strong>
-                    <Link
-                      href={`https://etherscan.io/address/${selectedMarket.depositTokenAddress}`}
-                      isExternal
-                      color="blue.500"
-                      wordBreak="break-all"
-                      fontFamily="monospace"
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <span>Util</span>
+                        <SortIcon column="utilization" />
+                      </Box>
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("liquidity")}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                      position="relative"
                     >
-                      {abbreviateAddress(selectedMarket.depositTokenAddress)}
-                    </Link>
-                    <Box
-                      as="button"
-                      ml={1}
-                      onClick={() =>
-                        handleCopy(selectedMarket.depositTokenAddress)
-                      }
-                      p={0.5}
-                      borderRadius="sm"
-                      bg="white"
-                      _hover={{ bg: "gray.100" }}
-                      transition="all 0.2s"
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <span>Liq</span>
+                        <SortIcon column="liquidity" />
+                      </Box>
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("borrowRate")}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                      fontSize={{ base: "8px", md: "sm" }}
+                      whiteSpace="normal"
+                      maxW={{ base: "48px", md: "none" }}
+                      position="relative"
                     >
-                      {copied === selectedMarket.depositTokenAddress ? (
-                        <CheckIcon color="green.400" boxSize={3} />
-                      ) : (
-                        <CopyIcon boxSize={3} />
-                      )}
-                    </Box>
-                  </Flex>
-                  <Flex align="center" gap={4} w="100%">
-                    <strong style={{ minWidth: 110, fontFamily: "monospace" }}>
-                      {selectedMarket.collateralTokenSymbol}:
-                    </strong>
-                    <Link
-                      href={`https://etherscan.io/address/${selectedMarket.collateralTokenAddress}`}
-                      isExternal
-                      color="blue.500"
-                      wordBreak="break-all"
-                      fontFamily="monospace"
+                      <Box as="span" display="block">
+                        {resupplyMode ? (
+                          <>
+                            Borrow
+                            <br />
+                            Cost
+                          </>
+                        ) : (
+                          <>
+                            Borrow
+                            <br />
+                            APR
+                          </>
+                        )}
+                        <SortIcon column="borrowRate" />
+                      </Box>
+                    </Th>
+                    <Th
+                      onClick={() => handleSort("lendRate")}
+                      px={{ base: 1, md: 5 }}
+                      py={{ base: 0.5, md: 2 }}
+                      textAlign="center"
+                      whiteSpace="normal"
+                      minW={{ base: "64px", md: "96px" }}
+                      maxW={{ base: "64px", md: "96px" }}
+                      w={{ base: "64px", md: "96px" }}
+                      position="relative"
                     >
-                      {abbreviateAddress(selectedMarket.collateralTokenAddress)}
-                    </Link>
-                    <Box
-                      as="button"
-                      ml={1}
-                      onClick={() =>
-                        handleCopy(selectedMarket.collateralTokenAddress)
-                      }
-                      p={0.5}
-                      borderRadius="sm"
-                      bg="white"
-                      _hover={{ bg: "gray.100" }}
-                      transition="all 0.2s"
-                    >
-                      {copied === selectedMarket.collateralTokenAddress ? (
-                        <CheckIcon color="green.400" boxSize={3} />
-                      ) : (
-                        <CopyIcon boxSize={3} />
-                      )}
-                    </Box>
-                  </Flex>
-                  <Flex align="center" gap={4} w="100%">
-                    <strong style={{ minWidth: 110, fontFamily: "monospace" }}>
-                      Resupply:
-                    </strong>
-                    <Link
-                      href={`https://etherscan.io/address/${selectedMarket.resupplyPairAddress}`}
-                      isExternal
-                      color="blue.500"
-                      wordBreak="break-all"
-                      fontFamily="monospace"
-                    >
-                      {abbreviateAddress(selectedMarket.resupplyPairAddress)}
-                    </Link>
-                    <Box
-                      as="button"
-                      ml={1}
-                      onClick={() =>
-                        handleCopy(selectedMarket.resupplyPairAddress)
-                      }
-                      p={0.5}
-                      borderRadius="sm"
-                      bg="white"
-                      _hover={{ bg: "gray.100" }}
-                      transition="all 0.2s"
-                    >
-                      {copied === selectedMarket.resupplyPairAddress ? (
-                        <CheckIcon color="green.400" boxSize={3} />
-                      ) : (
-                        <CopyIcon boxSize={3} />
-                      )}
-                    </Box>
-                  </Flex>
-                  {selectedMarket.controller &&
-                    selectedMarket.controller !==
-                      "0x0000000000000000000000000000000000000000" && (
-                      <Flex align="center" gap={4} w="100%">
-                        <strong
-                          style={{ minWidth: 110, fontFamily: "monospace" }}
-                        >
-                          Controller:
-                        </strong>
-                        <Link
-                          href={`https://etherscan.io/address/${selectedMarket.controller}`}
-                          isExternal
-                          color="blue.500"
-                          wordBreak="break-all"
-                          fontFamily="monospace"
-                        >
-                          {abbreviateAddress(selectedMarket.controller)}
-                        </Link>
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
                         <Box
-                          as="button"
-                          ml={1}
-                          onClick={() => handleCopy(selectedMarket.controller)}
-                          p={0.5}
-                          borderRadius="sm"
-                          bg="white"
-                          _hover={{ bg: "gray.100" }}
-                          transition="all 0.2s"
+                          as="span"
+                          fontSize={{ base: "8px", md: "sm" }}
+                          lineHeight={1}
+                          display="block"
                         >
-                          {copied === selectedMarket.controller ? (
-                            <CheckIcon color="green.400" boxSize={3} />
+                          {resupplyMode ? (
+                            <>
+                              Total
+                              <br />
+                              APR
+                            </>
                           ) : (
-                            <CopyIcon boxSize={3} />
+                            <>
+                              Lend
+                              <br />
+                              APR
+                            </>
                           )}
                         </Box>
-                      </Flex>
-                    )}
-                  <Flex align="center" gap={4} w="100%">
-                    <strong style={{ minWidth: 110, fontFamily: "monospace" }}>
-                      Rate Calc:
-                    </strong>
-                    <Link
-                      href={`https://etherscan.io/address/${selectedMarket.interestRateContract}`}
-                      isExternal
-                      color="blue.500"
-                      wordBreak="break-all"
-                      fontFamily="monospace"
-                    >
-                      {abbreviateAddress(selectedMarket.interestRateContract)}
-                    </Link>
-                    <Box
-                      as="button"
-                      ml={1}
-                      onClick={() =>
-                        handleCopy(selectedMarket.interestRateContract)
-                      }
-                      p={0.5}
-                      borderRadius="sm"
-                      bg="white"
-                      _hover={{ bg: "gray.100" }}
-                      transition="all 0.2s"
-                    >
-                      {copied === selectedMarket.interestRateContract ? (
-                        <CheckIcon color="green.400" boxSize={3} />
-                      ) : (
-                        <CopyIcon boxSize={3} />
-                      )}
-                    </Box>
-                  </Flex>
-                </Stack>
-              </Box>
-            )}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+                        <SortIcon column="lendRate" />
+                      </Box>
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {getFilteredData().map((market) => {
+                    const rewardsApr = Number(
+                      getValue(market, "lendRate", "resupply_lend_rate")
+                    );
+                    const underlyingApr = Number(market.lendRate);
+                    const totalApr = rewardsApr + underlyingApr;
+                    return (
+                      <Tr
+                        key={`${market.marketName}-${market.contractAddress}`}
+                      >
+                        <Td>
+                          <Flex align="center" gap={1}>
+                            <Box position="relative" boxSize="24px">
+                              <Image
+                                src={market.depositTokenLogo}
+                                boxSize="20px"
+                                fallbackSrc={FALLBACK_IMAGE}
+                                borderRadius="full"
+                              />
+                              <Image
+                                src={market.collateralTokenLogo}
+                                boxSize="20px"
+                                position="absolute"
+                                bottom="0px"
+                                right="-10px"
+                                zIndex={1}
+                                fallbackSrc={FALLBACK_IMAGE}
+                                borderRadius="full"
+                              />
+                            </Box>
+                            <Text
+                              as="button"
+                              display="inline-flex"
+                              alignItems="center"
+                              gap={1}
+                              ml={3}
+                              onClick={() =>
+                                handleInfoClick({
+                                  marketName: market.marketName,
+                                  protocolId: market.protocolId,
+                                  contractAddress: market.contractAddress,
+                                  protocolLink: market.protocolLink,
+                                  depositTokenAddress:
+                                    market.depositTokenAddress,
+                                  collateralTokenAddress:
+                                    market.collateralTokenAddress,
+                                  resupplyPairAddress:
+                                    market.resupplyPairAddress,
+                                  depositTokenSymbol: market.depositTokenSymbol,
+                                  collateralTokenSymbol:
+                                    market.collateralTokenSymbol,
+                                  controller: market.controller,
+                                  interestRateContract:
+                                    market.interestRateContract,
+                                  depositTokenLogo: market.depositTokenLogo,
+                                  collateralTokenLogo:
+                                    market.collateralTokenLogo,
+                                })
+                              }
+                              textDecoration="underline"
+                              color="black"
+                              fontFamily="monospace"
+                              bg="transparent"
+                              border="none"
+                              p={0}
+                              cursor="pointer"
+                              fontSize={{ base: "8px", md: "sm" }}
+                            >
+                              {market.marketName}
+                            </Text>
+                          </Flex>
+                        </Td>
+                        <Td>
+                          {Number(
+                            getValue(market, "ltv", "resupply_ltv")
+                          ).toFixed(1)}
+                          %
+                        </Td>
+                        <Td>
+                          $
+                          {formatNumberWithAbbreviation(
+                            getValue(market, "totalDebt", "resupply_total_debt")
+                          )}
+                        </Td>
+                        <Td
+                          fontFamily="monospace"
+                          fontSize={{ base: "10px", md: "sm" }}
+                          px={{ base: 1, md: 5 }}
+                          py={{ base: 0.5, md: 2 }}
+                          textAlign="center"
+                        >
+                          {formatPercent3Digits(
+                            getValue(
+                              market,
+                              "utilization",
+                              "resupply_utilization"
+                            )
+                          )}
+                        </Td>
+                        <Td
+                          fontFamily="monospace"
+                          fontSize={{ base: "10px", md: "sm" }}
+                          px={{ base: 1, md: 5 }}
+                          py={{ base: 0.5, md: 2 }}
+                          textAlign="center"
+                        >
+                          $
+                          {formatNumberWithAbbreviation(
+                            getValue(
+                              market,
+                              "liquidity",
+                              "resupply_available_liquidity"
+                            )
+                          )}
+                        </Td>
+                        <Td>
+                          {resupplyMode
+                            ? `${Number(
+                                getValue(
+                                  market,
+                                  "borrowRate",
+                                  "resupply_borrow_rate"
+                                )
+                              ).toFixed(2)}%`
+                            : `${Number(
+                                getValue(market, "borrowRate", "borrowRate")
+                              ).toFixed(2)}%`}
+                        </Td>
+                        <Td>
+                          {resupplyMode ? (
+                            <Tooltip
+                              label={
+                                <Box
+                                  fontFamily="monospace"
+                                  fontSize="xs"
+                                  color="white"
+                                  bg="gray.800"
+                                  borderRadius="md"
+                                  px={2}
+                                  py={1}
+                                >
+                                  <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    gap={2}
+                                  >
+                                    <span>rewards:</span>
+                                    <span
+                                      style={{
+                                        minWidth: 40,
+                                        textAlign: "right",
+                                        display: "inline-block",
+                                      }}
+                                    >
+                                      {rewardsApr.toFixed(2)}%
+                                    </span>
+                                  </Box>
+                                  <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    gap={2}
+                                  >
+                                    <span>underlying:</span>
+                                    <span
+                                      style={{
+                                        minWidth: 40,
+                                        textAlign: "right",
+                                        display: "inline-block",
+                                      }}
+                                    >
+                                      {underlyingApr.toFixed(2)}%
+                                    </span>
+                                  </Box>
+                                </Box>
+                              }
+                              fontSize="xs"
+                              hasArrow
+                              placement="top"
+                              bg="gray.800"
+                              color="white"
+                              borderRadius="md"
+                              p={0}
+                            >
+                              <span
+                                style={{
+                                  fontFamily: "monospace",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {totalApr.toFixed(2)}%
+                              </span>
+                            </Tooltip>
+                          ) : (
+                            `${Number(
+                              getValue(market, "lendRate", "lendRate")
+                            ).toFixed(2)}%`
+                          )}
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </Box>
+          </Flex>
+        )}
 
-      <Box
-        position="fixed"
-        bottom={0}
-        left={0}
-        right={0}
-        bg="gray.100"
-        p={1}
-        textAlign="center"
-      >
-        <Text fontSize="xs" color="gray.600" fontFamily="monospace">
-          Last updated:{" "}
-          {lastUpdateDate
-            ? formatDistanceToNow(lastUpdateDate, { addSuffix: true })
-            : lastUpdateFromApi ||
-              formatDistanceToNow(lastUpdated, { addSuffix: true })}
-        </Text>
-      </Box>
-    </Container>
+        {/* Subtle checkbox for deprecated markets */}
+        <Flex justify="center" mt={2} mb={1}>
+          <Box fontSize="xs" color="gray.500">
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+                cursor: "pointer",
+                fontFamily: "monospace",
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={showDeprecated}
+                onChange={(e) => setShowDeprecated(e.target.checked)}
+                style={{
+                  accentColor: "#bbb",
+                  width: 12,
+                  height: 12,
+                  marginRight: 4,
+                }}
+              />
+              Show deprecated markets
+            </label>
+          </Box>
+        </Flex>
+
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay bg="blackAlpha.300" />
+          <ModalContent
+            bg="white"
+            boxShadow="xl"
+            borderRadius="md"
+            p={1}
+            minW="0"
+            w="max-content"
+            maxW="95vw"
+            m="0 auto"
+            top="10vh"
+            h="auto"
+            minH="0"
+            height="fit-content"
+            position="relative"
+          >
+            <ModalBody pb={1} px={1} w="100%">
+              <Box height="24px" />
+              {selectedMarket && (
+                <Box fontSize="sm" m={0} p={0} fontFamily="monospace">
+                  <Stack spacing={1} align="start">
+                    {/* Market name and logos at the top */}
+                    <Flex direction="column" align="center" w="100%" mb={3}>
+                      <Flex align="center" justify="center" gap={1} mb={1}>
+                        <Box position="relative" boxSize="32px">
+                          <Image
+                            src={selectedMarket.depositTokenLogo}
+                            boxSize="28px"
+                            fallbackSrc={FALLBACK_IMAGE}
+                            borderRadius="full"
+                          />
+                          <Image
+                            src={selectedMarket.collateralTokenLogo}
+                            boxSize="28px"
+                            position="absolute"
+                            bottom="0px"
+                            right="-12px"
+                            zIndex={1}
+                            fallbackSrc={FALLBACK_IMAGE}
+                            borderRadius="full"
+                          />
+                        </Box>
+                      </Flex>
+                      <Text
+                        fontWeight="bold"
+                        fontSize="md"
+                        fontFamily="monospace"
+                        color="black"
+                      >
+                        {selectedMarket.marketName}
+                      </Text>
+                    </Flex>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
+                        Protocol:
+                      </strong>
+                      <Image
+                        src={
+                          selectedMarket.protocolId === 0
+                            ? crvLogo
+                            : fraxlendLogo
+                        }
+                        boxSize="18px"
+                        fallbackSrc={FALLBACK_IMAGE}
+                        ml={0}
+                        mr={0}
+                      />
+                      <Text mb={1} mt={0} fontFamily="monospace">
+                        {selectedMarket.protocolId === 0
+                          ? "CurveLend"
+                          : "FraxLend"}
+                      </Text>
+                    </Flex>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
+                        Market:
+                      </strong>
+                      <Link
+                        href={`https://etherscan.io/address/${selectedMarket.contractAddress}`}
+                        isExternal
+                        color="blue.500"
+                        wordBreak="break-all"
+                        fontFamily="monospace"
+                      >
+                        {abbreviateAddress(selectedMarket.contractAddress)}
+                      </Link>
+                      <Box
+                        as="button"
+                        ml={1}
+                        onClick={() =>
+                          handleCopy(selectedMarket.contractAddress)
+                        }
+                        p={0.5}
+                        borderRadius="sm"
+                        bg="white"
+                        _hover={{ bg: "gray.100" }}
+                        transition="all 0.2s"
+                      >
+                        {copied === selectedMarket.contractAddress ? (
+                          <CheckIcon color="green.400" boxSize={3} />
+                        ) : (
+                          <CopyIcon boxSize={3} />
+                        )}
+                      </Box>
+                    </Flex>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
+                        {selectedMarket.depositTokenSymbol}:
+                      </strong>
+                      <Link
+                        href={`https://etherscan.io/address/${selectedMarket.depositTokenAddress}`}
+                        isExternal
+                        color="blue.500"
+                        wordBreak="break-all"
+                        fontFamily="monospace"
+                      >
+                        {abbreviateAddress(selectedMarket.depositTokenAddress)}
+                      </Link>
+                      <Box
+                        as="button"
+                        ml={1}
+                        onClick={() =>
+                          handleCopy(selectedMarket.depositTokenAddress)
+                        }
+                        p={0.5}
+                        borderRadius="sm"
+                        bg="white"
+                        _hover={{ bg: "gray.100" }}
+                        transition="all 0.2s"
+                      >
+                        {copied === selectedMarket.depositTokenAddress ? (
+                          <CheckIcon color="green.400" boxSize={3} />
+                        ) : (
+                          <CopyIcon boxSize={3} />
+                        )}
+                      </Box>
+                    </Flex>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
+                        {selectedMarket.collateralTokenSymbol}:
+                      </strong>
+                      <Link
+                        href={`https://etherscan.io/address/${selectedMarket.collateralTokenAddress}`}
+                        isExternal
+                        color="blue.500"
+                        wordBreak="break-all"
+                        fontFamily="monospace"
+                      >
+                        {abbreviateAddress(
+                          selectedMarket.collateralTokenAddress
+                        )}
+                      </Link>
+                      <Box
+                        as="button"
+                        ml={1}
+                        onClick={() =>
+                          handleCopy(selectedMarket.collateralTokenAddress)
+                        }
+                        p={0.5}
+                        borderRadius="sm"
+                        bg="white"
+                        _hover={{ bg: "gray.100" }}
+                        transition="all 0.2s"
+                      >
+                        {copied === selectedMarket.collateralTokenAddress ? (
+                          <CheckIcon color="green.400" boxSize={3} />
+                        ) : (
+                          <CopyIcon boxSize={3} />
+                        )}
+                      </Box>
+                    </Flex>
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
+                        Resupply:
+                      </strong>
+                      <Link
+                        href={`https://etherscan.io/address/${selectedMarket.resupplyPairAddress}`}
+                        isExternal
+                        color="blue.500"
+                        wordBreak="break-all"
+                        fontFamily="monospace"
+                      >
+                        {abbreviateAddress(selectedMarket.resupplyPairAddress)}
+                      </Link>
+                      <Box
+                        as="button"
+                        ml={1}
+                        onClick={() =>
+                          handleCopy(selectedMarket.resupplyPairAddress)
+                        }
+                        p={0.5}
+                        borderRadius="sm"
+                        bg="white"
+                        _hover={{ bg: "gray.100" }}
+                        transition="all 0.2s"
+                      >
+                        {copied === selectedMarket.resupplyPairAddress ? (
+                          <CheckIcon color="green.400" boxSize={3} />
+                        ) : (
+                          <CopyIcon boxSize={3} />
+                        )}
+                      </Box>
+                    </Flex>
+                    {selectedMarket.controller &&
+                      selectedMarket.controller !==
+                        "0x0000000000000000000000000000000000000000" && (
+                        <Flex align="center" gap={4} w="100%">
+                          <strong
+                            style={{ minWidth: 110, fontFamily: "monospace" }}
+                          >
+                            Controller:
+                          </strong>
+                          <Link
+                            href={`https://etherscan.io/address/${selectedMarket.controller}`}
+                            isExternal
+                            color="blue.500"
+                            wordBreak="break-all"
+                            fontFamily="monospace"
+                          >
+                            {abbreviateAddress(selectedMarket.controller)}
+                          </Link>
+                          <Box
+                            as="button"
+                            ml={1}
+                            onClick={() =>
+                              handleCopy(selectedMarket.controller)
+                            }
+                            p={0.5}
+                            borderRadius="sm"
+                            bg="white"
+                            _hover={{ bg: "gray.100" }}
+                            transition="all 0.2s"
+                          >
+                            {copied === selectedMarket.controller ? (
+                              <CheckIcon color="green.400" boxSize={3} />
+                            ) : (
+                              <CopyIcon boxSize={3} />
+                            )}
+                          </Box>
+                        </Flex>
+                      )}
+                    <Flex align="center" gap={4} w="100%">
+                      <strong
+                        style={{ minWidth: 110, fontFamily: "monospace" }}
+                      >
+                        Rate Calc:
+                      </strong>
+                      <Link
+                        href={`https://etherscan.io/address/${selectedMarket.interestRateContract}`}
+                        isExternal
+                        color="blue.500"
+                        wordBreak="break-all"
+                        fontFamily="monospace"
+                      >
+                        {abbreviateAddress(selectedMarket.interestRateContract)}
+                      </Link>
+                      <Box
+                        as="button"
+                        ml={1}
+                        onClick={() =>
+                          handleCopy(selectedMarket.interestRateContract)
+                        }
+                        p={0.5}
+                        borderRadius="sm"
+                        bg="white"
+                        _hover={{ bg: "gray.100" }}
+                        transition="all 0.2s"
+                      >
+                        {copied === selectedMarket.interestRateContract ? (
+                          <CheckIcon color="green.400" boxSize={3} />
+                        ) : (
+                          <CopyIcon boxSize={3} />
+                        )}
+                      </Box>
+                    </Flex>
+                  </Stack>
+                </Box>
+              )}
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+
+        <Box
+          position="fixed"
+          bottom={0}
+          left={0}
+          right={0}
+          bg="gray.100"
+          p={1}
+          textAlign="center"
+        >
+          <Text fontSize="xs" color="gray.600" fontFamily="monospace">
+            Last updated:{" "}
+            {lastUpdateDate
+              ? formatDistanceToNow(lastUpdateDate, { addSuffix: true })
+              : lastUpdateFromApi ||
+                formatDistanceToNow(lastUpdated, { addSuffix: true })}
+          </Text>
+        </Box>
+      </Container>
+    </ChakraProvider>
   );
 }
 

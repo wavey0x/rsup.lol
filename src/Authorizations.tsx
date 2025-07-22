@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import {
-  ChakraProvider,
   Box,
   Text,
   Spinner,
@@ -16,13 +15,19 @@ import {
   Th,
   Td,
   Portal,
+  ChakraProvider,
+  Tabs,
+  TabList,
+  TabPanels,
+  TabPanel,
+  Tab,
 } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import { customTheme } from "./Markets";
 
 function abbreviateAddress(addr: string) {
-  return addr ? `${addr.slice(0, 5)}...${addr.slice(-3)}` : "";
+  return addr ? `${addr.slice(0, 5)}..${addr.slice(-3)}` : "";
 }
 // Helper to extract function name (before parens)
 function getFunctionName(signature: string) {
@@ -97,7 +102,8 @@ function Authorizations() {
         mb={0}
       >
         <Container
-          maxW="md"
+          maxW={{ base: "100vw", md: "md" }}
+          px={{ base: 0, md: 0 }}
           py={0}
           my={0}
           centerContent
@@ -127,163 +133,314 @@ function Authorizations() {
                 fontSize="md"
                 textAlign="center"
               >
-                {Array.isArray(data.authorizations?.active) &&
-                data.authorizations.active.length > 0 ? (
-                  <Box overflowX="auto" w="100%">
-                    <Table
-                      variant="simple"
-                      size="sm"
-                      w="100%"
-                      fontFamily="monospace"
+                <Box px={{ base: 2, md: 0 }}>
+                  <Tabs variant="unstyled" align="center" mb={0} mt={0}>
+                    <TabList
+                      display="flex"
+                      border="1px solid black"
+                      borderRadius="10px 10px 0 0"
+                      overflow="hidden"
+                      p={0}
+                      m={0}
+                      minWidth="374px"
+                      width="auto"
                     >
-                      <Thead>
-                        <Tr>
-                          <Th textAlign="center">Selector</Th>
-                          <Th textAlign="center">Target</Th>
-                          <Th textAlign="center">Caller</Th>
-                          <Th textAlign="center">Hook</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {data.authorizations.active.map(
-                          (auth: any, i: number) => (
-                            <Tr key={i}>
-                              <Td
-                                fontFamily="monospace"
-                                textAlign="left"
-                                style={{ position: "relative" }}
-                              >
-                                {Array.isArray(auth.selector) &&
-                                auth.selector[1] ? (
-                                  <span
-                                    style={{
-                                      fontFamily: "monospace",
-                                      cursor: "pointer",
-                                      position: "relative",
-                                      display: "inline-block",
-                                    }}
-                                    data-selector-tooltip-anchor
-                                    onMouseEnter={() =>
-                                      setOpenSelectorTooltip(i)
-                                    }
-                                    onMouseLeave={() =>
-                                      setOpenSelectorTooltip((cur) =>
-                                        cur === i ? null : cur
-                                      )
-                                    }
+                      <Tab
+                        fontFamily="monospace"
+                        fontWeight="normal"
+                        fontSize="sm"
+                        flex="1"
+                        borderRight="1px solid black"
+                        borderRadius="10px 0 0 0"
+                        bg="#f3f3f3"
+                        color="gray.500"
+                        _selected={{
+                          bg: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          borderBottom: "2px solid white",
+                        }}
+                        px={0}
+                        py={1}
+                        minW={0}
+                      >
+                        Active Authorizations
+                      </Tab>
+                      <Tab
+                        fontFamily="monospace"
+                        fontWeight="normal"
+                        fontSize="sm"
+                        flex="1"
+                        borderRadius="0 10px 0 0"
+                        bg="#f3f3f3"
+                        color="gray.500"
+                        _selected={{
+                          bg: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          borderBottom: "2px solid white",
+                        }}
+                        px={0}
+                        py={1}
+                        minW={0}
+                      >
+                        Info
+                      </Tab>
+                    </TabList>
+                    <TabPanels>
+                      <TabPanel px={0} py={0}>
+                        {Array.isArray(data.authorizations?.active) &&
+                        data.authorizations.active.length > 0 ? (
+                          <Box overflowX="auto" w="100%">
+                            <Table
+                              variant="simple"
+                              size="sm"
+                              w="100%"
+                              fontFamily="monospace"
+                              colorScheme="blackAlpha"
+                              borderWidth="1px"
+                              borderColor="black"
+                              borderTopWidth={0}
+                              minWidth="374px"
+                              width="auto"
+                              style={{
+                                textAlign: "center",
+                                fontSize: "13px",
+                                borderSpacing: 0,
+                              }}
+                            >
+                              <Thead>
+                                <Tr>
+                                  <Th
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="center"
+                                    px={2}
+                                    py={0}
+                                    minWidth="70px"
+                                    maxWidth="70px"
+                                    whiteSpace="nowrap"
                                   >
-                                    {truncateSelectorName(
-                                      getFunctionName(auth.selector[1])
-                                    )}
-                                    {openSelectorTooltip === i && (
-                                      <Portal>
-                                        <TooltipBoxSelector
-                                          i={i}
-                                          setOpenSelectorTooltip={
-                                            setOpenSelectorTooltip
-                                          }
-                                          selector1={auth.selector[1]}
-                                          selector0={auth.selector[0]}
-                                        />
-                                      </Portal>
-                                    )}
-                                  </span>
-                                ) : Array.isArray(auth.selector) &&
-                                  auth.selector[0] ? (
-                                  <span
-                                    style={{
-                                      fontFamily: "monospace",
-                                      cursor: "pointer",
-                                      position: "relative",
-                                      display: "inline-block",
-                                    }}
-                                    data-selector-tooltip-anchor
-                                    onMouseEnter={() =>
-                                      setOpenSelectorTooltip(i)
-                                    }
-                                    onMouseLeave={() =>
-                                      setOpenSelectorTooltip((cur) =>
-                                        cur === i ? null : cur
-                                      )
-                                    }
+                                    Selector
+                                  </Th>
+                                  <Th
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="center"
+                                    px={2}
+                                    py={0}
+                                    minWidth="83px"
+                                    maxWidth="83px"
+                                    whiteSpace="nowrap"
                                   >
-                                    {truncateSelectorName(auth.selector[0])}
-                                    {openSelectorTooltip === i && (
-                                      <Portal>
-                                        <TooltipBoxSelector
-                                          i={i}
-                                          setOpenSelectorTooltip={
-                                            setOpenSelectorTooltip
-                                          }
-                                          selector1={null}
-                                          selector0={auth.selector[0]}
-                                        />
-                                      </Portal>
-                                    )}
-                                  </span>
-                                ) : (
-                                  <span>-</span>
+                                    Target
+                                  </Th>
+                                  <Th
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="center"
+                                    px={2}
+                                    py={0}
+                                    minWidth="83px"
+                                    maxWidth="83px"
+                                    whiteSpace="nowrap"
+                                  >
+                                    Caller
+                                  </Th>
+                                  <Th
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="center"
+                                    px={2}
+                                    py={0}
+                                    minWidth="83px"
+                                    maxWidth="83px"
+                                    whiteSpace="nowrap"
+                                  >
+                                    Hook
+                                  </Th>
+                                </Tr>
+                              </Thead>
+                              <Tbody>
+                                {data.authorizations.active.map(
+                                  (auth: any, i: number) => (
+                                    <Tr key={i}>
+                                      <Td
+                                        fontFamily="monospace"
+                                        textAlign="left"
+                                        style={{ position: "relative" }}
+                                      >
+                                        {Array.isArray(auth.selector) &&
+                                        auth.selector[1] ? (
+                                          <span
+                                            style={{
+                                              fontFamily: "monospace",
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              display: "inline-block",
+                                            }}
+                                            data-selector-tooltip-anchor
+                                            onMouseEnter={() =>
+                                              setOpenSelectorTooltip(i)
+                                            }
+                                            onMouseLeave={() =>
+                                              setOpenSelectorTooltip((cur) =>
+                                                cur === i ? null : cur
+                                              )
+                                            }
+                                          >
+                                            {truncateSelectorName(
+                                              getFunctionName(auth.selector[1])
+                                            )}
+                                            {openSelectorTooltip === i && (
+                                              <Portal>
+                                                <TooltipBoxSelector
+                                                  i={i}
+                                                  setOpenSelectorTooltip={
+                                                    setOpenSelectorTooltip
+                                                  }
+                                                  selector1={auth.selector[1]}
+                                                  selector0={auth.selector[0]}
+                                                />
+                                              </Portal>
+                                            )}
+                                          </span>
+                                        ) : Array.isArray(auth.selector) &&
+                                          auth.selector[0] ? (
+                                          <span
+                                            style={{
+                                              fontFamily: "monospace",
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              display: "inline-block",
+                                            }}
+                                            data-selector-tooltip-anchor
+                                            onMouseEnter={() =>
+                                              setOpenSelectorTooltip(i)
+                                            }
+                                            onMouseLeave={() =>
+                                              setOpenSelectorTooltip((cur) =>
+                                                cur === i ? null : cur
+                                              )
+                                            }
+                                          >
+                                            {truncateSelectorName(
+                                              auth.selector[0]
+                                            )}
+                                            {openSelectorTooltip === i && (
+                                              <Portal>
+                                                <TooltipBoxSelector
+                                                  i={i}
+                                                  setOpenSelectorTooltip={
+                                                    setOpenSelectorTooltip
+                                                  }
+                                                  selector1={null}
+                                                  selector0={auth.selector[0]}
+                                                />
+                                              </Portal>
+                                            )}
+                                          </span>
+                                        ) : (
+                                          <span>-</span>
+                                        )}
+                                      </Td>
+                                      <Td
+                                        fontFamily="monospace"
+                                        textAlign="center"
+                                        fontSize="xs"
+                                      >
+                                        {auth.target === ADDRESS_ZERO ? (
+                                          <span>*</span>
+                                        ) : (
+                                          <Link
+                                            href={`https://etherscan.io/address/${auth.target}`}
+                                            isExternal
+                                            color="blue.600"
+                                            textDecoration="underline"
+                                          >
+                                            {abbreviateAddress(auth.target)}
+                                          </Link>
+                                        )}
+                                      </Td>
+                                      <Td
+                                        fontFamily="monospace"
+                                        textAlign="center"
+                                        fontSize="xs"
+                                      >
+                                        <Link
+                                          href={`https://etherscan.io/address/${auth.caller}`}
+                                          isExternal
+                                          color="blue.600"
+                                          textDecoration="underline"
+                                        >
+                                          {abbreviateAddress(auth.caller)}
+                                        </Link>
+                                      </Td>
+                                      <Td
+                                        fontFamily="monospace"
+                                        textAlign="center"
+                                        fontSize="xs"
+                                      >
+                                        {auth.auth_hook === ADDRESS_ZERO ? (
+                                          <span>None</span>
+                                        ) : (
+                                          <Link
+                                            href={`https://etherscan.io/address/${auth.auth_hook}`}
+                                            isExternal
+                                            color="blue.600"
+                                            textDecoration="underline"
+                                          >
+                                            {abbreviateAddress(auth.auth_hook)}
+                                          </Link>
+                                        )}
+                                      </Td>
+                                    </Tr>
+                                  )
                                 )}
-                              </Td>
-                              <Td
-                                fontFamily="monospace"
-                                textAlign="center"
-                                fontSize="xs"
-                              >
-                                {auth.target === ADDRESS_ZERO ? (
-                                  <span>*</span>
-                                ) : (
-                                  <Link
-                                    href={`https://etherscan.io/address/${auth.target}`}
-                                    isExternal
-                                    color="blue.600"
-                                    textDecoration="underline"
-                                  >
-                                    {abbreviateAddress(auth.target)}
-                                  </Link>
-                                )}
-                              </Td>
-                              <Td
-                                fontFamily="monospace"
-                                textAlign="center"
-                                fontSize="xs"
-                              >
-                                <Link
-                                  href={`https://etherscan.io/address/${auth.caller}`}
-                                  isExternal
-                                  color="blue.600"
-                                  textDecoration="underline"
-                                >
-                                  {abbreviateAddress(auth.caller)}
-                                </Link>
-                              </Td>
-                              <Td
-                                fontFamily="monospace"
-                                textAlign="center"
-                                fontSize="xs"
-                              >
-                                {auth.auth_hook === ADDRESS_ZERO ? (
-                                  <span>None</span>
-                                ) : (
-                                  <Link
-                                    href={`https://etherscan.io/address/${auth.auth_hook}`}
-                                    isExternal
-                                    color="blue.600"
-                                    textDecoration="underline"
-                                  >
-                                    {abbreviateAddress(auth.auth_hook)}
-                                  </Link>
-                                )}
-                              </Td>
-                            </Tr>
-                          )
+                              </Tbody>
+                            </Table>
+                          </Box>
+                        ) : (
+                          <Text>No authorizations found.</Text>
                         )}
-                      </Tbody>
-                    </Table>
-                  </Box>
-                ) : (
-                  <Text>No authorizations found.</Text>
-                )}
+                      </TabPanel>
+                      <TabPanel px={0} py={0}>
+                        <Box
+                          border="1px solid black"
+                          borderTopWidth={0}
+                          borderRadius="0 0 10px 10px"
+                          minWidth="374px"
+                          width="auto"
+                          px={4}
+                          py={3}
+                          bg="white"
+                        >
+                          <Stack
+                            spacing={3}
+                            align="center"
+                            fontFamily="monospace"
+                            fontSize="xs"
+                          >
+                            <Text textAlign="left">
+                              Resupply Core is the owner of all protocol
+                              contracts. Resupply manages authorizations by
+                              granting fine-grain permissions for callers to
+                              specified function selectors.
+                            </Text>
+                          </Stack>
+                        </Box>
+                      </TabPanel>
+                    </TabPanels>
+                  </Tabs>
+                </Box>
               </Box>
             ) : null}
           </Stack>

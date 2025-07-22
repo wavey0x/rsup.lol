@@ -133,7 +133,12 @@ function Authorizations() {
                 fontSize="md"
                 textAlign="center"
               >
-                <Box px={{ base: 2, md: 0 }}>
+                <Box
+                  px={{ base: 2, md: 0 }}
+                  minWidth={{ base: "396px", md: "448px" }}
+                  width={{ base: "100%", md: "auto" }}
+                  mx="auto"
+                >
                   <Tabs variant="unstyled" align="center" mb={0} mt={0}>
                     <TabList
                       display="flex"
@@ -191,7 +196,12 @@ function Authorizations() {
                       <TabPanel px={0} py={0}>
                         {Array.isArray(data.authorizations?.active) &&
                         data.authorizations.active.length > 0 ? (
-                          <Box overflowX="auto" w="100%">
+                          <Box
+                            overflowX="auto"
+                            w="100%"
+                            minWidth={{ base: "396px", md: "448px" }}
+                            width={{ base: "100%", md: "auto" }}
+                          >
                             <Table
                               variant="simple"
                               size="sm"
@@ -201,8 +211,8 @@ function Authorizations() {
                               borderWidth="1px"
                               borderColor="black"
                               borderTopWidth={0}
-                              minWidth="374px"
-                              width="auto"
+                              minWidth={{ base: "100%", md: "448px" }}
+                              width={{ base: "100%", md: "auto" }}
                               style={{
                                 textAlign: "center",
                                 fontSize: "13px",
@@ -417,8 +427,8 @@ function Authorizations() {
                           border="1px solid black"
                           borderTopWidth={0}
                           borderRadius="0 0 10px 10px"
-                          minWidth="374px"
-                          width="auto"
+                          minWidth={{ base: "396px", md: "448px" }}
+                          width={{ base: "100%", md: "auto" }}
                           px={4}
                           py={3}
                           bg="white"

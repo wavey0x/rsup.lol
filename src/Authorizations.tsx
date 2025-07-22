@@ -135,7 +135,7 @@ function Authorizations() {
               >
                 <Box
                   px={{ base: 2, md: 0 }}
-                  minWidth={{ base: "396px", md: "448px" }}
+                  minWidth={{ base: "380px", md: "448px" }}
                   width={{ base: "100%", md: "auto" }}
                   mx="auto"
                 >
@@ -199,7 +199,7 @@ function Authorizations() {
                           <Box
                             overflowX="auto"
                             w="100%"
-                            minWidth={{ base: "396px", md: "448px" }}
+                            minWidth={{ base: "380px", md: "448px" }}
                             width={{ base: "100%", md: "auto" }}
                           >
                             <Table
@@ -211,7 +211,7 @@ function Authorizations() {
                               borderWidth="1px"
                               borderColor="black"
                               borderTopWidth={0}
-                              minWidth={{ base: "100%", md: "448px" }}
+                              minWidth={{ base: "380px", md: "448px" }}
                               width={{ base: "100%", md: "auto" }}
                               style={{
                                 textAlign: "center",
@@ -271,8 +271,8 @@ function Authorizations() {
                                     textAlign="center"
                                     px={2}
                                     py={0}
-                                    minWidth="83px"
-                                    maxWidth="83px"
+                                    minWidth="60px"
+                                    maxWidth="60px"
                                     whiteSpace="nowrap"
                                   >
                                     Hook
@@ -398,6 +398,13 @@ function Authorizations() {
                                         fontFamily="monospace"
                                         textAlign="center"
                                         fontSize="xs"
+                                        minWidth="60px"
+                                        maxWidth="60px"
+                                        style={{
+                                          overflow: "hidden",
+                                          textOverflow: "ellipsis",
+                                          whiteSpace: "nowrap",
+                                        }}
                                       >
                                         {auth.auth_hook === ADDRESS_ZERO ? (
                                           <span>None</span>

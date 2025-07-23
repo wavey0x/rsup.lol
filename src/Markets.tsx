@@ -849,9 +849,9 @@ function Markets() {
                               </Flex>
                             </Td>
                             <Td>
-                              {Number(
-                                getValue(market, "ltv", "resupply_ltv")
-                              ).toFixed(1)}
+                              {formatNumberWithAbbreviation(
+                                Number(getValue(market, "ltv", "resupply_ltv"))
+                              )}
                               %
                             </Td>
                             <Td>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Table,
@@ -24,8 +24,6 @@ import {
   AlertDescription,
   Spinner,
   Center,
-  ButtonGroup,
-  Button,
   Stack,
   Tooltip,
   ChakraProvider,
@@ -140,7 +138,6 @@ function Markets() {
   const [showDeprecated, setShowDeprecated] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [copied, setCopied] = useState<string | null>(null);
-  const protocolGroupRef = useRef<HTMLDivElement | null>(null);
 
   const fetchData = async () => {
     try {

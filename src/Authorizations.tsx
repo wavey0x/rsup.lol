@@ -56,7 +56,7 @@ function Authorizations() {
   const [openSelectorTooltip, setOpenSelectorTooltip] = useState<number | null>(
     null
   );
-  const PAGE_SIZE = 15;
+  const PAGE_SIZE = 20;
   const [page, setPage] = useState(0);
   const activeAuths = Array.isArray(data?.authorizations?.active)
     ? data.authorizations.active
@@ -495,38 +495,44 @@ function Authorizations() {
                                 ))}
                               </Tbody>
                             </Table>
-                            <Flex
-                              justify="center"
-                              align="center"
-                              mt={2}
-                              gap={2}
-                            >
-                              <Button
-                                size="xs"
-                                onClick={() =>
-                                  setPage((p) => Math.max(0, p - 1))
-                                }
-                                disabled={page === 0}
-                                fontFamily="monospace"
-                                aria-label="Previous Page"
-                              >
-                                {"<"}
-                              </Button>
-                              <Text fontFamily="monospace" fontSize="sm">
-                                {page + 1} / {pageCount}
-                              </Text>
-                              <Button
-                                size="xs"
-                                onClick={() =>
-                                  setPage((p) => Math.min(pageCount - 1, p + 1))
-                                }
-                                disabled={page >= pageCount - 1}
-                                fontFamily="monospace"
-                                aria-label="Next Page"
-                              >
-                                {">"}
-                              </Button>
-                            </Flex>
+                            {pageCount > 1 && (
+                              <>
+                                <Flex
+                                  justify="center"
+                                  align="center"
+                                  mt={2}
+                                  gap={2}
+                                >
+                                  <Button
+                                    size="xs"
+                                    onClick={() =>
+                                      setPage((p) => Math.max(0, p - 1))
+                                    }
+                                    disabled={page === 0}
+                                    fontFamily="monospace"
+                                    aria-label="Previous Page"
+                                  >
+                                    {"<"}
+                                  </Button>
+                                  <Text fontFamily="monospace" fontSize="sm">
+                                    {page + 1} / {pageCount}
+                                  </Text>
+                                  <Button
+                                    size="xs"
+                                    onClick={() =>
+                                      setPage((p) =>
+                                        Math.min(pageCount - 1, p + 1)
+                                      )
+                                    }
+                                    disabled={page >= pageCount - 1}
+                                    fontFamily="monospace"
+                                    aria-label="Next Page"
+                                  >
+                                    {">"}
+                                  </Button>
+                                </Flex>
+                              </>
+                            )}
                           </Box>
                         ) : (
                           <Text>No authorizations found.</Text>

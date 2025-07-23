@@ -412,8 +412,7 @@ function Markets() {
         <Flex justify="center" mb={2} direction="column" align="center">
           <Box
             display="inline-block"
-            w={{ base: "calc(100vw - 4px)", md: "740px" }}
-            maxW={{ base: "380px", md: "740px" }}
+            w={{ base: "100%", md: "740px" }}
             border="1px solid black"
             borderRadius="16px 16px 0 0"
             overflow="hidden"
@@ -437,9 +436,7 @@ function Markets() {
                   overflow="hidden"
                   p={0}
                   m={0}
-                  minWidth={{ base: "calc(100vw - 4px)", md: "740px" }}
-                  width={{ base: "calc(100vw - 4px)", md: "740px" }}
-                  maxWidth={{ base: "380px", md: "740px" }}
+                  w={{ base: "100%", md: "740px" }}
                   bg="white"
                 >
                   <Tab
@@ -520,9 +517,7 @@ function Markets() {
                   overflow="hidden"
                   p={0}
                   m={0}
-                  minWidth={{ base: "calc(100vw - 4px)", md: "740px" }}
-                  width={{ base: "calc(100vw - 4px)", md: "740px" }}
-                  maxWidth={{ base: "380px", md: "740px" }}
+                  w={{ base: "100%", md: "740px" }}
                   bg="white"
                 >
                   <Tab
@@ -617,14 +612,8 @@ function Markets() {
               </Center>
             ) : (
               <Flex justify="center" w="100%" overflowX="auto" px={0.2}>
-                <Box minW="100%" px={0.2}>
-                  <Table
-                    variant="simple"
-                    size="sm"
-                    w="100%"
-                    maxW={{ base: "380px", md: "680px" }}
-                    mx="auto"
-                  >
+                <Box w={{ base: "100%", md: "740px" }} px={0.2}>
+                  <Table variant="simple" size="sm" w="100%" mx="auto">
                     <Thead>
                       <Tr>
                         <Th

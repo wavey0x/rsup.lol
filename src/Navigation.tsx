@@ -80,22 +80,22 @@ export function Navigation() {
       boxShadow="lg"
       border="1px solid"
       borderColor="gray.200"
-      minW={{ base: "280px", md: "auto" }}
-      w={{ base: "90vw", md: "auto" }}
-      maxW={{ base: "400px", md: "none" }}
+      w="360px"
+      minW="360px"
+      maxW="360px"
     >
       <Flex direction="column">
         {/* Active page display */}
         <Flex
           align="center"
-          justify="center"
-          py={1}
+          py={3}
           px={3}
           cursor="pointer"
           onClick={onToggle}
           _hover={{ bg: "gray.50" }}
           borderRadius="lg"
-          minW="220px"
+          w="100%"
+          position="relative"
         >
           <Image
             src={currentPageData?.logo}
@@ -104,22 +104,24 @@ export function Navigation() {
             w="auto"
             maxW="64px"
             objectFit="contain"
-            mr={3}
+            position="absolute"
+            left="12px"
           />
           <Text
             fontFamily="monospace"
             fontSize="lg"
             fontWeight="bold"
             color="gray.800"
-            minW="160px"
             textAlign="center"
+            flex="1"
           >
             {currentPageData?.name}
           </Text>
           <ChevronDownIcon
             boxSize={5}
             color="gray.500"
-            ml={3}
+            position="absolute"
+            right="12px"
             transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
             transition="transform 0.2s"
           />
@@ -141,7 +143,8 @@ export function Navigation() {
                   <Flex
                     key={page.id}
                     align="center"
-                    p={2}
+                    py={3}
+                    px={2}
                     cursor="pointer"
                     onClick={() => {
                       navigate(PAGE_TO_PATH[page.id]);
@@ -150,7 +153,8 @@ export function Navigation() {
                     _hover={{ bg: "gray.50" }}
                     borderBottom="1px solid"
                     borderColor="gray.100"
-                    minW="220px"
+                    w="100%"
+                    position="relative"
                   >
                     <Image
                       src={page.logo}
@@ -159,14 +163,15 @@ export function Navigation() {
                       w="auto"
                       maxW="32px"
                       objectFit="contain"
-                      mr={2}
+                      position="absolute"
+                      left="8px"
                     />
                     <Text
                       fontFamily="monospace"
                       fontSize="sm"
                       color="gray.600"
-                      minW="160px"
-                      textAlign="left"
+                      textAlign="center"
+                      flex="1"
                     >
                       {page.name}
                     </Text>

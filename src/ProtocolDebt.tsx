@@ -132,8 +132,13 @@ function SimpleLineChart({ data }: { data: any[] }) {
   const points = sortedData.map((point, index) => {
     const x =
       padding + (index / Math.max(sortedData.length - 1, 1)) * chartWidth;
-    const normalizedAmount =
-      amountRange > 0 ? (Number(point.amount) - minAmount) / amountRange : 0.5;
+    let normalizedAmount;
+    if (amountRange > 0) {
+      normalizedAmount = (Number(point.amount) - minAmount) / amountRange;
+    } else {
+      // If all values are the same, show a horizontal line in the middle
+      normalizedAmount = 0.5;
+    }
     const y = height - padding - normalizedAmount * chartHeight;
     return `${x},${y}`;
   });
@@ -690,12 +695,9 @@ function ProtocolDebt() {
                                         whiteSpace="nowrap"
                                       >
                                         {repayment.amount !== undefined
-                                          ? Number(
-                                              repayment.amount
-                                            ).toLocaleString(undefined, {
-                                              minimumFractionDigits: 2,
-                                              maximumFractionDigits: 2,
-                                            })
+                                          ? Math.floor(
+                                              Number(repayment.amount)
+                                            ).toLocaleString()
                                           : "-"}
                                       </Td>
                                     </Tr>
@@ -1001,13 +1003,9 @@ function ProtocolDebt() {
                                       whiteSpace="nowrap"
                                     >
                                       {payment.amount !== undefined
-                                        ? Number(payment.amount).toLocaleString(
-                                            undefined,
-                                            {
-                                              minimumFractionDigits: 2,
-                                              maximumFractionDigits: 2,
-                                            }
-                                          )
+                                        ? Math.floor(
+                                            Number(payment.amount)
+                                          ).toLocaleString()
                                         : "-"}
                                     </Td>
                                   </Tr>

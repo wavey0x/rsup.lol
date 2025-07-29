@@ -42,7 +42,7 @@ import axios from "axios";
 import type { MarketData, MarketInfo } from "./types/market";
 import {
   formatNumberWithAbbreviation,
-  formatPercent3Digits,
+  formatPercentWithAbbreviation,
 } from "./utils/format";
 
 const crvLogo = "/CRV-transparent.svg";
@@ -172,7 +172,7 @@ function Markets() {
         }
 
         const resupplyBorrowLimit = Number(market.resupply_borrow_limit) || 0;
-        const deprecated = resupplyBorrowLimit === 0;
+        const deprecated = resupplyBorrowLimit <= 1;
 
         return {
           marketName: `${market.deposit_token_symbol}/${market.collateral_token_symbol}`,
@@ -871,7 +871,7 @@ function Markets() {
                               py={{ base: 0.5, md: 2 }}
                               textAlign="center"
                             >
-                              {formatPercent3Digits(
+                              {formatPercentWithAbbreviation(
                                 getValue(
                                   market,
                                   "utilization",

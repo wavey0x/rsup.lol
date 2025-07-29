@@ -355,7 +355,7 @@ function Authorizations() {
                                                 <Link
                                                   href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
                                                   isExternal
-                                                  color="blue.200"
+                                                  color="black"
                                                   textDecoration="underline"
                                                   fontSize="xs"
                                                   fontFamily="monospace"
@@ -419,7 +419,7 @@ function Authorizations() {
                                                 <Link
                                                   href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
                                                   isExternal
-                                                  color="blue.200"
+                                                  color="black"
                                                   textDecoration="underline"
                                                   fontSize="xs"
                                                   fontFamily="monospace"
@@ -445,7 +445,7 @@ function Authorizations() {
                                         <Link
                                           href={`https://etherscan.io/address/${auth.target}`}
                                           isExternal
-                                          color="blue.600"
+                                          color="black"
                                           textDecoration="underline"
                                         >
                                           {abbreviateAddress(auth.target)}
@@ -460,7 +460,7 @@ function Authorizations() {
                                       <Link
                                         href={`https://etherscan.io/address/${auth.caller}`}
                                         isExternal
-                                        color="blue.600"
+                                        color="black"
                                         textDecoration="underline"
                                       >
                                         {abbreviateAddress(auth.caller)}
@@ -484,7 +484,7 @@ function Authorizations() {
                                         <Link
                                           href={`https://etherscan.io/address/${auth.auth_hook}`}
                                           isExternal
-                                          color="blue.600"
+                                          color="black"
                                           textDecoration="underline"
                                         >
                                           {abbreviateAddress(auth.auth_hook)}

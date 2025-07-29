@@ -171,11 +171,21 @@ function SimpleLineChart({ data }: { data: any[] }) {
           {/* Smooth line chart */}
           <path
             d={pathData}
-            stroke="#3182ce"
-            strokeWidth="3"
+            stroke="#4a5568"
+            strokeWidth="2"
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
+          />
+
+          {/* X-axis line */}
+          <line
+            x1={padding}
+            y1={height - padding}
+            x2={width - padding}
+            y2={height - padding}
+            stroke="#e2e8f0"
+            strokeWidth="1"
           />
 
           {/* X-axis labels */}
@@ -653,7 +663,7 @@ function ProtocolDebt() {
                                         <Link
                                           href={`https://etherscan.io/address/${repayment.payer}`}
                                           isExternal
-                                          color="blue.600"
+                                          color="black"
                                           textDecoration="underline"
                                         >
                                           {abbreviateAddress(repayment.payer)}
@@ -675,7 +685,7 @@ function ProtocolDebt() {
                                         <Link
                                           href={`https://etherscan.io/tx/${repayment.txn}`}
                                           isExternal
-                                          color="blue.600"
+                                          color="black"
                                           textDecoration="underline"
                                         >
                                           {abbreviateHash(repayment.txn)}
@@ -961,7 +971,7 @@ function ProtocolDebt() {
                                       <Link
                                         href={`https://etherscan.io/address/${payment.payer}`}
                                         isExternal
-                                        color="blue.600"
+                                        color="black"
                                         textDecoration="underline"
                                       >
                                         {abbreviateAddress(payment.payer)}
@@ -983,7 +993,7 @@ function ProtocolDebt() {
                                       <Link
                                         href={`https://etherscan.io/tx/${payment.txn}`}
                                         isExternal
-                                        color="blue.600"
+                                        color="black"
                                         textDecoration="underline"
                                       >
                                         {abbreviateHash(payment.txn)}
@@ -1093,14 +1103,15 @@ function ProtocolDebt() {
                                 my={3}
                               />
                               <Flex alignItems="center" gap={2} mb={1}>
-                                <Text minW="140px" textAlign="left">
+                                <Text minW="160px" textAlign="left">
                                   Loan Repayer:
                                 </Text>
                                 <Flex alignItems="center" gap={1}>
                                   <Link
                                     href="https://etherscan.io/address/0x4C0fFC2B96f3C6b048eF85d1A4744c8e36B5b6F6"
                                     isExternal
-                                    color="blue.500"
+                                    color="black"
+                                    textDecoration="underline"
                                     wordBreak="break-all"
                                   >
                                     {abbreviateAddress(
@@ -1134,14 +1145,15 @@ function ProtocolDebt() {
                                 </Flex>
                               </Flex>
                               <Flex alignItems="center" gap={2} mb={1}>
-                                <Text minW="140px" textAlign="left">
+                                <Text minW="160px" textAlign="left">
                                   Loan Converter:
                                 </Text>
                                 <Flex alignItems="center" gap={1}>
                                   <Link
                                     href="https://etherscan.io/address/0xf4aA178D7096E207Dc899d556c57336795311D53"
                                     isExternal
-                                    color="blue.500"
+                                    color="black"
+                                    textDecoration="underline"
                                     wordBreak="break-all"
                                   >
                                     {abbreviateAddress(
@@ -1175,14 +1187,15 @@ function ProtocolDebt() {
                                 </Flex>
                               </Flex>
                               <Flex alignItems="center" gap={2} mb={1}>
-                                <Text minW="140px" textAlign="left">
+                                <Text minW="160px" textAlign="left">
                                   Bad Debt Repayer:
                                 </Text>
                                 <Flex alignItems="center" gap={1}>
                                   <Link
                                     href="https://etherscan.io/address/0xcB2b60bE903556668e8ac172e91a61aD1A2F7CD1"
                                     isExternal
-                                    color="blue.500"
+                                    color="black"
+                                    textDecoration="underline"
                                     wordBreak="break-all"
                                   >
                                     {abbreviateAddress(

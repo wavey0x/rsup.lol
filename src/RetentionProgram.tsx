@@ -493,7 +493,7 @@ function RetentionProgram() {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             style={{
-                                              color: "#3182ce",
+                                              color: "black",
                                               textDecoration: "underline",
                                             }}
                                           >
@@ -518,7 +518,7 @@ function RetentionProgram() {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             style={{
-                                              color: "#3182ce",
+                                              color: "black",
                                               textDecoration: "underline",
                                             }}
                                           >
@@ -618,7 +618,8 @@ function RetentionProgram() {
                                       <Link
                                         href="https://etherscan.io/address/0xB9415639618e70aBb71A0F4F8bbB2643Bf337892"
                                         isExternal
-                                        color="blue.500"
+                                        color="black"
+                                        textDecoration="underline"
                                         wordBreak="break-all"
                                       >
                                         {abbreviateAddress(
@@ -662,7 +663,8 @@ function RetentionProgram() {
                                       <Link
                                         href="https://etherscan.io/address/0x6E7D5dade33f76F480EA38E3c47f870de74906F1"
                                         isExternal
-                                        color="blue.500"
+                                        color="black"
+                                        textDecoration="underline"
                                         wordBreak="break-all"
                                       >
                                         {abbreviateAddress(
@@ -708,14 +710,14 @@ function RetentionProgram() {
                                       <Link
                                         href="https://gov.resupply.fi/t/resupply-recovery-plan-phase-2-activate-ip-retention-program/63"
                                         isExternal
-                                        color="blue.500"
+                                        color="black"
                                         textDecoration="underline"
                                       >
                                         governance proposal
                                       </Link>
                                       <ExternalLinkIcon
                                         boxSize={3}
-                                        color="blue.500"
+                                        color="black"
                                       />
                                     </Flex>
                                   </Flex>

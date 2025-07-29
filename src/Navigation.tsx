@@ -27,18 +27,25 @@ const pages = [
     name: "Authorizations",
     logo: "/hippo_auth.png",
   },
+  {
+    id: "yearnloan",
+    name: "Yearn Loan",
+    logo: "/hippo_blue.png",
+  },
 ];
 
 const PAGE_TO_PATH: { [key: string]: string } = {
   markets: "/markets",
   retention: "/retention",
   authorizations: "/authorizations",
+  yearnloan: "/yearnloan",
 };
 const PATH_TO_PAGE: { [key: string]: string } = {
   "/": "markets",
   "/markets": "markets",
   "/retention": "retention",
   "/authorizations": "authorizations",
+  "/yearnloan": "yearnloan",
 };
 
 export function Navigation() {
@@ -93,7 +100,10 @@ export function Navigation() {
           <Image
             src={currentPageData?.logo}
             alt={currentPageData?.name}
-            boxSize="64px"
+            h="64px"
+            w="auto"
+            maxW="64px"
+            objectFit="contain"
             mr={3}
           />
           <Text
@@ -145,7 +155,10 @@ export function Navigation() {
                     <Image
                       src={page.logo}
                       alt={page.name}
-                      boxSize="32px"
+                      h="32px"
+                      w="auto"
+                      maxW="32px"
+                      objectFit="contain"
                       mr={2}
                     />
                     <Text

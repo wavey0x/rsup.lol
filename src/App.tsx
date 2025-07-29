@@ -4,6 +4,7 @@ import { Navigation } from "./Navigation";
 import Markets from "./Markets.tsx";
 import RetentionProgram from "./RetentionProgram.tsx";
 import Authorizations from "./Authorizations.tsx";
+import YearnLoan from "./YearnLoan.tsx";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/markets" element={<Markets />} />
           <Route path="/retention" element={<RetentionProgram />} />
           <Route path="/authorizations" element={<Authorizations />} />
+          <Route path="/yearnloan" element={<YearnLoan />} />
           <Route path="*" element={<Navigate to="/markets" replace />} />
         </Routes>
       </BrowserRouter>

@@ -51,7 +51,7 @@ function formatDate(ts: number | string) {
   return `${mm}/${dd} ${hh}:${min}`;
 }
 
-function SimpleLineChart({ data }: { data: any[] }) {
+function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
   if (!data || data.length === 0) {
     return (
       <Box p={4} textAlign="center" color="gray.500" fontFamily="monospace">
@@ -150,23 +150,83 @@ function SimpleLineChart({ data }: { data: any[] }) {
       <Box display="flex" justifyContent="center">
         <svg width={width} height={height}>
           {/* Y-axis labels */}
-          {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
-            const y = height - padding - ratio * chartHeight;
-            const value = minAmount + ratio * amountRange;
-            return (
-              <text
-                key={i}
-                x={padding - 5}
-                y={y + 3}
-                fontSize="10px"
-                fontFamily="monospace"
-                textAnchor="end"
-                fill="#666"
-              >
-                {formatNumberWithAbbreviation(value)}
-              </text>
-            );
-          })}
+          {(() => {
+            // Generate rounder Y-axis values
+            const generateYValues = () => {
+              if (amountRange === 0) {
+                // If all values are the same, show just the value
+                return [minAmount];
+              }
+
+              const maxValue = maxAmount;
+              const minValue = Math.max(0, minAmount);
+
+              if (maxValue === minValue) return [maxValue];
+
+              // Calculate evenly spaced values between 0 and max
+              const range = maxValue - minValue;
+              const step = range / 4; // 4 intervals = 5 points (0, 1/4, 2/4, 3/4, 1)
+
+              // Function to find nearest round number
+              const findNearestRound = (value: number) => {
+                if (value === 0) return 0;
+
+                const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+                const normalized = value / magnitude;
+
+                // Find the nearest round number based on tab type
+                let roundValue;
+                if (tabType === "badDebt") {
+                  // Bad debt tab: prefer 3.5 and 7
+                  if (normalized <= 3.5) roundValue = 3.5;
+                  else if (normalized <= 7.5) roundValue = 7;
+                  else roundValue = 10;
+                } else {
+                  // Yearn loan tab: prefer 4 and 8
+                  if (normalized <= 4.5) roundValue = 4;
+                  else if (normalized <= 8.5) roundValue = 8;
+                  else roundValue = 10;
+                }
+
+                return roundValue * magnitude;
+              };
+
+              // Generate 5 evenly spaced values, then round them
+              const values = [];
+              for (let i = 0; i <= 4; i++) {
+                const exactValue = i * step;
+                const roundValue = findNearestRound(exactValue);
+                values.push(roundValue);
+              }
+
+              // Ensure we have unique values and include the max
+              const uniqueValues = [...new Set([...values, maxValue])].sort(
+                (a, b) => a - b
+              );
+              return uniqueValues;
+            };
+
+            const yValues = generateYValues();
+
+            return yValues.map((value, i) => {
+              const normalizedValue =
+                amountRange > 0 ? (value - minAmount) / amountRange : 0.5;
+              const y = height - padding - normalizedValue * chartHeight;
+              return (
+                <text
+                  key={i}
+                  x={padding - 5}
+                  y={y + 3}
+                  fontSize="10px"
+                  fontFamily="monospace"
+                  textAnchor="end"
+                  fill="#666"
+                >
+                  {formatNumberWithAbbreviation(value)}
+                </text>
+              );
+            });
+          })()}
 
           {/* Smooth line chart */}
           <path
@@ -545,7 +605,10 @@ function ProtocolDebt() {
                             </tbody>
                           </Box>
                         </Flex>
-                        <SimpleLineChart data={yearnLoanHistory} />
+                        <SimpleLineChart
+                          data={yearnLoanHistory}
+                          tabType="yearnLoan"
+                        />
                         {repayments.length > 0 ? (
                           <Box
                             overflowX="auto"
@@ -663,12 +726,12 @@ function ProtocolDebt() {
                                         whiteSpace="nowrap"
                                       >
                                         <Link
-                                          href={`https://etherscan.io/address/${repayment.payer}`}
+                                          href={`https://etherscan.io/address/${repayment.repayer}`}
                                           isExternal
                                           color="black"
                                           textDecoration="underline"
                                         >
-                                          {abbreviateAddress(repayment.payer)}
+                                          {abbreviateAddress(repayment.repayer)}
                                         </Link>
                                       </Td>
                                       <Td
@@ -856,7 +919,10 @@ function ProtocolDebt() {
                             </tbody>
                           </Box>
                         </Flex>
-                        <SimpleLineChart data={badDebtHistory} />
+                        <SimpleLineChart
+                          data={badDebtHistory}
+                          tabType="badDebt"
+                        />
                         {badDebtPayments.length > 0 ? (
                           <Box
                             overflowX="auto"

@@ -472,9 +472,10 @@ function ProtocolDebt() {
                                     fontFamily: "monospace",
                                     fontSize: "15px",
                                     whiteSpace: "nowrap",
+                                    minWidth: "120px",
                                   }}
                                 >
-                                  Remaining Yearn Debt:
+                                  Remaining:
                                 </td>
                                 <td
                                   style={{
@@ -510,9 +511,10 @@ function ProtocolDebt() {
                                     fontFamily: "monospace",
                                     fontSize: "15px",
                                     whiteSpace: "nowrap",
+                                    minWidth: "120px",
                                   }}
                                 >
-                                  Total Repaid:
+                                  Repaid:
                                 </td>
                                 <td
                                   style={{
@@ -781,9 +783,10 @@ function ProtocolDebt() {
                                     fontFamily: "monospace",
                                     fontSize: "15px",
                                     whiteSpace: "nowrap",
+                                    minWidth: "120px",
                                   }}
                                 >
-                                  Remaining Bad Debt:
+                                  Remaining:
                                 </td>
                                 <td
                                   style={{
@@ -819,9 +822,10 @@ function ProtocolDebt() {
                                     fontFamily: "monospace",
                                     fontSize: "15px",
                                     whiteSpace: "nowrap",
+                                    minWidth: "120px",
                                   }}
                                 >
-                                  Bad Debt Paid:
+                                  Repaid:
                                 </td>
                                 <td
                                   style={{

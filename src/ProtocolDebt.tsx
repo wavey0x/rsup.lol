@@ -51,7 +51,7 @@ function formatDate(ts: number | string) {
   return `${mm}/${dd} ${hh}:${min}`;
 }
 
-function SimpleLineChart({ data, title }: { data: any[]; title: string }) {
+function SimpleLineChart({ data }: { data: any[] }) {
   if (!data || data.length === 0) {
     return (
       <Box p={4} textAlign="center" color="gray.500" fontFamily="monospace">
@@ -193,7 +193,7 @@ function SimpleLineChart({ data, title }: { data: any[]; title: string }) {
   );
 }
 
-function YearnLoan() {
+function ProtocolDebt() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -274,6 +274,10 @@ function YearnLoan() {
     Number(data?.loan_repayment?.current_state?.remaining_bad_debt) || 0;
   const remainingYearnDebt =
     Number(data?.loan_repayment?.current_state?.remaining_debt) || 0;
+  const badDebtPaid =
+    Number(data?.loan_repayment?.current_state?.bad_debt_paid) || 0;
+  const totalRepaid =
+    Number(data?.loan_repayment?.current_state?.total_repaid) || 0;
 
   const topData = [
     {
@@ -285,6 +289,16 @@ function YearnLoan() {
       label: "Remaining Yearn Debt",
       value: `$${formatNumberWithAbbreviation(remainingYearnDebt)}`,
       fullValue: `$${Math.floor(remainingYearnDebt).toLocaleString()}`,
+    },
+    {
+      label: "Bad Debt Paid",
+      value: `$${formatNumberWithAbbreviation(badDebtPaid)}`,
+      fullValue: `$${Math.floor(badDebtPaid).toLocaleString()}`,
+    },
+    {
+      label: "Total Repaid",
+      value: `$${formatNumberWithAbbreviation(totalRepaid)}`,
+      fullValue: `$${Math.floor(totalRepaid).toLocaleString()}`,
     },
   ];
 
@@ -333,65 +347,6 @@ function YearnLoan() {
                 fontSize="md"
                 textAlign="center"
               >
-                {/* Top data display */}
-                <Flex
-                  direction="row"
-                  justify="center"
-                  align="center"
-                  mb={4}
-                  gap={4}
-                  wrap="wrap"
-                >
-                  <Box
-                    as="table"
-                    mx="auto"
-                    style={{ borderCollapse: "collapse" }}
-                  >
-                    <tbody>
-                      {topData.map((item, i) => (
-                        <tr key={i}>
-                          <td
-                            style={{
-                              textAlign: "right",
-                              padding: "2px 8px",
-                              fontFamily: "monospace",
-                              fontSize: "15px",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {item.label}
-                          </td>
-                          <td
-                            style={{
-                              textAlign: "left",
-                              padding: "2px 8px",
-                              fontFamily: "monospace",
-                              fontSize: "16px",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            <Tooltip
-                              label={item.fullValue}
-                              fontSize="xs"
-                              hasArrow
-                              placement="top"
-                              bg="gray.800"
-                              color="white"
-                              borderRadius="md"
-                              p={2}
-                              fontFamily="monospace"
-                            >
-                              <span style={{ cursor: "pointer" }}>
-                                {item.value}
-                              </span>
-                            </Tooltip>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Box>
-                </Flex>
-
                 <Box
                   width={{ base: "380px", md: "448px" }}
                   minWidth={{ base: "380px", md: "448px" }}
@@ -480,10 +435,100 @@ function YearnLoan() {
                     >
                       {/* Yearn Loan Tab */}
                       <TabPanel px={0} py={0}>
-                        <SimpleLineChart
-                          data={yearnLoanHistory}
-                          title="Yearn Loan History"
-                        />
+                        <Flex
+                          direction="row"
+                          justify="center"
+                          align="center"
+                          mb={2}
+                          gap={4}
+                          wrap="wrap"
+                        >
+                          <Box
+                            as="table"
+                            mx="auto"
+                            style={{ borderCollapse: "collapse" }}
+                          >
+                            <tbody>
+                              <tr>
+                                <td
+                                  style={{
+                                    textAlign: "right",
+                                    padding: "2px 8px",
+                                    fontFamily: "monospace",
+                                    fontSize: "15px",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  Remaining Yearn Debt:
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "left",
+                                    padding: "2px 8px",
+                                    fontFamily: "monospace",
+                                    fontSize: "16px",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  <Tooltip
+                                    label={topData[1].fullValue}
+                                    fontSize="xs"
+                                    hasArrow
+                                    placement="top"
+                                    bg="gray.800"
+                                    color="white"
+                                    borderRadius="md"
+                                    p={2}
+                                    fontFamily="monospace"
+                                  >
+                                    <span style={{ cursor: "pointer" }}>
+                                      {topData[1].value}
+                                    </span>
+                                  </Tooltip>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td
+                                  style={{
+                                    textAlign: "right",
+                                    padding: "2px 8px",
+                                    fontFamily: "monospace",
+                                    fontSize: "15px",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  Total Repaid:
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "left",
+                                    padding: "2px 8px",
+                                    fontFamily: "monospace",
+                                    fontSize: "16px",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  <Tooltip
+                                    label={topData[3].fullValue}
+                                    fontSize="xs"
+                                    hasArrow
+                                    placement="top"
+                                    bg="gray.800"
+                                    color="white"
+                                    borderRadius="md"
+                                    p={2}
+                                    fontFamily="monospace"
+                                  >
+                                    <span style={{ cursor: "pointer" }}>
+                                      {topData[3].value}
+                                    </span>
+                                  </Tooltip>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </Box>
+                        </Flex>
+                        <SimpleLineChart data={yearnLoanHistory} />
                         {repayments.length > 0 ? (
                           <Box
                             overflowX="auto"
@@ -702,10 +747,100 @@ function YearnLoan() {
 
                       {/* Bad Debt Tab */}
                       <TabPanel px={0} py={0}>
-                        <SimpleLineChart
-                          data={badDebtHistory}
-                          title="Bad Debt History"
-                        />
+                        <Flex
+                          direction="row"
+                          justify="center"
+                          align="center"
+                          mb={2}
+                          gap={4}
+                          wrap="wrap"
+                        >
+                          <Box
+                            as="table"
+                            mx="auto"
+                            style={{ borderCollapse: "collapse" }}
+                          >
+                            <tbody>
+                              <tr>
+                                <td
+                                  style={{
+                                    textAlign: "right",
+                                    padding: "2px 8px",
+                                    fontFamily: "monospace",
+                                    fontSize: "15px",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  Remaining Bad Debt:
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "left",
+                                    padding: "2px 8px",
+                                    fontFamily: "monospace",
+                                    fontSize: "16px",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  <Tooltip
+                                    label={topData[0].fullValue}
+                                    fontSize="xs"
+                                    hasArrow
+                                    placement="top"
+                                    bg="gray.800"
+                                    color="white"
+                                    borderRadius="md"
+                                    p={2}
+                                    fontFamily="monospace"
+                                  >
+                                    <span style={{ cursor: "pointer" }}>
+                                      {topData[0].value}
+                                    </span>
+                                  </Tooltip>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td
+                                  style={{
+                                    textAlign: "right",
+                                    padding: "2px 8px",
+                                    fontFamily: "monospace",
+                                    fontSize: "15px",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  Bad Debt Paid:
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "left",
+                                    padding: "2px 8px",
+                                    fontFamily: "monospace",
+                                    fontSize: "16px",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  <Tooltip
+                                    label={topData[2].fullValue}
+                                    fontSize="xs"
+                                    hasArrow
+                                    placement="top"
+                                    bg="gray.800"
+                                    color="white"
+                                    borderRadius="md"
+                                    p={2}
+                                    fontFamily="monospace"
+                                  >
+                                    <span style={{ cursor: "pointer" }}>
+                                      {topData[2].value}
+                                    </span>
+                                  </Tooltip>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </Box>
+                        </Flex>
+                        <SimpleLineChart data={badDebtHistory} />
                         {badDebtPayments.length > 0 ? (
                           <Box
                             overflowX="auto"
@@ -939,13 +1074,30 @@ function YearnLoan() {
                             fontSize="sm"
                           >
                             <Box w="100%">
-                              <Flex
-                                alignItems="center"
-                                justifyContent="space-between"
-                                gap={2}
-                                mb={1}
-                              >
-                                <Text minW="140px">Loan Repayer:</Text>
+                              <Text fontWeight="bold" mb={2} textAlign="center">
+                                Loan Terms
+                              </Text>
+                              <Flex alignItems="center" gap={2} mb={1}>
+                                <Text minW="140px" textAlign="left">
+                                  Principal:
+                                </Text>
+                                <Text>1.13M crvUSD</Text>
+                              </Flex>
+                              <Flex alignItems="center" gap={2} mb={3}>
+                                <Text minW="140px" textAlign="left">
+                                  Interest Rate:
+                                </Text>
+                                <Text>6% APR</Text>
+                              </Flex>
+                              <Box
+                                borderTop="1px solid"
+                                borderColor="gray.300"
+                                my={3}
+                              />
+                              <Flex alignItems="center" gap={2} mb={1}>
+                                <Text minW="140px" textAlign="left">
+                                  Loan Repayer:
+                                </Text>
                                 <Flex alignItems="center" gap={1}>
                                   <Link
                                     href="https://etherscan.io/address/0x4C0fFC2B96f3C6b048eF85d1A4744c8e36B5b6F6"
@@ -983,13 +1135,10 @@ function YearnLoan() {
                                   </Box>
                                 </Flex>
                               </Flex>
-                              <Flex
-                                alignItems="center"
-                                justifyContent="space-between"
-                                gap={2}
-                                mb={1}
-                              >
-                                <Text minW="140px">Loan Converter:</Text>
+                              <Flex alignItems="center" gap={2} mb={1}>
+                                <Text minW="140px" textAlign="left">
+                                  Loan Converter:
+                                </Text>
                                 <Flex alignItems="center" gap={1}>
                                   <Link
                                     href="https://etherscan.io/address/0xf4aA178D7096E207Dc899d556c57336795311D53"
@@ -1027,13 +1176,10 @@ function YearnLoan() {
                                   </Box>
                                 </Flex>
                               </Flex>
-                              <Flex
-                                alignItems="center"
-                                justifyContent="space-between"
-                                gap={2}
-                                mb={1}
-                              >
-                                <Text minW="140px">Bad Debt Repayer:</Text>
+                              <Flex alignItems="center" gap={2} mb={1}>
+                                <Text minW="140px" textAlign="left">
+                                  Bad Debt Repayer:
+                                </Text>
                                 <Flex alignItems="center" gap={1}>
                                   <Link
                                     href="https://etherscan.io/address/0xcB2b60bE903556668e8ac172e91a61aD1A2F7CD1"
@@ -1105,4 +1251,4 @@ function YearnLoan() {
   );
 }
 
-export default YearnLoan;
+export default ProtocolDebt;

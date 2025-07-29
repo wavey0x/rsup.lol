@@ -28,8 +28,8 @@ const pages = [
     logo: "/hippo_auth.png",
   },
   {
-    id: "yearnloan",
-    name: "Yearn Loan",
+    id: "protocoldebt",
+    name: "Protocol Debt",
     logo: "/hippo_blue.png",
   },
 ];
@@ -38,14 +38,14 @@ const PAGE_TO_PATH: { [key: string]: string } = {
   markets: "/markets",
   retention: "/retention",
   authorizations: "/authorizations",
-  yearnloan: "/yearnloan",
+  protocoldebt: "/protocoldebt",
 };
 const PATH_TO_PAGE: { [key: string]: string } = {
   "/": "markets",
   "/markets": "markets",
   "/retention": "retention",
   "/authorizations": "authorizations",
-  "/yearnloan": "yearnloan",
+  "/protocoldebt": "protocoldebt",
 };
 
 export function Navigation() {

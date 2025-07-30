@@ -76,7 +76,7 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
   const chartWidth = width - 2 * padding;
   const chartHeight = height - 2 * padding;
 
-  // Generate X-axis ticks every 15 days
+  // Generate X-axis ticks
   const generateXTicks = () => {
     if (sortedData.length === 0) return [];
 
@@ -86,43 +86,83 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
         ? new Date(sortedData[sortedData.length - 1].timestamp * 1000)
         : new Date(startDate.getTime() + 24 * 60 * 60 * 1000); // Add 1 day if only 1 point
 
+    const timeDiff = endDate.getTime() - startDate.getTime();
+    const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+
     const ticks = [];
 
-    let currentDate = new Date(startDate);
-    currentDate.setDate(currentDate.getDate() - (currentDate.getDate() % 15)); // Round down to nearest 15th
+    // If time range is small (less than 7 days), show daily ticks
+    if (daysDiff <= 7) {
+      let currentDate = new Date(startDate);
+      while (currentDate <= endDate) {
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        const month = monthNames[currentDate.getUTCMonth()];
+        const day = currentDate.getUTCDate();
 
-    while (currentDate <= endDate) {
-      const monthNames = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
-      const month = monthNames[currentDate.getMonth()];
-      const day = currentDate.getDate();
+        // Calculate position on chart
+        const currentTimeDiff = currentDate.getTime() - startDate.getTime();
+        const x = padding + (currentTimeDiff / timeDiff) * chartWidth;
 
-      // Calculate position on chart
-      const timeDiff = endDate.getTime() - startDate.getTime();
-      const currentTimeDiff = currentDate.getTime() - startDate.getTime();
-      const x = padding + (currentTimeDiff / timeDiff) * chartWidth;
+        if (x >= padding && x <= width - padding) {
+          ticks.push({
+            x,
+            label: `${month} ${day}`,
+            date: new Date(currentDate),
+          });
+        }
 
-      if (x >= padding && x <= width - padding) {
-        ticks.push({
-          x,
-          label: `${month} ${day}`,
-          date: new Date(currentDate),
-        });
+        currentDate.setDate(currentDate.getDate() + 1);
       }
+    } else {
+      // For longer ranges, use 15-day intervals
+      let currentDate = new Date(startDate);
+      currentDate.setDate(currentDate.getDate() - (currentDate.getDate() % 15));
 
-      currentDate.setDate(currentDate.getDate() + 15);
+      while (currentDate <= endDate) {
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        const month = monthNames[currentDate.getUTCMonth()];
+        const day = currentDate.getUTCDate();
+
+        // Calculate position on chart
+        const currentTimeDiff = currentDate.getTime() - startDate.getTime();
+        const x = padding + (currentTimeDiff / timeDiff) * chartWidth;
+
+        if (x >= padding && x <= width - padding) {
+          ticks.push({
+            x,
+            label: `${month} ${day}`,
+            date: new Date(currentDate),
+          });
+        }
+
+        currentDate.setDate(currentDate.getDate() + 15);
+      }
     }
 
     return ticks;
@@ -205,7 +245,14 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
               const uniqueValues = [...new Set([...values, maxValue])].sort(
                 (a, b) => a - b
               );
-              return uniqueValues;
+
+              // Adjust the range to reduce slack space above the highest point
+              const adjustedRange = maxValue * 1.05; // Add 5% to reduce slack
+              const adjustedValues = uniqueValues.map((value) =>
+                value === maxValue ? adjustedRange : value
+              );
+
+              return adjustedValues;
             };
 
             const yValues = generateYValues();
@@ -218,7 +265,7 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
                 <text
                   key={i}
                   x={padding - 5}
-                  y={y + 3}
+                  y={y + 4}
                   fontSize="10px"
                   fontFamily="monospace"
                   textAnchor="end"
@@ -516,7 +563,7 @@ function ProtocolDebt() {
                           direction="row"
                           justify="center"
                           align="center"
-                          mb={2}
+                          mb={1}
                           gap={4}
                           wrap="wrap"
                         >
@@ -529,10 +576,10 @@ function ProtocolDebt() {
                               <tr>
                                 <td
                                   style={{
-                                    textAlign: "right",
+                                    textAlign: "center",
                                     padding: "2px 8px",
                                     fontFamily: "monospace",
-                                    fontSize: "15px",
+                                    fontSize: "13px",
                                     whiteSpace: "nowrap",
                                     minWidth: "120px",
                                   }}
@@ -541,10 +588,10 @@ function ProtocolDebt() {
                                 </td>
                                 <td
                                   style={{
-                                    textAlign: "left",
+                                    textAlign: "center",
                                     padding: "2px 8px",
                                     fontFamily: "monospace",
-                                    fontSize: "16px",
+                                    fontSize: "14px",
                                     whiteSpace: "nowrap",
                                   }}
                                 >
@@ -858,7 +905,7 @@ function ProtocolDebt() {
                           direction="row"
                           justify="center"
                           align="center"
-                          mb={2}
+                          mb={1}
                           gap={4}
                           wrap="wrap"
                         >
@@ -871,10 +918,10 @@ function ProtocolDebt() {
                               <tr>
                                 <td
                                   style={{
-                                    textAlign: "right",
+                                    textAlign: "center",
                                     padding: "2px 8px",
                                     fontFamily: "monospace",
-                                    fontSize: "15px",
+                                    fontSize: "13px",
                                     whiteSpace: "nowrap",
                                     minWidth: "120px",
                                   }}
@@ -883,10 +930,10 @@ function ProtocolDebt() {
                                 </td>
                                 <td
                                   style={{
-                                    textAlign: "left",
+                                    textAlign: "center",
                                     padding: "2px 8px",
                                     fontFamily: "monospace",
-                                    fontSize: "16px",
+                                    fontSize: "14px",
                                     whiteSpace: "nowrap",
                                   }}
                                 >

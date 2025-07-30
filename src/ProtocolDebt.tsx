@@ -87,83 +87,43 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
         : new Date(startDate.getTime() + 24 * 60 * 60 * 1000); // Add 1 day if only 1 point
 
     const timeDiff = endDate.getTime() - startDate.getTime();
-    const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
 
-    const ticks = [];
+    const ticks: Array<{ x: number; label: string; date: Date }> = [];
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
 
-    // If time range is small (less than 7 days), show daily ticks
-    if (daysDiff <= 7) {
-      let currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        const monthNames = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-        const month = monthNames[currentDate.getUTCMonth()];
-        const day = currentDate.getUTCDate();
+    // Generate exactly 3 ticks: start, middle, end (with rightmost moved in)
+    const positions = [0, 0.5, 0.92];
 
-        // Calculate position on chart
-        const currentTimeDiff = currentDate.getTime() - startDate.getTime();
-        const x = padding + (currentTimeDiff / timeDiff) * chartWidth;
+    positions.forEach((position) => {
+      const currentTime = startDate.getTime() + position * timeDiff;
+      const currentDate = new Date(currentTime);
 
-        if (x >= padding && x <= width - padding) {
-          ticks.push({
-            x,
-            label: `${month} ${day}`,
-            date: new Date(currentDate),
-          });
-        }
+      const month = monthNames[currentDate.getUTCMonth()];
+      const day = currentDate.getUTCDate();
 
-        currentDate.setDate(currentDate.getDate() + 1);
+      const x = padding + position * chartWidth;
+
+      if (x >= padding && x <= width - padding) {
+        ticks.push({
+          x,
+          label: `${month} ${day}`,
+          date: currentDate,
+        });
       }
-    } else {
-      // For longer ranges, use 15-day intervals
-      let currentDate = new Date(startDate);
-      currentDate.setDate(currentDate.getDate() - (currentDate.getDate() % 15));
-
-      while (currentDate <= endDate) {
-        const monthNames = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-        const month = monthNames[currentDate.getUTCMonth()];
-        const day = currentDate.getUTCDate();
-
-        // Calculate position on chart
-        const currentTimeDiff = currentDate.getTime() - startDate.getTime();
-        const x = padding + (currentTimeDiff / timeDiff) * chartWidth;
-
-        if (x >= padding && x <= width - padding) {
-          ticks.push({
-            x,
-            label: `${month} ${day}`,
-            date: new Date(currentDate),
-          });
-        }
-
-        currentDate.setDate(currentDate.getDate() + 15);
-      }
-    }
+    });
 
     return ticks;
   };

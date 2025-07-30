@@ -78,12 +78,14 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
 
   // Generate X-axis ticks every 15 days
   const generateXTicks = () => {
-    if (sortedData.length < 2) return [];
+    if (sortedData.length === 0) return [];
 
     const startDate = new Date(sortedData[0].timestamp * 1000);
-    const endDate = new Date(
-      sortedData[sortedData.length - 1].timestamp * 1000
-    );
+    const endDate =
+      sortedData.length > 1
+        ? new Date(sortedData[sortedData.length - 1].timestamp * 1000)
+        : new Date(startDate.getTime() + 24 * 60 * 60 * 1000); // Add 1 day if only 1 point
+
     const ticks = [];
 
     let currentDate = new Date(startDate);
@@ -563,45 +565,6 @@ function ProtocolDebt() {
                                   </Tooltip>
                                 </td>
                               </tr>
-                              <tr>
-                                <td
-                                  style={{
-                                    textAlign: "right",
-                                    padding: "2px 8px",
-                                    fontFamily: "monospace",
-                                    fontSize: "15px",
-                                    whiteSpace: "nowrap",
-                                    minWidth: "120px",
-                                  }}
-                                >
-                                  Repaid:
-                                </td>
-                                <td
-                                  style={{
-                                    textAlign: "left",
-                                    padding: "2px 8px",
-                                    fontFamily: "monospace",
-                                    fontSize: "16px",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  <Tooltip
-                                    label={topData[3].fullValue}
-                                    fontSize="xs"
-                                    hasArrow
-                                    placement="top"
-                                    bg="gray.800"
-                                    color="white"
-                                    borderRadius="md"
-                                    p={2}
-                                    fontFamily="monospace"
-                                  >
-                                    <span style={{ cursor: "pointer" }}>
-                                      {topData[3].value}
-                                    </span>
-                                  </Tooltip>
-                                </td>
-                              </tr>
                             </tbody>
                           </Box>
                         </Flex>
@@ -778,6 +741,73 @@ function ProtocolDebt() {
                                     </Tr>
                                   )
                                 )}
+                                {/* Total row for Yearn Loan repayments */}
+                                <Tr>
+                                  <Td
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="left"
+                                    px={2}
+                                    py={0}
+                                    minWidth="85px"
+                                    maxWidth="85px"
+                                    overflow="hidden"
+                                    whiteSpace="nowrap"
+                                    fontWeight="bold"
+                                  >
+                                    Total:
+                                  </Td>
+                                  <Td
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="left"
+                                    px={2}
+                                    py={0}
+                                    minWidth="83px"
+                                    maxWidth="83px"
+                                    overflow="hidden"
+                                    whiteSpace="nowrap"
+                                    fontWeight="bold"
+                                  >
+                                    -
+                                  </Td>
+                                  <Td
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="left"
+                                    px={2}
+                                    py={0}
+                                    minWidth="83px"
+                                    maxWidth="83px"
+                                    overflow="hidden"
+                                    whiteSpace="nowrap"
+                                    fontWeight="bold"
+                                  >
+                                    -
+                                  </Td>
+                                  <Td
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="sm"
+                                    textAlign="right"
+                                    px={2}
+                                    py={0}
+                                    minWidth="93px"
+                                    maxWidth="93px"
+                                    overflow="hidden"
+                                    whiteSpace="nowrap"
+                                    fontWeight="bold"
+                                  >
+                                    {Math.floor(totalRepaid).toLocaleString()}
+                                  </Td>
+                                </Tr>
                               </Tbody>
                             </Table>
                             {repaymentsPageCount > 1 && (
@@ -873,45 +903,6 @@ function ProtocolDebt() {
                                   >
                                     <span style={{ cursor: "pointer" }}>
                                       {topData[0].value}
-                                    </span>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td
-                                  style={{
-                                    textAlign: "right",
-                                    padding: "2px 8px",
-                                    fontFamily: "monospace",
-                                    fontSize: "15px",
-                                    whiteSpace: "nowrap",
-                                    minWidth: "120px",
-                                  }}
-                                >
-                                  Repaid:
-                                </td>
-                                <td
-                                  style={{
-                                    textAlign: "left",
-                                    padding: "2px 8px",
-                                    fontFamily: "monospace",
-                                    fontSize: "16px",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  <Tooltip
-                                    label={topData[2].fullValue}
-                                    fontSize="xs"
-                                    hasArrow
-                                    placement="top"
-                                    bg="gray.800"
-                                    color="white"
-                                    borderRadius="md"
-                                    p={2}
-                                    fontFamily="monospace"
-                                  >
-                                    <span style={{ cursor: "pointer" }}>
-                                      {topData[2].value}
                                     </span>
                                   </Tooltip>
                                 </td>
@@ -1090,6 +1081,73 @@ function ProtocolDebt() {
                                     </Td>
                                   </Tr>
                                 ))}
+                                {/* Total row for Bad Debt payments */}
+                                <Tr>
+                                  <Td
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="left"
+                                    px={2}
+                                    py={0}
+                                    minWidth="85px"
+                                    maxWidth="85px"
+                                    overflow="hidden"
+                                    whiteSpace="nowrap"
+                                    fontWeight="bold"
+                                  >
+                                    Total:
+                                  </Td>
+                                  <Td
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="left"
+                                    px={2}
+                                    py={0}
+                                    minWidth="83px"
+                                    maxWidth="83px"
+                                    overflow="hidden"
+                                    whiteSpace="nowrap"
+                                    fontWeight="bold"
+                                  >
+                                    -
+                                  </Td>
+                                  <Td
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="left"
+                                    px={2}
+                                    py={0}
+                                    minWidth="83px"
+                                    maxWidth="83px"
+                                    overflow="hidden"
+                                    whiteSpace="nowrap"
+                                    fontWeight="bold"
+                                  >
+                                    -
+                                  </Td>
+                                  <Td
+                                    fontFamily="monospace"
+                                    color="black"
+                                    borderColor="black"
+                                    fontSize="sm"
+                                    textAlign="right"
+                                    px={2}
+                                    py={0}
+                                    minWidth="93px"
+                                    maxWidth="93px"
+                                    overflow="hidden"
+                                    whiteSpace="nowrap"
+                                    fontWeight="bold"
+                                  >
+                                    {Math.floor(badDebtPaid).toLocaleString()}
+                                  </Td>
+                                </Tr>
                               </Tbody>
                             </Table>
                             {badDebtPageCount > 1 && (

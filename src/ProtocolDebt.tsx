@@ -316,6 +316,17 @@ function ProtocolDebt() {
     (page + 1) * PAGE_SIZE
   );
 
+  // Calculate sums for currently visible rows
+  const pagedBadDebtSum = pagedBadDebt.reduce((sum: number, payment: any) => {
+    return sum + (Number(payment.amount) || 0);
+  }, 0);
+  const pagedRepaymentsSum = pagedRepayments.reduce(
+    (sum: number, repayment: any) => {
+      return sum + (Number(repayment.amount) || 0);
+    },
+    0
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -812,7 +823,9 @@ function ProtocolDebt() {
                                     whiteSpace="nowrap"
                                     fontWeight="bold"
                                   >
-                                    {Math.floor(totalRepaid).toLocaleString()}
+                                    {Math.floor(
+                                      pagedRepaymentsSum
+                                    ).toLocaleString()}
                                   </Td>
                                 </Tr>
                               </Tbody>
@@ -1152,7 +1165,9 @@ function ProtocolDebt() {
                                     whiteSpace="nowrap"
                                     fontWeight="bold"
                                   >
-                                    {Math.floor(badDebtPaid).toLocaleString()}
+                                    {Math.floor(
+                                      pagedBadDebtSum
+                                    ).toLocaleString()}
                                   </Td>
                                 </Tr>
                               </Tbody>

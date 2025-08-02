@@ -374,6 +374,30 @@ function ProtocolDebt() {
   const totalRepaid =
     Number(data?.loan_repayment?.current_state?.total_repaid) || 0;
 
+  // Custom format function for Yearn Debt with extra precision
+  const formatYearnDebt = (value: number): string => {
+    if (value === 0) return "0";
+
+    const absValue = Math.abs(value);
+    const suffixes = ["", "k", "M", "B", "T"];
+    const suffixIndex = Math.min(
+      Math.floor(Math.log10(absValue) / 3),
+      suffixes.length - 1
+    );
+
+    const scaledValue = value / Math.pow(1000, suffixIndex);
+
+    if (suffixIndex === 0) {
+      // For numbers less than 1000, show with 1 decimal place
+      return scaledValue.toFixed(1);
+    } else {
+      // For larger numbers, show 4 digits total (3 + 1 extra decimal)
+      const digits = Math.floor(Math.log10(Math.abs(scaledValue))) + 1;
+      const decimals = Math.max(0, 4 - digits);
+      return scaledValue.toFixed(decimals) + suffixes[suffixIndex];
+    }
+  };
+
   const topData = [
     {
       label: "Remaining Bad Debt",
@@ -382,7 +406,7 @@ function ProtocolDebt() {
     },
     {
       label: "Remaining Yearn Debt",
-      value: `$${formatNumberWithAbbreviation(remainingYearnDebt)}`,
+      value: `$${formatYearnDebt(remainingYearnDebt)}`,
       fullValue: `$${Math.floor(remainingYearnDebt).toLocaleString()}`,
     },
     {

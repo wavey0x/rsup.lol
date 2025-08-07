@@ -355,12 +355,6 @@ function ProtocolDebt() {
   const pagedBadDebtSum = pagedBadDebt.reduce((sum: number, payment: any) => {
     return sum + (Number(payment.amount) || 0);
   }, 0);
-  const pagedRepaymentsSum = pagedRepayments.reduce(
-    (sum: number, repayment: any) => {
-      return sum + (Number(repayment.amount) || 0);
-    },
-    0
-  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -408,6 +402,10 @@ function ProtocolDebt() {
     Number(data?.loan_repayment?.current_state?.bad_debt_paid) || 0;
   const totalRepaid =
     Number(data?.loan_repayment?.current_state?.total_repaid) || 0;
+
+  // Calculate percentage of remaining debt against total loan obligation
+  const remainingYearnDebtPercentage =
+    (remainingYearnDebt / (remainingYearnDebt + totalRepaid)) * 100;
 
   // Custom format function for Yearn Debt with extra precision
   const formatYearnDebt = (value: number): string => {
@@ -625,21 +623,31 @@ function ProtocolDebt() {
                                     whiteSpace: "nowrap",
                                   }}
                                 >
-                                  <Tooltip
-                                    label={topData[1].fullValue}
-                                    fontSize="xs"
-                                    hasArrow
-                                    placement="top"
-                                    bg="gray.800"
-                                    color="white"
-                                    borderRadius="md"
-                                    p={2}
-                                    fontFamily="monospace"
-                                  >
-                                    <span style={{ cursor: "pointer" }}>
-                                      {topData[1].value}
-                                    </span>
-                                  </Tooltip>
+                                  <Flex alignItems="center" gap={2}>
+                                    <Tooltip
+                                      label={topData[1].fullValue}
+                                      fontSize="xs"
+                                      hasArrow
+                                      placement="top"
+                                      bg="gray.800"
+                                      color="white"
+                                      borderRadius="md"
+                                      p={2}
+                                      fontFamily="monospace"
+                                    >
+                                      <span style={{ cursor: "pointer" }}>
+                                        {topData[1].value}
+                                      </span>
+                                    </Tooltip>
+                                    <Text
+                                      fontSize="xs"
+                                      color="gray.600"
+                                      fontFamily="monospace"
+                                    >
+                                      ({remainingYearnDebtPercentage.toFixed(1)}
+                                      %)
+                                    </Text>
+                                  </Flex>
                                 </td>
                               </tr>
                             </tbody>
@@ -834,7 +842,7 @@ function ProtocolDebt() {
                                     whiteSpace="nowrap"
                                     fontWeight="bold"
                                   >
-                                    Total:
+                                    Total Repaid:
                                   </Td>
                                   <Td
                                     fontFamily="monospace"
@@ -879,12 +887,13 @@ function ProtocolDebt() {
                                     minWidth="93px"
                                     maxWidth="93px"
                                     overflow="hidden"
-                                    whiteSpace="nowrap"
+                                    whiteSpace={{
+                                      base: "normal",
+                                      md: "nowrap",
+                                    }}
                                     fontWeight="bold"
                                   >
-                                    {Math.floor(
-                                      pagedRepaymentsSum
-                                    ).toLocaleString()}
+                                    {Math.floor(totalRepaid).toLocaleString()}
                                   </Td>
                                 </Tr>
                               </Tbody>

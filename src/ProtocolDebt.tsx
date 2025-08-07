@@ -130,22 +130,62 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
 
   const xTicks = generateXTicks();
 
-  // Create SVG path for the line
-  const points = sortedData.map((point, index) => {
-    const x =
-      padding + (index / Math.max(sortedData.length - 1, 1)) * chartWidth;
-    let normalizedAmount;
-    if (amountRange > 0) {
-      normalizedAmount = (Number(point.amount) - minAmount) / amountRange;
-    } else {
-      // If all values are the same, show a horizontal line in the middle
-      normalizedAmount = 0.5;
-    }
-    const y = height - padding - normalizedAmount * chartHeight;
-    return `${x},${y}`;
-  });
+  // Create SVG path for step chart (sharp vertical changes)
+  const createStepPath = () => {
+    if (sortedData.length === 0) return "";
 
-  const pathData = points.length > 0 ? `M ${points.join(" L ")}` : "";
+    const pathSegments: string[] = [];
+
+    for (let i = 0; i < sortedData.length; i++) {
+      const point = sortedData[i];
+      const x = padding + (i / Math.max(sortedData.length - 1, 1)) * chartWidth;
+
+      let normalizedAmount;
+      if (amountRange > 0) {
+        normalizedAmount = (Number(point.amount) - minAmount) / amountRange;
+      } else {
+        // If all values are the same, show a horizontal line in the middle
+        normalizedAmount = 0.5;
+      }
+      const y = height - padding - normalizedAmount * chartHeight;
+
+      if (i === 0) {
+        // First point: move to position
+        pathSegments.push(`M ${x},${y}`);
+      } else {
+        // For step chart: draw horizontal line to current x, then vertical line to new y
+        const prevPoint = sortedData[i - 1];
+        const prevX =
+          padding + ((i - 1) / Math.max(sortedData.length - 1, 1)) * chartWidth;
+
+        // Horizontal line to current x position
+        pathSegments.push(`L ${x},${y}`);
+      }
+
+      // If this is the last point, we're done
+      if (i === sortedData.length - 1) {
+        break;
+      }
+
+      // For step chart: draw vertical line to next y position
+      const nextPoint = sortedData[i + 1];
+      let nextNormalizedAmount;
+      if (amountRange > 0) {
+        nextNormalizedAmount =
+          (Number(nextPoint.amount) - minAmount) / amountRange;
+      } else {
+        nextNormalizedAmount = 0.5;
+      }
+      const nextY = height - padding - nextNormalizedAmount * chartHeight;
+
+      // Vertical line to next y position
+      pathSegments.push(`L ${x},${nextY}`);
+    }
+
+    return pathSegments.join(" ");
+  };
+
+  const pathData = createStepPath();
 
   return (
     <Box mb={4} p={2}>
@@ -237,14 +277,14 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
             });
           })()}
 
-          {/* Smooth line chart */}
+          {/* Step chart with sharp vertical changes */}
           <path
             d={pathData}
             stroke="#4a5568"
             strokeWidth="2"
             fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            strokeLinecap="butt"
+            strokeLinejoin="miter"
           />
 
           {/* X-axis line */}

@@ -153,11 +153,6 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
         // First point: move to position
         pathSegments.push(`M ${x},${y}`);
       } else {
-        // For step chart: draw horizontal line to current x, then vertical line to new y
-        const prevPoint = sortedData[i - 1];
-        const prevX =
-          padding + ((i - 1) / Math.max(sortedData.length - 1, 1)) * chartWidth;
-
         // Horizontal line to current x position
         pathSegments.push(`L ${x},${y}`);
       }

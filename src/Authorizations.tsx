@@ -179,7 +179,7 @@ function Authorizations() {
                           bg: "white",
                           color: "black",
                           fontWeight: "bold",
-                          borderBottom: "2px solid white",
+                          borderBottom: "none",
                         }}
                         px={0}
                         py={1}
@@ -199,7 +199,7 @@ function Authorizations() {
                           bg: "white",
                           color: "black",
                           fontWeight: "bold",
-                          borderBottom: "2px solid white",
+                          borderBottom: "none",
                         }}
                         px={0}
                         py={1}
@@ -217,7 +217,7 @@ function Authorizations() {
                             w="100%"
                             minWidth={{ base: "380px", md: "448px" }}
                             width={{ base: "100%", md: "auto" }}
-                            mt={1}
+                            mt={0}
                           >
                             <Table
                               variant="simple"

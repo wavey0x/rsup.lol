@@ -183,9 +183,9 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
   const pathData = createStepPath();
 
   return (
-    <Box mb={4} p={2}>
+    <Box mb={4} p={4} bg="white" border="1px solid" borderColor="gray.100" borderRadius="lg" boxShadow="0 2px 4px rgba(0, 0, 0, 0.02)">
       <Box display="flex" justifyContent="center">
-        <svg width={width} height={height}>
+        <svg width={width} height={height} style={{ background: '#fafafa', borderRadius: '8px' }}>
           {/* Y-axis labels */}
           {(() => {
             // Generate rounder Y-axis values
@@ -264,7 +264,7 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
                   fontSize="10px"
                   fontFamily="monospace"
                   textAnchor="end"
-                  fill="#666"
+                  fill="#475569"
                 >
                   {formatNumberWithAbbreviation(value)}
                 </text>
@@ -272,24 +272,70 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
             });
           })()}
 
+          {/* Grid lines for better readability */}
+          {(() => {
+            const gridLines = [];
+            // Vertical grid lines
+            for (let i = 1; i < 4; i++) {
+              const x = padding + (i / 4) * chartWidth;
+              gridLines.push(
+                <line
+                  key={`v-${i}`}
+                  x1={x}
+                  y1={padding}
+                  x2={x}
+                  y2={height - padding}
+                  stroke="#e2e8f0"
+                  strokeWidth="0.5"
+                  opacity="0.6"
+                />
+              );
+            }
+            // Horizontal grid lines
+            for (let i = 1; i < 4; i++) {
+              const y = padding + (i / 4) * chartHeight;
+              gridLines.push(
+                <line
+                  key={`h-${i}`}
+                  x1={padding}
+                  y1={y}
+                  x2={width - padding}
+                  y2={y}
+                  stroke="#e2e8f0"
+                  strokeWidth="0.5"
+                  opacity="0.6"
+                />
+              );
+            }
+            return gridLines;
+          })()}
+
           {/* Step chart with sharp vertical changes */}
           <path
             d={pathData}
-            stroke="#4a5568"
+            stroke="black"
             strokeWidth="2"
             fill="none"
-            strokeLinecap="butt"
-            strokeLinejoin="miter"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
 
-          {/* X-axis line */}
+          {/* Chart axes */}
           <line
             x1={padding}
             y1={height - padding}
             x2={width - padding}
             y2={height - padding}
-            stroke="#e2e8f0"
-            strokeWidth="1"
+            stroke="#94a3b8"
+            strokeWidth="1.5"
+          />
+          <line
+            x1={padding}
+            y1={padding}
+            x2={padding}
+            y2={height - padding}
+            stroke="#94a3b8"
+            strokeWidth="1.5"
           />
 
           {/* X-axis labels */}
@@ -301,7 +347,7 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
               fontSize="10px"
               fontFamily="monospace"
               textAnchor="middle"
-              fill="#666"
+              fill="#475569"
             >
               {tick.label}
             </text>

@@ -71,15 +71,15 @@ export function Navigation() {
     <Box
       ref={navRef}
       position="fixed"
-      top={2}
+      top={4}
       left="50%"
       transform="translateX(-50%)"
       zIndex={1000}
       bg="white"
-      borderRadius="lg"
-      boxShadow="lg"
+      borderRadius={isOpen ? "xl xl 0 0" : "xl"}
+      boxShadow="0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1)"
       border="1px solid"
-      borderColor="gray.200"
+      borderColor="gray.150"
       w="360px"
       minW="360px"
       maxW="360px"
@@ -88,14 +88,15 @@ export function Navigation() {
         {/* Active page display */}
         <Flex
           align="center"
-          py={3}
-          px={3}
+          py={4}
+          px={4}
           cursor="pointer"
           onClick={onToggle}
-          _hover={{ bg: "gray.50" }}
-          borderRadius="lg"
+          _hover={{ bg: "gray.25" }}
+          borderRadius={isOpen ? "xl xl 0 0" : "xl"}
           w="100%"
           position="relative"
+          transition="background-color 0.15s ease"
         >
           <Image
             src={currentPageData?.logo}
@@ -110,20 +111,21 @@ export function Navigation() {
           <Text
             fontFamily="monospace"
             fontSize="lg"
-            fontWeight="bold"
-            color="gray.800"
+            fontWeight="semibold"
+            color="gray.900"
             textAlign="center"
             flex="1"
+            letterSpacing="-0.025em"
           >
             {currentPageData?.name}
           </Text>
           <ChevronDownIcon
             boxSize={5}
-            color="gray.500"
+            color="gray.400"
             position="absolute"
-            right="12px"
+            right="14px"
             transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
-            transition="transform 0.2s"
+            transition="all 0.2s ease"
           />
         </Flex>
 
@@ -132,9 +134,10 @@ export function Navigation() {
           <Box
             bg="white"
             borderTop="1px solid"
-            borderColor="gray.200"
-            borderRadius="0 0 lg lg"
+            borderColor="gray.150"
+            borderRadius="0"
             overflow="hidden"
+            mt={1}
           >
             <VStack spacing={0} align="stretch">
               {pages
@@ -144,17 +147,19 @@ export function Navigation() {
                     key={page.id}
                     align="center"
                     py={3}
-                    px={2}
+                    px={3}
                     cursor="pointer"
                     onClick={() => {
                       navigate(PAGE_TO_PATH[page.id]);
                       onToggle();
                     }}
-                    _hover={{ bg: "gray.50" }}
+                    _hover={{ bg: "gray.50", transform: "translateX(2px)" }}
                     borderBottom="1px solid"
                     borderColor="gray.100"
                     w="100%"
                     position="relative"
+                    transition="all 0.15s ease"
+                    _last={{ borderBottom: "none" }}
                   >
                     <Image
                       src={page.logo}
@@ -169,9 +174,10 @@ export function Navigation() {
                     <Text
                       fontFamily="monospace"
                       fontSize="sm"
-                      color="gray.600"
+                      color="gray.700"
                       textAlign="center"
                       flex="1"
+                      fontWeight="medium"
                     >
                       {page.name}
                     </Text>

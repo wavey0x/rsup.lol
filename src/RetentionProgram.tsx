@@ -22,7 +22,7 @@ import {
   Tab,
   ChakraProvider,
 } from "@chakra-ui/react";
-import { InfoIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import { customTheme } from "./Markets";
@@ -71,7 +71,6 @@ function RetentionProgram() {
     null
   );
   const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
-  const [showAprBreakdown, setShowAprBreakdown] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
@@ -125,75 +124,19 @@ function RetentionProgram() {
     {
       label: "Expected APR",
       value: data ? (
-        <>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              color: "#000",
-              fontSize: "16px",
-            }}
-          >
-            <Text as="span" fontWeight="bold" color="green.500">
-              {totalApr.toFixed(2)}%
+        <Flex justify="flex-end" align="center" gap={3}>
+          <Text fontWeight="bold" color="green.500" fontSize="lg">
+            {totalApr.toFixed(2)}%
+          </Text>
+          <Box textAlign="right">
+            <Text fontSize="xs" color="gray.600" lineHeight="1">
+              <span style={{ fontSize: '8px', marginRight: '4px', color: 'black' }}>BASE</span>{baseApr.toFixed(2)}%
             </Text>
-            <Box
-              as="span"
-              position="relative"
-              ml={1}
-              display="inline-block"
-              onMouseEnter={() => setShowAprBreakdown(true)}
-              onMouseLeave={() => setShowAprBreakdown(false)}
-            >
-              <InfoIcon
-                boxSize="13px"
-                color="black"
-                cursor="pointer"
-                _hover={{ color: "gray.500" }}
-                mt="-2px"
-              />
-              {showAprBreakdown && (
-                <Box
-                  position="absolute"
-                  top="100%"
-                  left="50%"
-                  transform="translateX(-50%)"
-                  mt={-1}
-                  bg="gray.800"
-                  color="white"
-                  borderRadius="md"
-                  px={3}
-                  py={2}
-                  maxW="220px"
-                  zIndex={1000}
-                  fontFamily="monospace"
-                  fontSize="xs"
-                  boxShadow="lg"
-                  textAlign="left"
-                >
-                  <div>{baseApr.toFixed(2)}% base apr</div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      color: "#fff",
-                    }}
-                  >
-                    <span>{retentionApr.toFixed(2)}% ❤️ retention program</span>
-                    <span
-                      style={{
-                        fontSize: "15px",
-                        marginLeft: 4,
-                        color: "#e53935",
-                      }}
-                    ></span>
-                  </div>
-                </Box>
-              )}
-            </Box>
-          </span>
-        </>
+            <Text fontSize="xs" color="gray.600" lineHeight="1">
+              <span style={{ fontSize: '6px', marginRight: '2px', verticalAlign: 'middle' }}>❤️</span>{retentionApr.toFixed(2)}%
+            </Text>
+          </Box>
+        </Flex>
       ) : (
         "-"
       ),
@@ -201,26 +144,28 @@ function RetentionProgram() {
     {
       label: "Eligible Remaining",
       value: (
-        <>
-          {Math.floor(remaining).toLocaleString()}
-          <span style={{ fontSize: "12px" }}>
-            {" "}
+        <Box textAlign="right">
+          <Text fontSize="sm">
+            {Math.floor(remaining).toLocaleString()}
+          </Text>
+          <Text fontSize="xs" color="gray.600" lineHeight="1">
             ({remainingPct.toFixed(2)}%)
-          </span>
-        </>
+          </Text>
+        </Box>
       ),
       smallLabel: true,
     },
     {
       label: "Eligible Withdrawn",
       value: (
-        <>
-          {Math.floor(withdrawn).toLocaleString()}
-          <span style={{ fontSize: "12px" }}>
-            {" "}
+        <Box textAlign="right">
+          <Text fontSize="sm">
+            {Math.floor(withdrawn).toLocaleString()}
+          </Text>
+          <Text fontSize="xs" color="gray.600" lineHeight="1">
             ({withdrawnPct.toFixed(2)}%)
-          </span>
-        </>
+          </Text>
+        </Box>
       ),
       smallLabel: true,
     },
@@ -277,49 +222,64 @@ function RetentionProgram() {
                 fontSize="md"
                 textAlign="center"
               >
-                <Flex
-                  direction="row"
-                  justify="center"
-                  align="center"
+                <Box
+                  bg="white"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  borderRadius="xl"
+                  boxShadow="0 2px 8px rgba(0, 0, 0, 0.04)"
+                  px={2}
+                  py={2}
                   mb={4}
-                  gap={4}
-                  wrap="wrap"
+                  maxW="400px"
+                  mx="auto"
                 >
-                  <Box
-                    as="table"
-                    mx="auto"
-                    style={{ borderCollapse: "collapse" }}
-                  >
-                    <tbody>
-                      {topData.map((item, i) => (
-                        <tr key={i}>
-                          <td
-                            style={{
-                              textAlign: "right",
-                              padding: "2px 8px",
-                              fontFamily: "monospace",
-                              fontSize: item.smallLabel ? "14px" : "15px",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {item.label}
-                          </td>
-                          <td
-                            style={{
-                              textAlign: "left",
-                              padding: "2px 8px",
-                              fontFamily: "monospace",
-                              fontSize: "16px",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {item.value}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Box>
-                </Flex>
+                  <Flex direction="column" spacing={0}>
+                    {/* APR Row */}
+                    <Flex justify="space-between" align="center" py={0.5}>
+                      <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">
+                        Total APR
+                      </Text>
+                      <Text fontFamily="monospace" fontSize="sm" color="green.500" fontWeight="bold" textAlign="left" minW="80px">
+                        {data ? totalApr.toFixed(2) : "-"}%
+                      </Text>
+                      <Box textAlign="right" minW="80px">
+                        <Text fontSize="xs" color="gray.600" lineHeight="1">
+                          <span style={{ fontSize: '8px', marginRight: '2px', color: 'black' }}>BASE</span>{data ? baseApr.toFixed(2) : "-"}%
+                        </Text>
+                        <Text fontSize="xs" color="gray.600" lineHeight="1">
+                          <span style={{ fontSize: '6px', marginRight: '1px', verticalAlign: 'middle' }}>❤️</span>{data ? retentionApr.toFixed(2) : "-"}%
+                        </Text>
+                      </Box>
+                    </Flex>
+                    
+                    {/* Remaining Row */}
+                    <Flex justify="space-between" align="center" py={0.5}>
+                      <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">
+                        Eligible Remaining
+                      </Text>
+                      <Text fontFamily="monospace" fontSize="sm" color="black" textAlign="right" minW="80px">
+                        {Math.floor(remaining).toLocaleString()}
+                      </Text>
+                      <Text fontFamily="monospace" fontSize="xs" color="gray.600" textAlign="right" minW="80px">
+                        {remainingPct.toFixed(2)}%
+                      </Text>
+                    </Flex>
+                    
+                    {/* Withdrawn Row */}
+                    <Flex justify="space-between" align="center" py={0.5}>
+                      <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">
+                        Eligible Withdrawn
+                      </Text>
+                      <Text fontFamily="monospace" fontSize="sm" color="black" textAlign="right" minW="80px">
+                        {Math.floor(withdrawn).toLocaleString()}
+                      </Text>
+                      <Text fontFamily="monospace" fontSize="xs" color="gray.600" textAlign="right" minW="80px">
+                        {withdrawnPct.toFixed(2)}%
+                      </Text>
+                    </Flex>
+                  </Flex>
+                </Box>
                 {feed.length > 0 && (
                   <Box w="100%" minWidth="0">
                     <Box minWidth="374px" width="auto" mx="auto">

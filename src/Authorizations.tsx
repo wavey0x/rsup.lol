@@ -29,6 +29,11 @@ import { customTheme } from "./Markets";
 function abbreviateAddress(addr: string) {
   return addr ? `${addr.slice(0, 5)}..${addr.slice(-3)}` : "";
 }
+
+function abbreviateName(name: string) {
+  if (!name || name.length <= 10) return name;
+  return `${name.slice(0, 5)}..${name.slice(-3)}`;
+}
 // Helper to extract function name (before parens)
 function getFunctionName(signature: string) {
   if (!signature) return "";
@@ -238,7 +243,7 @@ function Authorizations() {
                                     color="black"
                                     borderColor="black"
                                     fontSize="xs"
-                                    textAlign="center"
+                                    textAlign="left"
                                     px={2}
                                     py={0}
                                     minWidth="70px"
@@ -252,7 +257,7 @@ function Authorizations() {
                                     color="black"
                                     borderColor="black"
                                     fontSize="xs"
-                                    textAlign="center"
+                                    textAlign="left"
                                     px={2}
                                     py={0}
                                     minWidth="83px"
@@ -266,7 +271,7 @@ function Authorizations() {
                                     color="black"
                                     borderColor="black"
                                     fontSize="xs"
-                                    textAlign="center"
+                                    textAlign="left"
                                     px={2}
                                     py={0}
                                     minWidth="83px"
@@ -280,7 +285,7 @@ function Authorizations() {
                                     color="black"
                                     borderColor="black"
                                     fontSize="xs"
-                                    textAlign="center"
+                                    textAlign="left"
                                     px={2}
                                     py={0}
                                     minWidth="60px"
@@ -436,7 +441,7 @@ function Authorizations() {
                                     </Td>
                                     <Td
                                       fontFamily="monospace"
-                                      textAlign="center"
+                                      textAlign="left"
                                       fontSize="xs"
                                     >
                                       {auth.target === ADDRESS_ZERO ? (
@@ -447,14 +452,15 @@ function Authorizations() {
                                           isExternal
                                           color="black"
                                           textDecoration="underline"
+                                          title={auth.target_name ? `${auth.target_name}\n${auth.target}` : auth.target}
                                         >
-                                          {abbreviateAddress(auth.target)}
+                                          {auth.target_name ? abbreviateName(auth.target_name) : abbreviateAddress(auth.target)}
                                         </Link>
                                       )}
                                     </Td>
                                     <Td
                                       fontFamily="monospace"
-                                      textAlign="center"
+                                      textAlign="left"
                                       fontSize="xs"
                                     >
                                       <Link
@@ -462,13 +468,14 @@ function Authorizations() {
                                         isExternal
                                         color="black"
                                         textDecoration="underline"
+                                        title={auth.caller_name ? `${auth.caller_name}\n${auth.caller}` : auth.caller}
                                       >
-                                        {abbreviateAddress(auth.caller)}
+                                        {auth.caller_name ? abbreviateName(auth.caller_name) : abbreviateAddress(auth.caller)}
                                       </Link>
                                     </Td>
                                     <Td
                                       fontFamily="monospace"
-                                      textAlign="center"
+                                      textAlign="left"
                                       fontSize="xs"
                                       minWidth="60px"
                                       maxWidth="60px"
@@ -486,6 +493,7 @@ function Authorizations() {
                                           isExternal
                                           color="black"
                                           textDecoration="underline"
+                                          title={auth.auth_hook}
                                         >
                                           {abbreviateAddress(auth.auth_hook)}
                                         </Link>

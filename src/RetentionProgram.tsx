@@ -175,7 +175,7 @@ function RetentionProgram() {
                 <Box
                   bg="white"
                   border="1px solid"
-                  borderColor="gray.200"
+                  borderColor="black"
                   borderRadius="xl"
                   boxShadow="0 2px 8px rgba(0, 0, 0, 0.04)"
                   px={2}
@@ -241,7 +241,7 @@ function RetentionProgram() {
                 </Box>
                 {feed.length > 0 && (
                   <Box w="100%" minWidth="0">
-                    <Box minWidth="374px" width="auto" mx="auto">
+                    <Box minWidth={{ base: "380px", md: "448px" }} width={{ base: "380px", md: "448px" }} mx="auto">
                       <Tabs variant="unstyled" align="center" mb={0} mt={0}>
                         <TabList
                           display="flex"
@@ -250,8 +250,8 @@ function RetentionProgram() {
                           overflow="hidden"
                           p={0}
                           m={0}
-                          minWidth="374px"
-                          width="auto"
+                          minWidth={{ base: "380px", md: "448px" }}
+                          width={{ base: "380px", md: "448px" }}
                         >
                           <Tab
                             fontFamily="monospace"
@@ -306,8 +306,8 @@ function RetentionProgram() {
                                 borderWidth="1px"
                                 borderColor="black"
                                 borderTopWidth={0}
-                                minWidth="374px"
-                                width="auto"
+                                minWidth={{ base: "380px", md: "448px" }}
+                                width={{ base: "380px", md: "448px" }}
                                 style={{
                                   textAlign: "center",
                                   fontSize: "13px",
@@ -511,8 +511,8 @@ function RetentionProgram() {
                               border="1px solid black"
                               borderTopWidth={0}
                               borderRadius="0 0 10px 10px"
-                              minWidth="374px"
-                              width="auto"
+                              minWidth={{ base: "380px", md: "448px" }}
+                              width={{ base: "380px", md: "448px" }}
                               px={4}
                               py={3}
                               bg="white"

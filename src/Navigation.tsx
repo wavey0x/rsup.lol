@@ -80,9 +80,9 @@ export function Navigation() {
       boxShadow="0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1)"
       border="1px solid"
       borderColor="gray.150"
-      w="360px"
-      minW="360px"
-      maxW="360px"
+      w={{ base: "380px", md: "448px" }}
+      minW={{ base: "380px", md: "448px" }}
+      maxW={{ base: "380px", md: "448px" }}
     >
       <Flex direction="column">
         {/* Active page display */}

@@ -120,56 +120,6 @@ function RetentionProgram() {
   const retentionApr = Number(data?.apr) * 100 || 0;
   const totalApr = baseApr + retentionApr;
 
-  const topData = [
-    {
-      label: "Expected APR",
-      value: data ? (
-        <Flex justify="flex-end" align="center" gap={3}>
-          <Text fontWeight="bold" color="green.500" fontSize="lg">
-            {totalApr.toFixed(2)}%
-          </Text>
-          <Box textAlign="right">
-            <Text fontSize="xs" color="gray.600" lineHeight="1">
-              <span style={{ fontSize: '8px', marginRight: '4px', color: 'black' }}>BASE</span>{baseApr.toFixed(2)}%
-            </Text>
-            <Text fontSize="xs" color="gray.600" lineHeight="1">
-              <span style={{ fontSize: '6px', marginRight: '2px', verticalAlign: 'middle' }}>❤️</span>{retentionApr.toFixed(2)}%
-            </Text>
-          </Box>
-        </Flex>
-      ) : (
-        "-"
-      ),
-    },
-    {
-      label: "Eligible Remaining",
-      value: (
-        <Box textAlign="right">
-          <Text fontSize="sm">
-            {Math.floor(remaining).toLocaleString()}
-          </Text>
-          <Text fontSize="xs" color="gray.600" lineHeight="1">
-            ({remainingPct.toFixed(2)}%)
-          </Text>
-        </Box>
-      ),
-      smallLabel: true,
-    },
-    {
-      label: "Eligible Withdrawn",
-      value: (
-        <Box textAlign="right">
-          <Text fontSize="sm">
-            {Math.floor(withdrawn).toLocaleString()}
-          </Text>
-          <Text fontSize="xs" color="gray.600" lineHeight="1">
-            ({withdrawnPct.toFixed(2)}%)
-          </Text>
-        </Box>
-      ),
-      smallLabel: true,
-    },
-  ];
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address);
@@ -234,7 +184,7 @@ function RetentionProgram() {
                   maxW="400px"
                   mx="auto"
                 >
-                  <Flex direction="column" spacing={0}>
+                  <Flex direction="column">
                     {/* APR Row */}
                     <Flex justify="space-between" align="center" py={0.5}>
                       <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">

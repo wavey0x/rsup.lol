@@ -240,9 +240,11 @@ function RetentionProgram() {
                       <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">
                         Total APR
                       </Text>
-                      <Text fontFamily="monospace" fontSize="sm" color="green.500" fontWeight="bold" textAlign="left" minW="80px">
-                        {data ? totalApr.toFixed(2) : "-"}%
-                      </Text>
+                      <Box minW="80px" display="flex" alignItems="center">
+                        <Text fontFamily="monospace" fontSize="sm" color="green.500" fontWeight="bold" textAlign="left">
+                          {data ? totalApr.toFixed(2) : "-"}%
+                        </Text>
+                      </Box>
                       <Box textAlign="right" minW="80px">
                         <Text fontSize="xs" color="gray.600" lineHeight="1">
                           <span style={{ fontSize: '8px', marginRight: '2px', color: 'black' }}>BASE</span>{data ? baseApr.toFixed(2) : "-"}%
@@ -253,14 +255,19 @@ function RetentionProgram() {
                       </Box>
                     </Flex>
                     
+                    {/* Subtle separator */}
+                    <Box w="100%" h="1px" bg="gray.200" my={1} />
+                    
                     {/* Remaining Row */}
                     <Flex justify="space-between" align="center" py={0.5}>
                       <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">
                         Eligible Remaining
                       </Text>
-                      <Text fontFamily="monospace" fontSize="sm" color="black" textAlign="right" minW="80px">
-                        {Math.floor(remaining).toLocaleString()}
-                      </Text>
+                      <Box minW="80px" display="flex" alignItems="center">
+                        <Text fontFamily="monospace" fontSize="xs" color="black" textAlign="left">
+                          {Math.floor(remaining).toLocaleString()}
+                        </Text>
+                      </Box>
                       <Text fontFamily="monospace" fontSize="xs" color="gray.600" textAlign="right" minW="80px">
                         {remainingPct.toFixed(2)}%
                       </Text>
@@ -271,9 +278,11 @@ function RetentionProgram() {
                       <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">
                         Eligible Withdrawn
                       </Text>
-                      <Text fontFamily="monospace" fontSize="sm" color="black" textAlign="right" minW="80px">
-                        {Math.floor(withdrawn).toLocaleString()}
-                      </Text>
+                      <Box minW="80px" display="flex" alignItems="center">
+                        <Text fontFamily="monospace" fontSize="xs" color="black" textAlign="left">
+                          {Math.floor(withdrawn).toLocaleString()}
+                        </Text>
+                      </Box>
                       <Text fontFamily="monospace" fontSize="xs" color="gray.600" textAlign="right" minW="80px">
                         {withdrawnPct.toFixed(2)}%
                       </Text>

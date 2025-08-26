@@ -136,7 +136,7 @@ function RetentionProgram() {
         minH="0"
         w="100vw"
         bg="white"
-        pt={24}
+        pt={32}
         mt={8}
         mb={0}
       >
@@ -175,7 +175,7 @@ function RetentionProgram() {
                 <Box
                   bg="white"
                   border="1px solid"
-                  borderColor="black"
+                  borderColor="gray.200"
                   borderRadius="xl"
                   boxShadow="0 2px 8px rgba(0, 0, 0, 0.04)"
                   px={2}

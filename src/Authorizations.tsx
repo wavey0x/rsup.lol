@@ -31,8 +31,8 @@ function abbreviateAddress(addr: string) {
 }
 
 function abbreviateName(name: string) {
-  if (!name || name.length <= 10) return name;
-  return `${name.slice(0, 5)}..${name.slice(-3)}`;
+  if (!name || name.length <= 13) return name;
+  return `${name.slice(0, 8)}..${name.slice(-3)}`;
 }
 // Helper to extract function name (before parens)
 function getFunctionName(signature: string) {
@@ -61,6 +61,7 @@ function Authorizations() {
   const [openSelectorTooltip, setOpenSelectorTooltip] = useState<number | null>(
     null
   );
+  const [tooltipPosition, setTooltipPosition] = useState<{x: number, y: number} | null>(null);
   const PAGE_SIZE = 20;
   const [page, setPage] = useState(0);
   const activeAuths = Array.isArray(data?.authorizations?.active)
@@ -214,6 +215,7 @@ function Authorizations() {
                         data.authorizations.active.length > 0 ? (
                           <Box
                             overflowX="auto"
+                            overflowY="visible"
                             w="100%"
                             minWidth={{ base: "380px", md: "448px" }}
                             width={{ base: "100%", md: "auto" }}
@@ -246,8 +248,8 @@ function Authorizations() {
                                     textAlign="left"
                                     px={2}
                                     py={0}
-                                    minWidth="70px"
-                                    maxWidth="70px"
+                                    minWidth="120px"
+                                    maxWidth="120px"
                                     whiteSpace="nowrap"
                                   >
                                     Selector
@@ -260,8 +262,8 @@ function Authorizations() {
                                     textAlign="left"
                                     px={2}
                                     py={0}
-                                    minWidth="83px"
-                                    maxWidth="83px"
+                                    minWidth="85px"
+                                    maxWidth="85px"
                                     whiteSpace="nowrap"
                                   >
                                     Target
@@ -274,8 +276,8 @@ function Authorizations() {
                                     textAlign="left"
                                     px={2}
                                     py={0}
-                                    minWidth="83px"
-                                    maxWidth="83px"
+                                    minWidth="85px"
+                                    maxWidth="85px"
                                     whiteSpace="nowrap"
                                   >
                                     Caller
@@ -288,8 +290,8 @@ function Authorizations() {
                                     textAlign="left"
                                     px={2}
                                     py={0}
-                                    minWidth="60px"
-                                    maxWidth="60px"
+                                    minWidth="43px"
+                                    maxWidth="43px"
                                     whiteSpace="nowrap"
                                   >
                                     Hook
@@ -303,6 +305,13 @@ function Authorizations() {
                                       fontFamily="monospace"
                                       textAlign="left"
                                       style={{ position: "relative" }}
+                                      minWidth="120px"
+                                      maxWidth="120px"
+                                      overflow="hidden"
+                                      textOverflow="ellipsis"
+                                      whiteSpace="nowrap"
+                                      px={2}
+                                      py={1}
                                     >
                                       {Array.isArray(auth.selector) &&
                                       auth.selector[1] ? (
@@ -314,9 +323,11 @@ function Authorizations() {
                                             display: "inline-block",
                                           }}
                                           data-selector-tooltip-anchor
-                                          onMouseEnter={() =>
-                                            setOpenSelectorTooltip(i)
-                                          }
+                                          onMouseEnter={(e) => {
+                                            setOpenSelectorTooltip(i);
+                                            const rect = e.currentTarget.getBoundingClientRect();
+                                            setTooltipPosition({x: rect.left, y: rect.bottom + 2});
+                                          }}
                                           onMouseLeave={() =>
                                             setOpenSelectorTooltip((cur) =>
                                               cur === i ? null : cur
@@ -326,13 +337,12 @@ function Authorizations() {
                                           {truncateSelectorName(
                                             getFunctionName(auth.selector[1])
                                           )}
-                                          {openSelectorTooltip === i && (
+                                          {openSelectorTooltip === i && tooltipPosition && (
                                             <Box
-                                              position="absolute"
-                                              top="100%"
-                                              left={0}
-                                              mt={-1}
-                                              zIndex={2000}
+                                              position="fixed"
+                                              left={`${tooltipPosition.x}px`}
+                                              top={`${tooltipPosition.y}px`}
+                                              zIndex={9999}
                                               bg="gray.800"
                                               color="white"
                                               borderRadius="md"
@@ -348,9 +358,10 @@ function Authorizations() {
                                               onMouseEnter={() =>
                                                 setOpenSelectorTooltip(i)
                                               }
-                                              onMouseLeave={() =>
-                                                setOpenSelectorTooltip(null)
-                                              }
+                                              onMouseLeave={() => {
+                                                setOpenSelectorTooltip(null);
+                                                setTooltipPosition(null);
+                                              }}
                                             >
                                               {auth.selector[1] && (
                                                 <Box>{auth.selector[1]}</Box>
@@ -360,7 +371,7 @@ function Authorizations() {
                                                 <Link
                                                   href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
                                                   isExternal
-                                                  color="black"
+                                                  color="white"
                                                   textDecoration="underline"
                                                   fontSize="xs"
                                                   fontFamily="monospace"
@@ -381,9 +392,11 @@ function Authorizations() {
                                             display: "inline-block",
                                           }}
                                           data-selector-tooltip-anchor
-                                          onMouseEnter={() =>
-                                            setOpenSelectorTooltip(i)
-                                          }
+                                          onMouseEnter={(e) => {
+                                            setOpenSelectorTooltip(i);
+                                            const rect = e.currentTarget.getBoundingClientRect();
+                                            setTooltipPosition({x: rect.left, y: rect.bottom + 2});
+                                          }}
                                           onMouseLeave={() =>
                                             setOpenSelectorTooltip((cur) =>
                                               cur === i ? null : cur
@@ -393,13 +406,12 @@ function Authorizations() {
                                           {truncateSelectorName(
                                             auth.selector[0]
                                           )}
-                                          {openSelectorTooltip === i && (
+                                          {openSelectorTooltip === i && tooltipPosition && (
                                             <Box
-                                              position="absolute"
-                                              top="100%"
-                                              left={0}
-                                              mt={-1}
-                                              zIndex={2000}
+                                              position="fixed"
+                                              left={`${tooltipPosition.x}px`}
+                                              top={`${tooltipPosition.y}px`}
+                                              zIndex={9999}
                                               bg="gray.800"
                                               color="white"
                                               borderRadius="md"
@@ -415,16 +427,17 @@ function Authorizations() {
                                               onMouseEnter={() =>
                                                 setOpenSelectorTooltip(i)
                                               }
-                                              onMouseLeave={() =>
-                                                setOpenSelectorTooltip(null)
-                                              }
+                                              onMouseLeave={() => {
+                                                setOpenSelectorTooltip(null);
+                                                setTooltipPosition(null);
+                                              }}
                                             >
                                               <Box>{auth.selector[0]}</Box>
                                               <Box mt={1}>
                                                 <Link
                                                   href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
                                                   isExternal
-                                                  color="black"
+                                                  color="white"
                                                   textDecoration="underline"
                                                   fontSize="xs"
                                                   fontFamily="monospace"
@@ -443,6 +456,13 @@ function Authorizations() {
                                       fontFamily="monospace"
                                       textAlign="left"
                                       fontSize="xs"
+                                      minWidth="85px"
+                                      maxWidth="85px"
+                                      overflow="hidden"
+                                      textOverflow="ellipsis"
+                                      whiteSpace="nowrap"
+                                      px={2}
+                                      py={1}
                                     >
                                       {auth.target === ADDRESS_ZERO ? (
                                         <span>*</span>
@@ -462,6 +482,13 @@ function Authorizations() {
                                       fontFamily="monospace"
                                       textAlign="left"
                                       fontSize="xs"
+                                      minWidth="85px"
+                                      maxWidth="85px"
+                                      overflow="hidden"
+                                      textOverflow="ellipsis"
+                                      whiteSpace="nowrap"
+                                      px={2}
+                                      py={1}
                                     >
                                       <Link
                                         href={`https://etherscan.io/address/${auth.caller}`}
@@ -477,13 +504,15 @@ function Authorizations() {
                                       fontFamily="monospace"
                                       textAlign="left"
                                       fontSize="xs"
-                                      minWidth="60px"
-                                      maxWidth="60px"
+                                      minWidth="43px"
+                                      maxWidth="43px"
                                       style={{
                                         overflow: "hidden",
                                         textOverflow: "ellipsis",
                                         whiteSpace: "nowrap",
                                       }}
+                                      px={2}
+                                      py={1}
                                     >
                                       {auth.auth_hook === ADDRESS_ZERO ? (
                                         <span>None</span>

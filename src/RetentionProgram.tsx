@@ -136,7 +136,7 @@ function RetentionProgram() {
         minH="0"
         w="100vw"
         bg="white"
-        pt={32}
+        pt={20}
         mt={8}
         mb={0}
       >

@@ -25,7 +25,7 @@ import {
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
-import { customTheme } from "./Markets";
+import { customTheme } from "./theme";
 import { CopyIcon, CheckIcon } from "@chakra-ui/icons";
 
 const PAGE_SIZE = 15;
@@ -120,7 +120,6 @@ function RetentionProgram() {
   const retentionApr = Number(data?.apr) * 100 || 0;
   const totalApr = baseApr + retentionApr;
 
-
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address);
     setCopied(address);
@@ -187,53 +186,117 @@ function RetentionProgram() {
                   <Flex direction="column">
                     {/* APR Row */}
                     <Flex justify="space-between" align="center" py={0.5}>
-                      <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">
+                      <Text
+                        fontFamily="monospace"
+                        fontSize="xs"
+                        color="black"
+                        w="135px"
+                        textAlign="left"
+                      >
                         Total APR
                       </Text>
                       <Box minW="80px" display="flex" alignItems="center">
-                        <Text fontFamily="monospace" fontSize="sm" color="green.500" fontWeight="bold" textAlign="left">
+                        <Text
+                          fontFamily="monospace"
+                          fontSize="sm"
+                          color="green.500"
+                          fontWeight="bold"
+                          textAlign="left"
+                        >
                           {data ? totalApr.toFixed(2) : "-"}%
                         </Text>
                       </Box>
                       <Box textAlign="right" minW="80px">
                         <Text fontSize="xs" color="gray.600" lineHeight="1">
-                          <span style={{ fontSize: '8px', marginRight: '2px', color: 'black' }}>BASE</span>{data ? baseApr.toFixed(2) : "-"}%
+                          <span
+                            style={{
+                              fontSize: "8px",
+                              marginRight: "2px",
+                              color: "black",
+                            }}
+                          >
+                            BASE
+                          </span>
+                          {data ? baseApr.toFixed(2) : "-"}%
                         </Text>
                         <Text fontSize="xs" color="gray.600" lineHeight="1">
-                          <span style={{ fontSize: '6px', marginRight: '1px', verticalAlign: 'middle' }}>❤️</span>{data ? retentionApr.toFixed(2) : "-"}%
+                          <span
+                            style={{
+                              fontSize: "6px",
+                              marginRight: "1px",
+                              verticalAlign: "middle",
+                            }}
+                          >
+                            ❤️
+                          </span>
+                          {data ? retentionApr.toFixed(2) : "-"}%
                         </Text>
                       </Box>
                     </Flex>
-                    
+
                     {/* Subtle separator */}
                     <Box w="100%" h="1px" bg="gray.200" my={1} />
-                    
+
                     {/* Remaining Row */}
                     <Flex justify="space-between" align="center" py={0.5}>
-                      <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">
+                      <Text
+                        fontFamily="monospace"
+                        fontSize="xs"
+                        color="black"
+                        w="135px"
+                        textAlign="left"
+                      >
                         Eligible Remaining
                       </Text>
                       <Box minW="80px" display="flex" alignItems="center">
-                        <Text fontFamily="monospace" fontSize="xs" color="black" textAlign="left">
+                        <Text
+                          fontFamily="monospace"
+                          fontSize="xs"
+                          color="black"
+                          textAlign="left"
+                        >
                           {Math.floor(remaining).toLocaleString()}
                         </Text>
                       </Box>
-                      <Text fontFamily="monospace" fontSize="xs" color="gray.600" textAlign="right" minW="80px">
+                      <Text
+                        fontFamily="monospace"
+                        fontSize="xs"
+                        color="gray.600"
+                        textAlign="right"
+                        minW="80px"
+                      >
                         {remainingPct.toFixed(2)}%
                       </Text>
                     </Flex>
-                    
+
                     {/* Withdrawn Row */}
                     <Flex justify="space-between" align="center" py={0.5}>
-                      <Text fontFamily="monospace" fontSize="xs" color="black" w="135px" textAlign="left">
+                      <Text
+                        fontFamily="monospace"
+                        fontSize="xs"
+                        color="black"
+                        w="135px"
+                        textAlign="left"
+                      >
                         Eligible Withdrawn
                       </Text>
                       <Box minW="80px" display="flex" alignItems="center">
-                        <Text fontFamily="monospace" fontSize="xs" color="black" textAlign="left">
+                        <Text
+                          fontFamily="monospace"
+                          fontSize="xs"
+                          color="black"
+                          textAlign="left"
+                        >
                           {Math.floor(withdrawn).toLocaleString()}
                         </Text>
                       </Box>
-                      <Text fontFamily="monospace" fontSize="xs" color="gray.600" textAlign="right" minW="80px">
+                      <Text
+                        fontFamily="monospace"
+                        fontSize="xs"
+                        color="gray.600"
+                        textAlign="right"
+                        minW="80px"
+                      >
                         {withdrawnPct.toFixed(2)}%
                       </Text>
                     </Flex>
@@ -241,7 +304,11 @@ function RetentionProgram() {
                 </Box>
                 {feed.length > 0 && (
                   <Box w="100%" minWidth="0">
-                    <Box minWidth={{ base: "380px", md: "448px" }} width={{ base: "380px", md: "448px" }} mx="auto">
+                    <Box
+                      minWidth={{ base: "380px", md: "448px" }}
+                      width={{ base: "380px", md: "448px" }}
+                      mx="auto"
+                    >
                       <Tabs variant="unstyled" align="center" mb={0} mt={0}>
                         <TabList
                           display="flex"

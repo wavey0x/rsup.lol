@@ -24,7 +24,7 @@ import {
 } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
-import { customTheme } from "./Markets";
+import { customTheme } from "./theme";
 
 function abbreviateAddress(addr: string) {
   return addr ? `${addr.slice(0, 5)}..${addr.slice(-3)}` : "";
@@ -61,7 +61,10 @@ function Authorizations() {
   const [openSelectorTooltip, setOpenSelectorTooltip] = useState<number | null>(
     null
   );
-  const [tooltipPosition, setTooltipPosition] = useState<{x: number, y: number} | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const PAGE_SIZE = 20;
   const [page, setPage] = useState(0);
   const activeAuths = Array.isArray(data?.authorizations?.active)
@@ -110,11 +113,11 @@ function Authorizations() {
         direction="column"
         align="center"
         justify="flex-start"
-        minH="0"
-        w="100vw"
+        minH="100vh"
+        w="100%"
         bg="white"
         pt={24}
-        mt={8}
+        mt={0}
         mb={0}
       >
         <Container
@@ -325,8 +328,12 @@ function Authorizations() {
                                           data-selector-tooltip-anchor
                                           onMouseEnter={(e) => {
                                             setOpenSelectorTooltip(i);
-                                            const rect = e.currentTarget.getBoundingClientRect();
-                                            setTooltipPosition({x: rect.left, y: rect.bottom + 2});
+                                            const rect =
+                                              e.currentTarget.getBoundingClientRect();
+                                            setTooltipPosition({
+                                              x: rect.left,
+                                              y: rect.bottom + 2,
+                                            });
                                           }}
                                           onMouseLeave={() =>
                                             setOpenSelectorTooltip((cur) =>
@@ -337,50 +344,51 @@ function Authorizations() {
                                           {truncateSelectorName(
                                             getFunctionName(auth.selector[1])
                                           )}
-                                          {openSelectorTooltip === i && tooltipPosition && (
-                                            <Box
-                                              position="fixed"
-                                              left={`${tooltipPosition.x}px`}
-                                              top={`${tooltipPosition.y}px`}
-                                              zIndex={9999}
-                                              bg="gray.800"
-                                              color="white"
-                                              borderRadius="md"
-                                              px={3}
-                                              py={2}
-                                              fontFamily="monospace"
-                                              fontSize="xs"
-                                              boxShadow="lg"
-                                              textAlign="left"
-                                              minW="220px"
-                                              maxW="260px"
-                                              pointerEvents="auto"
-                                              onMouseEnter={() =>
-                                                setOpenSelectorTooltip(i)
-                                              }
-                                              onMouseLeave={() => {
-                                                setOpenSelectorTooltip(null);
-                                                setTooltipPosition(null);
-                                              }}
-                                            >
-                                              {auth.selector[1] && (
-                                                <Box>{auth.selector[1]}</Box>
-                                              )}
-                                              <Box>{auth.selector[0]}</Box>
-                                              <Box mt={1}>
-                                                <Link
-                                                  href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
-                                                  isExternal
-                                                  color="white"
-                                                  textDecoration="underline"
-                                                  fontSize="xs"
-                                                  fontFamily="monospace"
-                                                >
-                                                  4byte.directory ↗
-                                                </Link>
+                                          {openSelectorTooltip === i &&
+                                            tooltipPosition && (
+                                              <Box
+                                                position="fixed"
+                                                left={`${tooltipPosition.x}px`}
+                                                top={`${tooltipPosition.y}px`}
+                                                zIndex={9999}
+                                                bg="gray.800"
+                                                color="white"
+                                                borderRadius="md"
+                                                px={3}
+                                                py={2}
+                                                fontFamily="monospace"
+                                                fontSize="xs"
+                                                boxShadow="lg"
+                                                textAlign="left"
+                                                minW="220px"
+                                                maxW="260px"
+                                                pointerEvents="auto"
+                                                onMouseEnter={() =>
+                                                  setOpenSelectorTooltip(i)
+                                                }
+                                                onMouseLeave={() => {
+                                                  setOpenSelectorTooltip(null);
+                                                  setTooltipPosition(null);
+                                                }}
+                                              >
+                                                {auth.selector[1] && (
+                                                  <Box>{auth.selector[1]}</Box>
+                                                )}
+                                                <Box>{auth.selector[0]}</Box>
+                                                <Box mt={1}>
+                                                  <Link
+                                                    href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
+                                                    isExternal
+                                                    color="white"
+                                                    textDecoration="underline"
+                                                    fontSize="xs"
+                                                    fontFamily="monospace"
+                                                  >
+                                                    4byte.directory ↗
+                                                  </Link>
+                                                </Box>
                                               </Box>
-                                            </Box>
-                                          )}
+                                            )}
                                         </span>
                                       ) : Array.isArray(auth.selector) &&
                                         auth.selector[0] ? (
@@ -394,8 +402,12 @@ function Authorizations() {
                                           data-selector-tooltip-anchor
                                           onMouseEnter={(e) => {
                                             setOpenSelectorTooltip(i);
-                                            const rect = e.currentTarget.getBoundingClientRect();
-                                            setTooltipPosition({x: rect.left, y: rect.bottom + 2});
+                                            const rect =
+                                              e.currentTarget.getBoundingClientRect();
+                                            setTooltipPosition({
+                                              x: rect.left,
+                                              y: rect.bottom + 2,
+                                            });
                                           }}
                                           onMouseLeave={() =>
                                             setOpenSelectorTooltip((cur) =>
@@ -406,47 +418,48 @@ function Authorizations() {
                                           {truncateSelectorName(
                                             auth.selector[0]
                                           )}
-                                          {openSelectorTooltip === i && tooltipPosition && (
-                                            <Box
-                                              position="fixed"
-                                              left={`${tooltipPosition.x}px`}
-                                              top={`${tooltipPosition.y}px`}
-                                              zIndex={9999}
-                                              bg="gray.800"
-                                              color="white"
-                                              borderRadius="md"
-                                              px={3}
-                                              py={2}
-                                              fontFamily="monospace"
-                                              fontSize="xs"
-                                              boxShadow="lg"
-                                              textAlign="left"
-                                              minW="220px"
-                                              maxW="260px"
-                                              pointerEvents="auto"
-                                              onMouseEnter={() =>
-                                                setOpenSelectorTooltip(i)
-                                              }
-                                              onMouseLeave={() => {
-                                                setOpenSelectorTooltip(null);
-                                                setTooltipPosition(null);
-                                              }}
-                                            >
-                                              <Box>{auth.selector[0]}</Box>
-                                              <Box mt={1}>
-                                                <Link
-                                                  href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
-                                                  isExternal
-                                                  color="white"
-                                                  textDecoration="underline"
-                                                  fontSize="xs"
-                                                  fontFamily="monospace"
-                                                >
-                                                  4byte.directory ↗
-                                                </Link>
+                                          {openSelectorTooltip === i &&
+                                            tooltipPosition && (
+                                              <Box
+                                                position="fixed"
+                                                left={`${tooltipPosition.x}px`}
+                                                top={`${tooltipPosition.y}px`}
+                                                zIndex={9999}
+                                                bg="gray.800"
+                                                color="white"
+                                                borderRadius="md"
+                                                px={3}
+                                                py={2}
+                                                fontFamily="monospace"
+                                                fontSize="xs"
+                                                boxShadow="lg"
+                                                textAlign="left"
+                                                minW="220px"
+                                                maxW="260px"
+                                                pointerEvents="auto"
+                                                onMouseEnter={() =>
+                                                  setOpenSelectorTooltip(i)
+                                                }
+                                                onMouseLeave={() => {
+                                                  setOpenSelectorTooltip(null);
+                                                  setTooltipPosition(null);
+                                                }}
+                                              >
+                                                <Box>{auth.selector[0]}</Box>
+                                                <Box mt={1}>
+                                                  <Link
+                                                    href={`https://www.4byte.directory/signatures/?bytes4_signature=${auth.selector[0]}`}
+                                                    isExternal
+                                                    color="white"
+                                                    textDecoration="underline"
+                                                    fontSize="xs"
+                                                    fontFamily="monospace"
+                                                  >
+                                                    4byte.directory ↗
+                                                  </Link>
+                                                </Box>
                                               </Box>
-                                            </Box>
-                                          )}
+                                            )}
                                         </span>
                                       ) : (
                                         <span>-</span>
@@ -472,9 +485,15 @@ function Authorizations() {
                                           isExternal
                                           color="black"
                                           textDecoration="underline"
-                                          title={auth.target_name ? `${auth.target_name}\n${auth.target}` : auth.target}
+                                          title={
+                                            auth.target_name
+                                              ? `${auth.target_name}\n${auth.target}`
+                                              : auth.target
+                                          }
                                         >
-                                          {auth.target_name ? abbreviateName(auth.target_name) : abbreviateAddress(auth.target)}
+                                          {auth.target_name
+                                            ? abbreviateName(auth.target_name)
+                                            : abbreviateAddress(auth.target)}
                                         </Link>
                                       )}
                                     </Td>
@@ -495,9 +514,15 @@ function Authorizations() {
                                         isExternal
                                         color="black"
                                         textDecoration="underline"
-                                        title={auth.caller_name ? `${auth.caller_name}\n${auth.caller}` : auth.caller}
+                                        title={
+                                          auth.caller_name
+                                            ? `${auth.caller_name}\n${auth.caller}`
+                                            : auth.caller
+                                        }
                                       >
-                                        {auth.caller_name ? abbreviateName(auth.caller_name) : abbreviateAddress(auth.caller)}
+                                        {auth.caller_name
+                                          ? abbreviateName(auth.caller_name)
+                                          : abbreviateAddress(auth.caller)}
                                       </Link>
                                     </Td>
                                     <Td

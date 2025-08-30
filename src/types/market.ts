@@ -21,6 +21,11 @@ export interface MarketData {
   resupplyBorrowLimit: number;
   deprecated: boolean;
   totalDebt: number;
+  resupply_borrow_rate_history: Array<{
+    block: number;
+    ts: number;
+    borrow_rate: number;
+  }>;
 }
 
 export interface MarketInfo {

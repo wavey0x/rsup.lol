@@ -17,7 +17,6 @@ import {
   Link,
   Flex,
   Container,
-  theme,
   Alert,
   AlertIcon,
   AlertTitle,
@@ -44,6 +43,198 @@ import {
   formatNumberWithAbbreviation,
   formatPercentWithAbbreviation,
 } from "./utils/format";
+import { customTheme, FALLBACK_IMAGE } from "./theme";
+
+// Minimalist rate chart component for tooltips
+function MiniRateChart({ data }: { data: any[] }) {
+  if (!data || data.length === 0) {
+    return (
+      <Box
+        p={2}
+        textAlign="center"
+        color="gray.500"
+        fontFamily="monospace"
+        fontSize="10px"
+      >
+        No chart data
+      </Box>
+    );
+  }
+
+  // Sort data by timestamp
+  const sortedData = [...data].sort((a, b) => a.ts - b.ts);
+
+  // Get min and max values for scaling - always start from 0%
+  // Convert decimal rates to percentages (0.043 -> 4.3)
+  const rates = sortedData.map((d) => Number(d.borrow_rate) * 100 || 0);
+  const minRate = 0;
+  const maxRate = Math.max(...rates);
+
+  // Calculate the display range (round up to next regular interval)
+  const step = Math.max(1, Math.ceil(maxRate / 5));
+  const displayMax = Math.ceil(maxRate / step) * step;
+  const rateRange = displayMax - minRate;
+
+  // Chart dimensions - compact for tooltip
+  const width = 240;
+  const height = 120;
+  const padding = 20;
+  const leftPadding = 25; // Less space needed for Y-axis labels like "10%"
+  const chartWidth = width - leftPadding - padding;
+  const chartHeight = height - 2 * padding;
+
+  // Generate path for line chart
+  const createPath = () => {
+    if (sortedData.length === 0) return "";
+
+    const pathSegments: string[] = [];
+
+    for (let i = 0; i < sortedData.length; i++) {
+      const point = sortedData[i];
+      const x =
+        leftPadding + (i / Math.max(sortedData.length - 1, 1)) * chartWidth;
+
+      let normalizedRate;
+      if (rateRange > 0) {
+        const ratePercent = Number(point.borrow_rate) * 100;
+        normalizedRate = (ratePercent - minRate) / rateRange;
+      } else {
+        normalizedRate = 0.5;
+      }
+      const y = height - padding - normalizedRate * chartHeight;
+
+      if (i === 0) {
+        pathSegments.push(`M ${x},${y}`);
+      } else {
+        pathSegments.push(`L ${x},${y}`);
+      }
+    }
+
+    return pathSegments.join(" ");
+  };
+
+  const pathData = createPath();
+
+  // Generate date ticks
+  const generateDateTicks = () => {
+    if (sortedData.length === 0) return [];
+
+    const ticks = [];
+    const indices = [
+      0,
+      Math.floor(sortedData.length / 2),
+      sortedData.length - 1,
+    ];
+
+    for (const i of indices) {
+      if (i < sortedData.length) {
+        const date = new Date(sortedData[i].ts * 1000);
+        const x =
+          leftPadding + (i / Math.max(sortedData.length - 1, 1)) * chartWidth;
+        const label = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+        ticks.push({ x, label });
+      }
+    }
+
+    return ticks;
+  };
+
+  const dateTicks = generateDateTicks();
+
+  // Generate rate ticks
+  const generateRateTicks = () => {
+    const ticks = [];
+
+    // If the range is small (like 0-10%), show more granular ticks
+    if (maxRate <= 10) {
+      for (let rate = 0; rate <= displayMax; rate += step) {
+        const normalizedRate =
+          rateRange > 0 ? (rate - minRate) / rateRange : 0.5;
+        const y = height - padding - normalizedRate * chartHeight;
+        const label = `${rate.toFixed(0)}%`;
+        ticks.push({ y, label });
+      }
+    } else {
+      // For larger ranges, show min and max
+      const values = [0, maxRate];
+      for (const rate of values) {
+        const normalizedRate =
+          rateRange > 0 ? (rate - minRate) / rateRange : 0.5;
+        const y = height - padding - normalizedRate * chartHeight;
+        const label = `${rate.toFixed(1)}%`;
+        ticks.push({ y, label });
+      }
+    }
+
+    return ticks;
+  };
+
+  const rateTicks = generateRateTicks();
+
+  return (
+    <Box bg="white" borderRadius="4px" p={1}>
+      <svg width={width} height={height} style={{ background: "white" }}>
+        {/* Rate labels */}
+        {rateTicks.map((tick, i) => (
+          <text
+            key={i}
+            x={leftPadding - 5}
+            y={tick.y + 2}
+            fontSize="8px"
+            fontFamily="monospace"
+            textAnchor="end"
+            fill="#475569"
+          >
+            {tick.label}
+          </text>
+        ))}
+
+        {/* Chart line */}
+        <path
+          d={pathData}
+          stroke="black"
+          strokeWidth="1.5"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Axes */}
+        <line
+          x1={leftPadding}
+          y1={height - padding}
+          x2={width - padding}
+          y2={height - padding}
+          stroke="#94a3b8"
+          strokeWidth="1"
+        />
+        <line
+          x1={leftPadding}
+          y1={padding}
+          x2={leftPadding}
+          y2={height - padding}
+          stroke="#94a3b8"
+          strokeWidth="1"
+        />
+
+        {/* Date labels */}
+        {dateTicks.map((tick, i) => (
+          <text
+            key={i}
+            x={tick.x}
+            y={height - padding + 12}
+            fontSize="8px"
+            fontFamily="monospace"
+            textAnchor="middle"
+            fill="#475569"
+          >
+            {tick.label}
+          </text>
+        ))}
+      </svg>
+    </Box>
+  );
+}
 
 const crvLogo = "/CRV-transparent.svg";
 const fraxlendLogo = "/Fraxlend.svg";
@@ -51,41 +242,14 @@ const fraxlendLogo = "/Fraxlend.svg";
 // Protocol logos as SVG strings
 const CURVE_LOGO = crvLogo;
 
-// Custom theme extension for monospace and compact table
-const customTheme = {
-  ...theme,
-  components: {
-    Table: {
-      baseStyle: {
-        th: {
-          fontFamily: "monospace",
-          fontSize: { base: "xs", md: "sm" },
-          py: { base: 1, md: 2 },
-          px: { base: 1, md: 2 },
-          cursor: "pointer",
-          userSelect: "none",
-          _hover: {
-            bg: "gray.50",
-          },
-        },
-        td: {
-          fontFamily: "monospace",
-          fontSize: { base: "xs", md: "sm" },
-          py: { base: 0.5, md: 1 },
-          px: { base: 1, md: 2 },
-        },
-      },
-    },
-  },
-};
+// Theme is now imported from ./theme
 
 type SortConfig = {
   key: keyof MarketData | null;
   direction: "asc" | "desc";
 };
 
-const FALLBACK_IMAGE =
-  "data:image/svg+xml,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23ffffff'/%3E%3Ctext x='12' y='17' text-anchor='middle' font-size='16' font-family='monospace' fill='%23999'%3E%3F%3C/text%3E%3C/svg%3E";
+// FALLBACK_IMAGE is now imported from ./theme
 
 // Extend MarketInfo for modal use
 interface MarketInfoModal extends MarketInfo {
@@ -106,7 +270,7 @@ const abbreviateAddress = (addr: string) =>
 
 const SORT_CONFIG_KEY = "resupply_sort_config";
 
-export { customTheme, FALLBACK_IMAGE };
+// Removed export to fix HMR issues
 
 function Markets() {
   const [marketData, setMarketData] = useState<MarketData[]>([]);
@@ -207,6 +371,11 @@ function Markets() {
             Number(market.resupply_available_liquidity) || 0,
           resupply_borrow_rate: Number(market.resupply_borrow_rate) * 100 || 0,
           resupply_lend_rate: Number(market.resupply_lend_rate) * 100 || 0,
+          resupply_borrow_rate_history: Array.isArray(
+            market.resupply_historical_borrow_rates
+          )
+            ? market.resupply_historical_borrow_rates
+            : [],
         };
       });
 
@@ -896,17 +1065,47 @@ function Markets() {
                               )}
                             </Td>
                             <Td>
-                              {resupplyMode
-                                ? `${Number(
-                                    getValue(
-                                      market,
-                                      "borrowRate",
-                                      "resupply_borrow_rate"
-                                    )
-                                  ).toFixed(2)}%`
-                                : `${Number(
-                                    getValue(market, "borrowRate", "borrowRate")
-                                  ).toFixed(2)}%`}
+                              {resupplyMode ? (
+                                <Tooltip
+                                  label={
+                                    <MiniRateChart
+                                      data={
+                                        market.resupply_borrow_rate_history ||
+                                        []
+                                      }
+                                    />
+                                  }
+                                  hasArrow={false}
+                                  placement="top"
+                                  bg="white"
+                                  color="black"
+                                  borderRadius="md"
+                                  border="1px solid"
+                                  borderColor="gray.200"
+                                  p={0}
+                                  boxShadow="lg"
+                                >
+                                  <span
+                                    style={{
+                                      fontFamily: "monospace",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    {Number(
+                                      getValue(
+                                        market,
+                                        "borrowRate",
+                                        "resupply_borrow_rate"
+                                      )
+                                    ).toFixed(2)}
+                                    %
+                                  </span>
+                                </Tooltip>
+                              ) : (
+                                `${Number(
+                                  getValue(market, "borrowRate", "borrowRate")
+                                ).toFixed(2)}%`
+                              )}
                             </Td>
                             <Td>
                               {resupplyMode ? (

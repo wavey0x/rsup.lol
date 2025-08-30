@@ -25,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
-import { customTheme } from "./Markets";
+import { customTheme } from "./theme";
 import { formatNumberWithAbbreviation } from "./utils/format";
 import { CopyIcon, CheckIcon } from "@chakra-ui/icons";
 
@@ -183,9 +183,21 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
   const pathData = createStepPath();
 
   return (
-    <Box mb={4} p={4} bg="white" border="1px solid" borderColor="gray.100" borderRadius="lg" boxShadow="0 2px 4px rgba(0, 0, 0, 0.02)">
+    <Box
+      mb={4}
+      p={4}
+      bg="white"
+      border="1px solid"
+      borderColor="gray.100"
+      borderRadius="lg"
+      boxShadow="0 2px 4px rgba(0, 0, 0, 0.02)"
+    >
       <Box display="flex" justifyContent="center">
-        <svg width={width} height={height} style={{ background: '#fafafa', borderRadius: '8px' }}>
+        <svg
+          width={width}
+          height={height}
+          style={{ background: "#fafafa", borderRadius: "8px" }}
+        >
           {/* Y-axis labels */}
           {(() => {
             // Generate rounder Y-axis values

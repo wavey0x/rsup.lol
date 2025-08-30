@@ -119,13 +119,13 @@ function MiniRateChart({ data }: { data: any[] }) {
   const generateDateTicks = () => {
     if (sortedData.length === 0) return [];
 
-    const ticks = [];
+    const ticks: { x: number; label: string }[] = [];
     const startTime = sortedData[0].ts;
     const endTime = sortedData[sortedData.length - 1].ts;
     const timeRange = endTime - startTime;
 
     // Get unique dates from the data
-    const uniqueDates = new Set();
+    const uniqueDates = new Set<string>();
     sortedData.forEach((point) => {
       const date = new Date(point.ts * 1000);
       const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
@@ -133,7 +133,7 @@ function MiniRateChart({ data }: { data: any[] }) {
     });
 
     // Generate ticks for start, middle, and end dates
-    const dateArray = Array.from(uniqueDates);
+    const dateArray = Array.from(uniqueDates) as string[];
     const indices = [0, Math.floor(dateArray.length / 2), dateArray.length - 1];
 
     indices.forEach((idx) => {
@@ -175,27 +175,27 @@ function MiniRateChart({ data }: { data: any[] }) {
 
   // Generate rate ticks
   const generateRateTicks = () => {
-    const ticks = [];
+    const ticks: { y: number; label: string }[] = [];
 
-    // If the range is small (like 0-10%), show more granular ticks
-    if (maxRate <= 10) {
-      for (let rate = 0; rate <= displayMax; rate += step) {
-        const normalizedRate =
-          rateRange > 0 ? (rate - minRate) / rateRange : 0.5;
-        const y = height - padding - normalizedRate * chartHeight;
-        const label = `${rate.toFixed(0)}%`;
-        ticks.push({ y, label });
+    // Always show 0% and the actual peak value
+    const values = [0, displayMax];
+
+    // Add intermediate ticks for better readability
+    if (displayMax > 0) {
+      // Add ticks at reasonable intervals (every 1% or 2% depending on range)
+      const step = displayMax <= 5 ? 1 : Math.max(1, Math.ceil(displayMax / 5));
+      for (let rate = step; rate < displayMax; rate += step) {
+        values.push(rate);
       }
-    } else {
-      // For larger ranges, show min and max
-      const values = [0, maxRate];
-      for (const rate of values) {
-        const normalizedRate =
-          rateRange > 0 ? (rate - minRate) / rateRange : 0.5;
-        const y = height - padding - normalizedRate * chartHeight;
-        const label = `${rate.toFixed(1)}%`;
-        ticks.push({ y, label });
-      }
+      // Sort to ensure proper order
+      values.sort((a, b) => a - b);
+    }
+
+    for (const rate of values) {
+      const normalizedRate = rateRange > 0 ? (rate - minRate) / rateRange : 0.5;
+      const y = height - padding - normalizedRate * chartHeight;
+      const label = `${rate.toFixed(0)}%`;
+      ticks.push({ y, label });
     }
 
     return ticks;

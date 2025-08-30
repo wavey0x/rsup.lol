@@ -126,7 +126,7 @@ function MiniRateChart({ data }: { data: any[] }) {
 
     // Get unique dates from the data
     const uniqueDates = new Set();
-    sortedData.forEach(point => {
+    sortedData.forEach((point) => {
       const date = new Date(point.ts * 1000);
       const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
       uniqueDates.add(dateStr);
@@ -135,27 +135,34 @@ function MiniRateChart({ data }: { data: any[] }) {
     // Generate ticks for start, middle, and end dates
     const dateArray = Array.from(uniqueDates);
     const indices = [0, Math.floor(dateArray.length / 2), dateArray.length - 1];
-    
-    indices.forEach(idx => {
+
+    indices.forEach((idx) => {
       if (idx < dateArray.length) {
         const dateStr = dateArray[idx];
-        
+
         // Find the midnight timestamp for this date
-        const samplePoint = sortedData.find(p => {
+        const samplePoint = sortedData.find((p) => {
           const d = new Date(p.ts * 1000);
           return `${d.getUTCMonth() + 1}/${d.getUTCDate()}` === dateStr;
         });
-        
+
         if (samplePoint) {
           const date = new Date(samplePoint.ts * 1000);
           // Calculate midnight of this date
-          const midnight = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+          const midnight = new Date(
+            Date.UTC(
+              date.getUTCFullYear(),
+              date.getUTCMonth(),
+              date.getUTCDate()
+            )
+          );
           const midnightTs = midnight.getTime() / 1000;
-          
+
           // Position the notch based on where midnight falls in our time range
           const timeProgress = (midnightTs - startTime) / timeRange;
-          const x = leftPadding + Math.max(0, Math.min(1, timeProgress)) * chartWidth;
-          
+          const x =
+            leftPadding + Math.max(0, Math.min(1, timeProgress)) * chartWidth;
+
           ticks.push({ x, label: dateStr });
         }
       }

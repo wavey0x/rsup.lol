@@ -345,6 +345,14 @@ function Markets() {
   const [showDeprecated, setShowDeprecated] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [copied, setCopied] = useState<string | null>(null);
+  
+  // Touch device detection
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [expandedChart, setExpandedChart] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -588,6 +596,11 @@ function Markets() {
     navigator.clipboard.writeText(address);
     setCopied(address);
     setTimeout(() => setCopied(null), 1200);
+  };
+
+  // Chart toggle handler for mobile
+  const handleChartToggle = (marketAddress: string) => {
+    setExpandedChart(expandedChart === marketAddress ? null : marketAddress);
   };
 
   // Save sortConfig to localStorage whenever it changes
@@ -994,9 +1007,10 @@ function Markets() {
                         const underlyingApr = Number(market.lendRate);
                         const totalApr = rewardsApr + underlyingApr;
                         return (
-                          <Tr
-                            key={`${market.marketName}-${market.contractAddress}`}
-                          >
+                          <>
+                            <Tr
+                              key={`${market.marketName}-${market.contractAddress}`}
+                            >
                             <Td>
                               <Flex align="center" gap={1}>
                                 <Box position="relative" boxSize="24px">
@@ -1109,30 +1123,19 @@ function Markets() {
                             </Td>
                             <Td>
                               {resupplyMode ? (
-                                <Tooltip
-                                  label={
-                                    <MiniRateChart
-                                      data={
-                                        market.resupply_borrow_rate_history ||
-                                        []
-                                      }
-                                    />
-                                  }
-                                  hasArrow={false}
-                                  placement="top"
-                                  bg="white"
-                                  color="black"
-                                  borderRadius="md"
-                                  border="1px solid"
-                                  borderColor="gray.200"
-                                  p={0}
-                                  boxShadow="lg"
-                                >
+                                isTouchDevice ? (
                                   <span
                                     style={{
                                       fontFamily: "monospace",
                                       cursor: "pointer",
+                                      textDecoration: expandedChart === market.contractAddress ? "underline" : "none",
+                                      padding: "2px 4px",
+                                      borderRadius: "4px",
+                                      backgroundColor: expandedChart === market.contractAddress ? "#f7fafc" : "transparent",
+                                      border: expandedChart === market.contractAddress ? "1px solid #e2e8f0" : "1px solid transparent",
+                                      transition: "all 0.2s ease",
                                     }}
+                                    onClick={() => handleChartToggle(market.contractAddress)}
                                   >
                                     {Number(
                                       getValue(
@@ -1143,7 +1146,43 @@ function Markets() {
                                     ).toFixed(2)}
                                     %
                                   </span>
-                                </Tooltip>
+                                ) : (
+                                  <Tooltip
+                                    label={
+                                      <MiniRateChart
+                                        data={
+                                          market.resupply_borrow_rate_history ||
+                                          []
+                                        }
+                                      />
+                                    }
+                                    hasArrow={false}
+                                    placement="top"
+                                    bg="white"
+                                    color="black"
+                                    borderRadius="md"
+                                    border="1px solid"
+                                    borderColor="gray.200"
+                                    p={0}
+                                    boxShadow="lg"
+                                  >
+                                    <span
+                                      style={{
+                                        fontFamily: "monospace",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      {Number(
+                                        getValue(
+                                          market,
+                                          "borrowRate",
+                                          "resupply_borrow_rate"
+                                        )
+                                      ).toFixed(2)}
+                                      %
+                                    </span>
+                                  </Tooltip>
+                                )
                               ) : (
                                 `${Number(
                                   getValue(market, "borrowRate", "borrowRate")
@@ -1221,6 +1260,52 @@ function Markets() {
                               )}
                             </Td>
                           </Tr>
+                          {/* Mobile chart expansion row */}
+                          {isTouchDevice && expandedChart === market.contractAddress && (
+                            <Tr>
+                              <Td 
+                                colSpan={7} 
+                                p={0} 
+                                bg="gray.50"
+                                borderTop="1px solid"
+                                borderColor="gray.200"
+                              >
+                                <Box 
+                                  p={3} 
+                                  display="flex" 
+                                  flexDirection="column"
+                                  alignItems="center"
+                                  animation="slideDown 0.2s ease-out"
+                                  sx={{
+                                    '@keyframes slideDown': {
+                                      '0%': { 
+                                        opacity: 0, 
+                                        transform: 'translateY(-10px)' 
+                                      },
+                                      '100%': { 
+                                        opacity: 1, 
+                                        transform: 'translateY(0)' 
+                                      }
+                                    }
+                                  }}
+                                >
+                                  <Text 
+                                    fontSize="xs" 
+                                    fontFamily="monospace" 
+                                    color="gray.600" 
+                                    mb={2}
+                                    fontWeight="medium"
+                                  >
+                                    Resupply Borrow Cost
+                                  </Text>
+                                  <MiniRateChart 
+                                    data={market.resupply_borrow_rate_history || []} 
+                                  />
+                                </Box>
+                              </Td>
+                            </Tr>
+                          )}
+                          </>
                         );
                       })}
                     </Tbody>

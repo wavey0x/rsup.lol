@@ -27,7 +27,7 @@ interface TimeSeriesChartProps {
 
 const CHART_DIMENSIONS = {
   mini: { width: 240, height: 120, padding: 20, leftPadding: 25, rightPadding: 25 },
-  medium: { width: 450, height: 260, padding: 30, leftPadding: 40, rightPadding: 40 },
+  medium: { width: 370, height: 240, padding: 25, leftPadding: 35, rightPadding: 35 },
   large: { width: 700, height: 300, padding: 30, leftPadding: 50, rightPadding: 60 },
 };
 

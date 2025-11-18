@@ -78,24 +78,24 @@ function SreUSD() {
             <Stack spacing={designTokens.spacing.sectionGap}>
               {/* Current Metrics Display */}
               <Flex
-                direction={{ base: "column", md: "row" }}
+                direction="row"
                 justify="center"
                 align="center"
-                gap={8}
+                gap={{ base: 4, md: 8 }}
                 textAlign="center"
               >
                 <Box>
                   <Text
-                    fontSize="sm"
+                    fontSize={{ base: "xs", md: "sm" }}
                     fontFamily="monospace"
                     color="gray.600"
-                    mb={2}
+                    mb={1}
                     {...designTokens.typography.caption}
                   >
                     APR
                   </Text>
                   <Text
-                    fontSize="2xl"
+                    fontSize={{ base: "xl", md: "2xl" }}
                     fontFamily="monospace"
                     fontWeight="400"
                     color="green.500"
@@ -105,16 +105,16 @@ function SreUSD() {
                 </Box>
                 <Box>
                   <Text
-                    fontSize="sm"
+                    fontSize={{ base: "xs", md: "sm" }}
                     fontFamily="monospace"
                     color="gray.600"
-                    mb={2}
+                    mb={1}
                     {...designTokens.typography.caption}
                   >
                     TVL
                   </Text>
                   <Text
-                    fontSize="2xl"
+                    fontSize={{ base: "xl", md: "2xl" }}
                     fontFamily="monospace"
                     fontWeight="400"
                     color="gray.700"

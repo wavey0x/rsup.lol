@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Container, ChakraProvider } from "@chakra-ui/react";
 import { customTheme, designTokens } from "../../theme";
 

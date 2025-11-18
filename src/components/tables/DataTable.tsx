@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Table, Thead, Tbody, Box } from "@chakra-ui/react";
 import { designTokens } from "../../theme";
 

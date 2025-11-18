@@ -45,8 +45,8 @@ function SreUSD() {
     : "0.00";
 
   const currentTvl = sreusdData && sreusdData.length > 0
-    ? (sreusdData[sreusdData.length - 1].total_assets
-        ? `${(sreusdData[sreusdData.length - 1].total_assets / 1000000).toFixed(2)}M`
+    ? (sreusdData[sreusdData.length - 1].total_assets !== undefined
+        ? `${(sreusdData[sreusdData.length - 1].total_assets! / 1000000).toFixed(2)}M`
         : "N/A")
     : "0";
 

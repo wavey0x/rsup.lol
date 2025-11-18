@@ -35,7 +35,9 @@ function abbreviateAddress(addr: string) {
 }
 
 function abbreviateHash(hash: string) {
-  return hash ? `${hash.slice(0, 5)}...${hash.slice(-3)}` : "";
+  if (!hash) return "";
+  const prefixedHash = hash.startsWith("0x") ? hash : `0x${hash}`;
+  return `${prefixedHash.slice(0, 5)}...${prefixedHash.slice(-3)}`;
 }
 
 function formatDate(ts: number | string) {
@@ -174,7 +176,7 @@ function RetentionProgram() {
                 <Box
                   bg="white"
                   border="1px solid"
-                  borderColor="gray.200"
+                  borderColor="black"
                   borderRadius="xl"
                   boxShadow="0 2px 8px rgba(0, 0, 0, 0.04)"
                   px={2}
@@ -305,8 +307,8 @@ function RetentionProgram() {
                 {feed.length > 0 && (
                   <Box w="100%" minWidth="0">
                     <Box
-                      minWidth={{ base: "380px", md: "448px" }}
-                      width={{ base: "380px", md: "448px" }}
+                      minWidth={{ base: "400px", md: "470px" }}
+                      width={{ base: "400px", md: "470px" }}
                       mx="auto"
                     >
                       <Tabs variant="unstyled" align="center" mb={0} mt={0}>
@@ -317,8 +319,8 @@ function RetentionProgram() {
                           overflow="hidden"
                           p={0}
                           m={0}
-                          minWidth={{ base: "380px", md: "448px" }}
-                          width={{ base: "380px", md: "448px" }}
+                          minWidth={{ base: "400px", md: "470px" }}
+                          width={{ base: "400px", md: "470px" }}
                         >
                           <Tab
                             fontFamily="monospace"
@@ -364,29 +366,39 @@ function RetentionProgram() {
                         </TabList>
                         <TabPanels>
                           <TabPanel px={0} py={0}>
-                            <Flex justify="center" overflowX="auto">
-                              <Table
-                                variant="simple"
-                                size="sm"
-                                fontFamily="monospace"
-                                colorScheme="blackAlpha"
-                                borderWidth="1px"
-                                borderColor="black"
-                                borderTopWidth={0}
-                                minWidth={{ base: "380px", md: "448px" }}
-                                width={{ base: "380px", md: "448px" }}
-                                style={{
-                                  textAlign: "center",
-                                  fontSize: "13px",
-                                  borderSpacing: 0,
-                                }}
-                              >
+                            <Box
+                              minWidth={{ base: "400px", md: "470px" }}
+                              width={{ base: "400px", md: "470px" }}
+                              border="1px solid"
+                              borderColor="black"
+                              borderTopWidth={0}
+                              borderRadius="0 0 10px 10px"
+                              overflow="hidden"
+                              mx="auto"
+                            >
+                              <Box overflowX="auto">
+                                <Table
+                                  variant="simple"
+                                  size="sm"
+                                  w="100%"
+                                  fontFamily="monospace"
+                                  colorScheme="blackAlpha"
+                                  style={{
+                                    textAlign: "center",
+                                    fontSize: "13px",
+                                    borderSpacing: 0,
+                                  }}
+                                  sx={{
+                                    "tbody tr td": {
+                                      borderBottom: "none",
+                                    },
+                                  }}
+                                >
                                 <Thead>
                                   <Tr>
                                     <Th
                                       fontFamily="monospace"
                                       color="black"
-                                      borderColor="black"
                                       fontSize="xs"
                                       textAlign="center"
                                       px={2}
@@ -400,7 +412,6 @@ function RetentionProgram() {
                                     <Th
                                       fontFamily="monospace"
                                       color="black"
-                                      borderColor="black"
                                       fontSize="sm"
                                       textAlign="center"
                                       px={2}
@@ -414,7 +425,6 @@ function RetentionProgram() {
                                     <Th
                                       fontFamily="monospace"
                                       color="black"
-                                      borderColor="black"
                                       fontSize="sm"
                                       textAlign="center"
                                       px={2}
@@ -428,7 +438,6 @@ function RetentionProgram() {
                                     <Th
                                       fontFamily="monospace"
                                       color="black"
-                                      borderColor="black"
                                       fontSize="sm"
                                       textAlign="center"
                                       px={2}
@@ -449,13 +458,12 @@ function RetentionProgram() {
                                         <Td
                                           fontFamily="monospace"
                                           color="black"
-                                          borderColor="black"
                                           fontSize="xs"
                                           textAlign="left"
                                           px={2}
                                           py={0}
-                                          minWidth="85px"
-                                          maxWidth="85px"
+                                          minWidth="70px"
+                                          maxWidth="70px"
                                           overflow="hidden"
                                           whiteSpace="nowrap"
                                         >
@@ -464,7 +472,6 @@ function RetentionProgram() {
                                         <Td
                                           fontFamily="monospace"
                                           color="black"
-                                          borderColor="black"
                                           fontSize="xs"
                                           textAlign="left"
                                           px={2}
@@ -489,7 +496,6 @@ function RetentionProgram() {
                                         <Td
                                           fontFamily="monospace"
                                           color="black"
-                                          borderColor="black"
                                           fontSize="xs"
                                           textAlign="left"
                                           px={2}
@@ -514,7 +520,6 @@ function RetentionProgram() {
                                         <Td
                                           fontFamily="monospace"
                                           color="black"
-                                          borderColor="black"
                                           fontSize="sm"
                                           textAlign="right"
                                           px={2}
@@ -538,26 +543,49 @@ function RetentionProgram() {
                                     );
                                   })}
                                 </Tbody>
-                              </Table>
-                            </Flex>
+                                  </Table>
+                              </Box>
+                            </Box>
                             <Flex
                               justify="center"
                               align="center"
                               mt={2}
-                              gap={2}
+                              gap={3}
+                              fontFamily="monospace"
                             >
                               <Button
                                 size="xs"
                                 onClick={() =>
                                   setPage((p) => Math.max(0, p - 1))
                                 }
-                                disabled={page === 0}
+                                isDisabled={page === 0}
                                 fontFamily="monospace"
+                                variant="ghost"
+                                minW="auto"
+                                px={2}
+                                bg="transparent"
+                                _hover={{
+                                  bg: "transparent",
+                                  textDecoration: "underline",
+                                }}
+                                _disabled={{
+                                  opacity: 0.3,
+                                  cursor: "not-allowed",
+                                }}
+                                _active={{
+                                  bg: "transparent",
+                                }}
                                 aria-label="Previous Page"
                               >
                                 {"<"}
                               </Button>
-                              <Text fontFamily="monospace" fontSize="sm">
+                              <Text
+                                fontSize="xs"
+                                fontFamily="monospace"
+                                color="gray.700"
+                                minW="80px"
+                                textAlign="center"
+                              >
                                 {page + 1} / {pageCount}
                               </Text>
                               <Button
@@ -565,8 +593,23 @@ function RetentionProgram() {
                                 onClick={() =>
                                   setPage((p) => Math.min(pageCount - 1, p + 1))
                                 }
-                                disabled={page >= pageCount - 1}
+                                isDisabled={page >= pageCount - 1}
                                 fontFamily="monospace"
+                                variant="ghost"
+                                minW="auto"
+                                px={2}
+                                bg="transparent"
+                                _hover={{
+                                  bg: "transparent",
+                                  textDecoration: "underline",
+                                }}
+                                _disabled={{
+                                  opacity: 0.3,
+                                  cursor: "not-allowed",
+                                }}
+                                _active={{
+                                  bg: "transparent",
+                                }}
                                 aria-label="Next Page"
                               >
                                 {">"}
@@ -578,8 +621,8 @@ function RetentionProgram() {
                               border="1px solid black"
                               borderTopWidth={0}
                               borderRadius="0 0 10px 10px"
-                              minWidth={{ base: "380px", md: "448px" }}
-                              width={{ base: "380px", md: "448px" }}
+                              minWidth={{ base: "400px", md: "470px" }}
+                              width={{ base: "400px", md: "470px" }}
                               px={4}
                               py={3}
                               bg="white"

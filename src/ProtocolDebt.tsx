@@ -34,7 +34,9 @@ function abbreviateAddress(addr: string) {
 }
 
 function abbreviateHash(hash: string) {
-  return hash ? `${hash.slice(0, 5)}..${hash.slice(-3)}` : "";
+  if (!hash) return "";
+  const prefixedHash = hash.startsWith("0x") ? hash : `0x${hash}`;
+  return `${prefixedHash.slice(0, 5)}..${prefixedHash.slice(-3)}`;
 }
 
 function formatDate(ts: number | string) {
@@ -187,16 +189,12 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
       mb={4}
       p={4}
       bg="white"
-      border="1px solid"
-      borderColor="gray.100"
-      borderRadius="lg"
-      boxShadow="0 2px 4px rgba(0, 0, 0, 0.02)"
     >
       <Box display="flex" justifyContent="center">
         <svg
           width={width}
           height={height}
-          style={{ background: "#fafafa", borderRadius: "8px" }}
+          style={{ background: "white" }}
         >
           {/* Y-axis labels */}
           {(() => {
@@ -276,7 +274,7 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
                   fontSize="10px"
                   fontFamily="monospace"
                   textAnchor="end"
-                  fill="#475569"
+                  fill="black"
                 >
                   {formatNumberWithAbbreviation(value)}
                 </text>
@@ -284,43 +282,6 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
             });
           })()}
 
-          {/* Grid lines for better readability */}
-          {(() => {
-            const gridLines = [];
-            // Vertical grid lines
-            for (let i = 1; i < 4; i++) {
-              const x = padding + (i / 4) * chartWidth;
-              gridLines.push(
-                <line
-                  key={`v-${i}`}
-                  x1={x}
-                  y1={padding}
-                  x2={x}
-                  y2={height - padding}
-                  stroke="#e2e8f0"
-                  strokeWidth="0.5"
-                  opacity="0.6"
-                />
-              );
-            }
-            // Horizontal grid lines
-            for (let i = 1; i < 4; i++) {
-              const y = padding + (i / 4) * chartHeight;
-              gridLines.push(
-                <line
-                  key={`h-${i}`}
-                  x1={padding}
-                  y1={y}
-                  x2={width - padding}
-                  y2={y}
-                  stroke="#e2e8f0"
-                  strokeWidth="0.5"
-                  opacity="0.6"
-                />
-              );
-            }
-            return gridLines;
-          })()}
 
           {/* Step chart with sharp vertical changes */}
           <path
@@ -359,7 +320,7 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
               fontSize="10px"
               fontFamily="monospace"
               textAnchor="middle"
-              fill="#475569"
+              fill="black"
             >
               {tick.label}
             </text>
@@ -558,8 +519,8 @@ function ProtocolDebt() {
                 textAlign="center"
               >
                 <Box
-                  width={{ base: "380px", md: "448px" }}
-                  minWidth={{ base: "380px", md: "448px" }}
+                  width={{ base: "400px", md: "470px" }}
+                  minWidth={{ base: "400px", md: "470px" }}
                   mx="auto"
                   px={0}
                   py={0}
@@ -572,8 +533,8 @@ function ProtocolDebt() {
                       overflow="hidden"
                       p={0}
                       m={0}
-                      minWidth={{ base: "380px", md: "448px" }}
-                      width={{ base: "380px", md: "448px" }}
+                      minWidth={{ base: "400px", md: "470px" }}
+                      width={{ base: "400px", md: "470px" }}
                     >
                       <Tab
                         fontFamily="monospace"
@@ -638,103 +599,108 @@ function ProtocolDebt() {
                         Info
                       </Tab>
                     </TabList>
-                    <TabPanels
-                      border="1px solid black"
-                      borderTopWidth={0}
-                      borderRadius="0 0 10px 10px"
-                    >
+                    <TabPanels>
                       {/* Yearn Loan Tab */}
                       <TabPanel px={0} py={0}>
-                        <Flex
-                          direction="row"
-                          justify="center"
-                          align="center"
-                          mb={1}
-                          gap={4}
-                          wrap="wrap"
+                        <Box
+                          minWidth={{ base: "400px", md: "470px" }}
+                          width={{ base: "400px", md: "470px" }}
+                          border="1px solid"
+                          borderColor="black"
+                          borderTopWidth={0}
+                          borderRadius="0 0 10px 10px"
+                          overflow="hidden"
+                          mx="auto"
                         >
-                          <Box
-                            as="table"
-                            mx="auto"
-                            style={{ borderCollapse: "collapse" }}
+                          <Flex
+                            direction="row"
+                            justify="center"
+                            align="center"
+                            mb={1}
+                            gap={4}
+                            wrap="wrap"
+                            pt={2}
                           >
-                            <tbody>
-                              <tr>
-                                <td
-                                  style={{
-                                    textAlign: "center",
-                                    padding: "2px 8px",
-                                    fontFamily: "monospace",
-                                    fontSize: "13px",
-                                    whiteSpace: "nowrap",
-                                    minWidth: "120px",
-                                  }}
-                                >
-                                  Remaining:
-                                </td>
-                                <td
-                                  style={{
-                                    textAlign: "center",
-                                    padding: "2px 8px",
-                                    fontFamily: "monospace",
-                                    fontSize: "14px",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  <Flex alignItems="center" gap={2}>
-                                    <Tooltip
-                                      label={topData[1].fullValue}
-                                      fontSize="xs"
-                                      hasArrow
-                                      placement="top"
-                                      bg="gray.800"
-                                      color="white"
-                                      borderRadius="md"
-                                      p={2}
-                                      fontFamily="monospace"
-                                    >
-                                      <span style={{ cursor: "pointer" }}>
-                                        {topData[1].value}
-                                      </span>
-                                    </Tooltip>
-                                    <Text
-                                      fontSize="xs"
-                                      color="gray.600"
-                                      fontFamily="monospace"
-                                    >
-                                      ({remainingYearnDebtPercentage.toFixed(1)}
-                                      %)
-                                    </Text>
-                                  </Flex>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </Box>
-                        </Flex>
-                        <SimpleLineChart
-                          data={yearnLoanHistory}
-                          tabType="yearnLoan"
-                        />
-                        {repayments.length > 0 ? (
-                          <Box
-                            overflowX="auto"
-                            w="100%"
-                            minWidth={{ base: "380px", md: "448px" }}
-                            width={{ base: "100%", md: "auto" }}
-                            mt={1}
-                          >
-                            <Table
+                            <Box
+                              as="table"
+                              mx="auto"
+                              style={{ borderCollapse: "collapse" }}
+                            >
+                              <tbody>
+                                <tr>
+                                  <td
+                                    style={{
+                                      textAlign: "center",
+                                      padding: "2px 8px",
+                                      fontFamily: "monospace",
+                                      fontSize: "13px",
+                                      whiteSpace: "nowrap",
+                                      minWidth: "120px",
+                                    }}
+                                  >
+                                    Remaining:
+                                  </td>
+                                  <td
+                                    style={{
+                                      textAlign: "center",
+                                      padding: "2px 8px",
+                                      fontFamily: "monospace",
+                                      fontSize: "14px",
+                                      whiteSpace: "nowrap",
+                                    }}
+                                  >
+                                    <Flex alignItems="center" gap={2}>
+                                      <Tooltip
+                                        label={topData[1].fullValue}
+                                        fontSize="xs"
+                                        hasArrow
+                                        placement="top"
+                                        bg="gray.800"
+                                        color="white"
+                                        borderRadius="md"
+                                        p={2}
+                                        fontFamily="monospace"
+                                      >
+                                        <span style={{ cursor: "pointer" }}>
+                                          {topData[1].value}
+                                        </span>
+                                      </Tooltip>
+                                      <Text
+                                        fontSize="xs"
+                                        color="gray.600"
+                                        fontFamily="monospace"
+                                      >
+                                        ({remainingYearnDebtPercentage.toFixed(1)}
+                                        %)
+                                      </Text>
+                                    </Flex>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </Box>
+                          </Flex>
+                          <SimpleLineChart
+                            data={yearnLoanHistory}
+                            tabType="yearnLoan"
+                          />
+                          {repayments.length > 0 ? (
+                            <>
+                              <Box overflowX="auto">
+                                <Table
                               variant="simple"
                               size="sm"
                               w="100%"
                               fontFamily="monospace"
                               colorScheme="blackAlpha"
-                              minWidth={{ base: "380px", md: "448px" }}
-                              width={{ base: "100%", md: "auto" }}
                               style={{
                                 textAlign: "center",
                                 fontSize: "13px",
                                 borderSpacing: 0,
+                              }}
+                              sx={{
+                                "tbody tr td": {
+                                  borderBottom: "none",
+                                },
                               }}
                             >
                               <Thead>
@@ -742,7 +708,19 @@ function ProtocolDebt() {
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="center"
+                                    px={2}
+                                    py={0}
+                                    minWidth="68px"
+                                    maxWidth="68px"
+                                    whiteSpace="nowrap"
+                                  >
+                                    Date
+                                  </Th>
+                                  <Th
+                                    fontFamily="monospace"
+                                    color="black"
                                     fontSize="xs"
                                     textAlign="center"
                                     px={2}
@@ -751,32 +729,17 @@ function ProtocolDebt() {
                                     maxWidth="70px"
                                     whiteSpace="nowrap"
                                   >
-                                    Date
-                                  </Th>
-                                  <Th
-                                    fontFamily="monospace"
-                                    color="black"
-                                    borderColor="black"
-                                    fontSize="xs"
-                                    textAlign="center"
-                                    px={2}
-                                    py={0}
-                                    minWidth="83px"
-                                    maxWidth="83px"
-                                    whiteSpace="nowrap"
-                                  >
                                     Payer
                                   </Th>
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="center"
                                     px={2}
                                     py={0}
-                                    minWidth="83px"
-                                    maxWidth="83px"
+                                    minWidth="70px"
+                                    maxWidth="70px"
                                     whiteSpace="nowrap"
                                   >
                                     Txn
@@ -784,13 +747,12 @@ function ProtocolDebt() {
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="center"
                                     px={2}
                                     py={0}
-                                    minWidth="93px"
-                                    maxWidth="93px"
+                                    minWidth="70px"
+                                    maxWidth="70px"
                                     whiteSpace="nowrap"
                                   >
                                     Amount
@@ -804,13 +766,12 @@ function ProtocolDebt() {
                                       <Td
                                         fontFamily="monospace"
                                         color="black"
-                                        borderColor="black"
                                         fontSize="xs"
                                         textAlign="left"
                                         px={2}
                                         py={0}
-                                        minWidth="85px"
-                                        maxWidth="85px"
+                                        minWidth="68px"
+                                        maxWidth="68px"
                                         overflow="hidden"
                                         whiteSpace="nowrap"
                                       >
@@ -821,13 +782,12 @@ function ProtocolDebt() {
                                       <Td
                                         fontFamily="monospace"
                                         color="black"
-                                        borderColor="black"
                                         fontSize="xs"
                                         textAlign="left"
                                         px={2}
                                         py={0}
-                                        minWidth="83px"
-                                        maxWidth="83px"
+                                        minWidth="70px"
+                                        maxWidth="70px"
                                         overflow="hidden"
                                         whiteSpace="nowrap"
                                       >
@@ -843,13 +803,12 @@ function ProtocolDebt() {
                                       <Td
                                         fontFamily="monospace"
                                         color="black"
-                                        borderColor="black"
                                         fontSize="xs"
                                         textAlign="left"
                                         px={2}
                                         py={0}
-                                        minWidth="83px"
-                                        maxWidth="83px"
+                                        minWidth="70px"
+                                        maxWidth="70px"
                                         overflow="hidden"
                                         whiteSpace="nowrap"
                                       >
@@ -865,13 +824,12 @@ function ProtocolDebt() {
                                       <Td
                                         fontFamily="monospace"
                                         color="black"
-                                        borderColor="black"
                                         fontSize="sm"
                                         textAlign="right"
                                         px={2}
                                         py={0}
-                                        minWidth="93px"
-                                        maxWidth="93px"
+                                        minWidth="70px"
+                                        maxWidth="70px"
                                         overflow="hidden"
                                         whiteSpace="nowrap"
                                       >
@@ -889,7 +847,6 @@ function ProtocolDebt() {
                                   <Td
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -905,7 +862,6 @@ function ProtocolDebt() {
                                   <Td
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -921,7 +877,6 @@ function ProtocolDebt() {
                                   <Td
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -937,7 +892,6 @@ function ProtocolDebt() {
                                   <Td
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="sm"
                                     textAlign="right"
                                     px={2}
@@ -955,26 +909,56 @@ function ProtocolDebt() {
                                   </Td>
                                 </Tr>
                               </Tbody>
-                            </Table>
-                            {repaymentsPageCount > 1 && (
+                                </Table>
+                              </Box>
+                            </>
+                          ) : (
+                            <Box p={4}>
+                              <Text fontFamily="monospace" textAlign="center">No repayments found.</Text>
+                            </Box>
+                          )}
+                        </Box>
+                        {repayments.length > 0 && repaymentsPageCount > 1 && (
                               <Flex
                                 justify="center"
                                 align="center"
                                 mt={2}
-                                gap={2}
+                                gap={3}
+                                fontFamily="monospace"
                               >
                                 <Button
                                   size="xs"
                                   onClick={() =>
                                     setPage((p) => Math.max(0, p - 1))
                                   }
-                                  disabled={page === 0}
+                                  isDisabled={page === 0}
                                   fontFamily="monospace"
+                                  variant="ghost"
+                                  minW="auto"
+                                  px={2}
+                                  bg="transparent"
+                                  _hover={{
+                                    bg: "transparent",
+                                    textDecoration: "underline",
+                                  }}
+                                  _disabled={{
+                                    opacity: 0.3,
+                                    cursor: "not-allowed",
+                                  }}
+                                  _active={{
+                                    bg: "transparent",
+                                  }}
                                   aria-label="Previous Page"
                                 >
                                   {"<"}
                                 </Button>
-                                <Text fontFamily="monospace" fontSize="sm">
+                                <Text
+                                  fontSize="xs"
+                                  fontFamily="monospace"
+                                  color="gray.700"
+                                  minW="80px"
+                                  textAlign="center"
+                                >
                                   {page + 1} / {repaymentsPageCount}
                                 </Text>
                                 <Button
@@ -984,102 +968,122 @@ function ProtocolDebt() {
                                       Math.min(repaymentsPageCount - 1, p + 1)
                                     )
                                   }
-                                  disabled={page >= repaymentsPageCount - 1}
+                                  isDisabled={page >= repaymentsPageCount - 1}
                                   fontFamily="monospace"
+                                  variant="ghost"
+                                  minW="auto"
+                                  px={2}
+                                  bg="transparent"
+                                  _hover={{
+                                    bg: "transparent",
+                                    textDecoration: "underline",
+                                  }}
+                                  _disabled={{
+                                    opacity: 0.3,
+                                    cursor: "not-allowed",
+                                  }}
+                                  _active={{
+                                    bg: "transparent",
+                                  }}
                                   aria-label="Next Page"
                                 >
                                   {">"}
                                 </Button>
                               </Flex>
                             )}
-                          </Box>
-                        ) : (
-                          <Text>No repayments found.</Text>
-                        )}
                       </TabPanel>
 
                       {/* Bad Debt Tab */}
                       <TabPanel px={0} py={0}>
-                        <Flex
-                          direction="row"
-                          justify="center"
-                          align="center"
-                          mb={1}
-                          gap={4}
-                          wrap="wrap"
+                        <Box
+                          minWidth={{ base: "400px", md: "470px" }}
+                          width={{ base: "400px", md: "470px" }}
+                          border="1px solid"
+                          borderColor="black"
+                          borderTopWidth={0}
+                          borderRadius="0 0 10px 10px"
+                          overflow="hidden"
+                          mx="auto"
                         >
-                          <Box
-                            as="table"
-                            mx="auto"
-                            style={{ borderCollapse: "collapse" }}
+                          <Flex
+                            direction="row"
+                            justify="center"
+                            align="center"
+                            mb={1}
+                            gap={4}
+                            wrap="wrap"
+                            pt={2}
                           >
-                            <tbody>
-                              <tr>
-                                <td
-                                  style={{
-                                    textAlign: "center",
-                                    padding: "2px 8px",
-                                    fontFamily: "monospace",
-                                    fontSize: "13px",
-                                    whiteSpace: "nowrap",
-                                    minWidth: "120px",
-                                  }}
-                                >
-                                  Remaining:
-                                </td>
-                                <td
-                                  style={{
-                                    textAlign: "center",
-                                    padding: "2px 8px",
-                                    fontFamily: "monospace",
-                                    fontSize: "14px",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  <Tooltip
-                                    label={topData[0].fullValue}
-                                    fontSize="xs"
-                                    hasArrow
-                                    placement="top"
-                                    bg="gray.800"
-                                    color="white"
-                                    borderRadius="md"
-                                    p={2}
-                                    fontFamily="monospace"
+                            <Box
+                              as="table"
+                              mx="auto"
+                              style={{ borderCollapse: "collapse" }}
+                            >
+                              <tbody>
+                                <tr>
+                                  <td
+                                    style={{
+                                      textAlign: "center",
+                                      padding: "2px 8px",
+                                      fontFamily: "monospace",
+                                      fontSize: "13px",
+                                      whiteSpace: "nowrap",
+                                      minWidth: "120px",
+                                    }}
                                   >
-                                    <span style={{ cursor: "pointer" }}>
-                                      {topData[0].value}
-                                    </span>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </Box>
-                        </Flex>
-                        <SimpleLineChart
-                          data={badDebtHistory}
-                          tabType="badDebt"
-                        />
-                        {badDebtPayments.length > 0 ? (
-                          <Box
-                            overflowX="auto"
-                            w="100%"
-                            minWidth={{ base: "380px", md: "448px" }}
-                            width={{ base: "100%", md: "auto" }}
-                            mt={1}
-                          >
-                            <Table
+                                    Remaining:
+                                  </td>
+                                  <td
+                                    style={{
+                                      textAlign: "center",
+                                      padding: "2px 8px",
+                                      fontFamily: "monospace",
+                                      fontSize: "14px",
+                                      whiteSpace: "nowrap",
+                                    }}
+                                  >
+                                    <Tooltip
+                                      label={topData[0].fullValue}
+                                      fontSize="xs"
+                                      hasArrow
+                                      placement="top"
+                                      bg="gray.800"
+                                      color="white"
+                                      borderRadius="md"
+                                      p={2}
+                                      fontFamily="monospace"
+                                    >
+                                      <span style={{ cursor: "pointer" }}>
+                                        {topData[0].value}
+                                      </span>
+                                    </Tooltip>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </Box>
+                          </Flex>
+                          <SimpleLineChart
+                            data={badDebtHistory}
+                            tabType="badDebt"
+                          />
+                          {badDebtPayments.length > 0 ? (
+                            <>
+                              <Box overflowX="auto">
+                                <Table
                               variant="simple"
                               size="sm"
                               w="100%"
                               fontFamily="monospace"
                               colorScheme="blackAlpha"
-                              minWidth={{ base: "380px", md: "448px" }}
-                              width={{ base: "100%", md: "auto" }}
                               style={{
                                 textAlign: "center",
                                 fontSize: "13px",
                                 borderSpacing: 0,
+                              }}
+                              sx={{
+                                "tbody tr td": {
+                                  borderBottom: "none",
+                                },
                               }}
                             >
                               <Thead>
@@ -1087,7 +1091,19 @@ function ProtocolDebt() {
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
+                                    fontSize="xs"
+                                    textAlign="center"
+                                    px={2}
+                                    py={0}
+                                    minWidth="68px"
+                                    maxWidth="68px"
+                                    whiteSpace="nowrap"
+                                  >
+                                    Date
+                                  </Th>
+                                  <Th
+                                    fontFamily="monospace"
+                                    color="black"
                                     fontSize="xs"
                                     textAlign="center"
                                     px={2}
@@ -1096,32 +1112,17 @@ function ProtocolDebt() {
                                     maxWidth="70px"
                                     whiteSpace="nowrap"
                                   >
-                                    Date
-                                  </Th>
-                                  <Th
-                                    fontFamily="monospace"
-                                    color="black"
-                                    borderColor="black"
-                                    fontSize="xs"
-                                    textAlign="center"
-                                    px={2}
-                                    py={0}
-                                    minWidth="83px"
-                                    maxWidth="83px"
-                                    whiteSpace="nowrap"
-                                  >
                                     Payer
                                   </Th>
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="center"
                                     px={2}
                                     py={0}
-                                    minWidth="83px"
-                                    maxWidth="83px"
+                                    minWidth="70px"
+                                    maxWidth="70px"
                                     whiteSpace="nowrap"
                                   >
                                     Txn
@@ -1129,13 +1130,12 @@ function ProtocolDebt() {
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="center"
                                     px={2}
                                     py={0}
-                                    minWidth="93px"
-                                    maxWidth="93px"
+                                    minWidth="70px"
+                                    maxWidth="70px"
                                     whiteSpace="nowrap"
                                   >
                                     Amount
@@ -1153,8 +1153,8 @@ function ProtocolDebt() {
                                       textAlign="left"
                                       px={2}
                                       py={0}
-                                      minWidth="85px"
-                                      maxWidth="85px"
+                                      minWidth="68px"
+                                      maxWidth="68px"
                                       overflow="hidden"
                                       whiteSpace="nowrap"
                                     >
@@ -1170,8 +1170,8 @@ function ProtocolDebt() {
                                       textAlign="left"
                                       px={2}
                                       py={0}
-                                      minWidth="83px"
-                                      maxWidth="83px"
+                                      minWidth="70px"
+                                      maxWidth="70px"
                                       overflow="hidden"
                                       whiteSpace="nowrap"
                                     >
@@ -1192,8 +1192,8 @@ function ProtocolDebt() {
                                       textAlign="left"
                                       px={2}
                                       py={0}
-                                      minWidth="83px"
-                                      maxWidth="83px"
+                                      minWidth="70px"
+                                      maxWidth="70px"
                                       overflow="hidden"
                                       whiteSpace="nowrap"
                                     >
@@ -1214,8 +1214,8 @@ function ProtocolDebt() {
                                       textAlign="right"
                                       px={2}
                                       py={0}
-                                      minWidth="93px"
-                                      maxWidth="93px"
+                                      minWidth="70px"
+                                      maxWidth="70px"
                                       overflow="hidden"
                                       whiteSpace="nowrap"
                                     >
@@ -1232,7 +1232,6 @@ function ProtocolDebt() {
                                   <Td
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -1248,7 +1247,6 @@ function ProtocolDebt() {
                                   <Td
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -1264,7 +1262,6 @@ function ProtocolDebt() {
                                   <Td
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -1280,7 +1277,6 @@ function ProtocolDebt() {
                                   <Td
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="sm"
                                     textAlign="right"
                                     px={2}
@@ -1297,26 +1293,56 @@ function ProtocolDebt() {
                                   </Td>
                                 </Tr>
                               </Tbody>
-                            </Table>
-                            {badDebtPageCount > 1 && (
+                                </Table>
+                              </Box>
+                            </>
+                          ) : (
+                            <Box p={4}>
+                              <Text fontFamily="monospace" textAlign="center">No bad debt payments found.</Text>
+                            </Box>
+                          )}
+                        </Box>
+                        {badDebtPayments.length > 0 && badDebtPageCount > 1 && (
                               <Flex
                                 justify="center"
                                 align="center"
                                 mt={2}
-                                gap={2}
+                                gap={3}
+                                fontFamily="monospace"
                               >
                                 <Button
                                   size="xs"
                                   onClick={() =>
                                     setPage((p) => Math.max(0, p - 1))
                                   }
-                                  disabled={page === 0}
+                                  isDisabled={page === 0}
                                   fontFamily="monospace"
+                                  variant="ghost"
+                                  minW="auto"
+                                  px={2}
+                                  bg="transparent"
+                                  _hover={{
+                                    bg: "transparent",
+                                    textDecoration: "underline",
+                                  }}
+                                  _disabled={{
+                                    opacity: 0.3,
+                                    cursor: "not-allowed",
+                                  }}
+                                  _active={{
+                                    bg: "transparent",
+                                  }}
                                   aria-label="Previous Page"
                                 >
                                   {"<"}
                                 </Button>
-                                <Text fontFamily="monospace" fontSize="sm">
+                                <Text
+                                  fontSize="xs"
+                                  fontFamily="monospace"
+                                  color="gray.700"
+                                  minW="80px"
+                                  textAlign="center"
+                                >
                                   {page + 1} / {badDebtPageCount}
                                 </Text>
                                 <Button
@@ -1326,18 +1352,29 @@ function ProtocolDebt() {
                                       Math.min(badDebtPageCount - 1, p + 1)
                                     )
                                   }
-                                  disabled={page >= badDebtPageCount - 1}
+                                  isDisabled={page >= badDebtPageCount - 1}
                                   fontFamily="monospace"
+                                  variant="ghost"
+                                  minW="auto"
+                                  px={2}
+                                  bg="transparent"
+                                  _hover={{
+                                    bg: "transparent",
+                                    textDecoration: "underline",
+                                  }}
+                                  _disabled={{
+                                    opacity: 0.3,
+                                    cursor: "not-allowed",
+                                  }}
+                                  _active={{
+                                    bg: "transparent",
+                                  }}
                                   aria-label="Next Page"
                                 >
                                   {">"}
                                 </Button>
                               </Flex>
                             )}
-                          </Box>
-                        ) : (
-                          <Text>No bad debt payments found.</Text>
-                        )}
                       </TabPanel>
 
                       {/* Info Tab */}

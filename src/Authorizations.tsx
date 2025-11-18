@@ -246,7 +246,6 @@ function Authorizations() {
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -260,7 +259,6 @@ function Authorizations() {
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -274,7 +272,6 @@ function Authorizations() {
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -288,7 +285,6 @@ function Authorizations() {
                                   <Th
                                     fontFamily="monospace"
                                     color="black"
-                                    borderColor="black"
                                     fontSize="xs"
                                     textAlign="left"
                                     px={2}
@@ -563,20 +559,42 @@ function Authorizations() {
                                   justify="center"
                                   align="center"
                                   mt={2}
-                                  gap={2}
+                                  gap={3}
+                                  fontFamily="monospace"
                                 >
                                   <Button
                                     size="xs"
                                     onClick={() =>
                                       setPage((p) => Math.max(0, p - 1))
                                     }
-                                    disabled={page === 0}
+                                    isDisabled={page === 0}
                                     fontFamily="monospace"
+                                    variant="ghost"
+                                    minW="auto"
+                                    px={2}
+                                    bg="transparent"
+                                    _hover={{
+                                      bg: "transparent",
+                                      textDecoration: "underline",
+                                    }}
+                                    _disabled={{
+                                      opacity: 0.3,
+                                      cursor: "not-allowed",
+                                    }}
+                                    _active={{
+                                      bg: "transparent",
+                                    }}
                                     aria-label="Previous Page"
                                   >
                                     {"<"}
                                   </Button>
-                                  <Text fontFamily="monospace" fontSize="sm">
+                                  <Text
+                                    fontSize="xs"
+                                    fontFamily="monospace"
+                                    color="gray.700"
+                                    minW="80px"
+                                    textAlign="center"
+                                  >
                                     {page + 1} / {pageCount}
                                   </Text>
                                   <Button
@@ -586,8 +604,23 @@ function Authorizations() {
                                         Math.min(pageCount - 1, p + 1)
                                       )
                                     }
-                                    disabled={page >= pageCount - 1}
+                                    isDisabled={page >= pageCount - 1}
                                     fontFamily="monospace"
+                                    variant="ghost"
+                                    minW="auto"
+                                    px={2}
+                                    bg="transparent"
+                                    _hover={{
+                                      bg: "transparent",
+                                      textDecoration: "underline",
+                                    }}
+                                    _disabled={{
+                                      opacity: 0.3,
+                                      cursor: "not-allowed",
+                                    }}
+                                    _active={{
+                                      bg: "transparent",
+                                    }}
                                     aria-label="Next Page"
                                   >
                                     {">"}

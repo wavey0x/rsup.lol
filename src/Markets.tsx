@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Table,
@@ -1010,9 +1010,8 @@ function Markets() {
                         const underlyingApr = Number(market.lendRate);
                         const totalApr = rewardsApr + underlyingApr;
                         return (
-                          <>
+                          <React.Fragment key={`${market.marketName}-${market.contractAddress}`}>
                             <Tr
-                              key={`${market.marketName}-${market.contractAddress}`}
                             >
                             <Td>
                               <Flex align="center" gap={1}>
@@ -1308,7 +1307,7 @@ function Markets() {
                               </Td>
                             </Tr>
                           )}
-                          </>
+                          </React.Fragment>
                         );
                       })}
                     </Tbody>

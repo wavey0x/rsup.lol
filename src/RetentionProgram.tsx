@@ -305,10 +305,9 @@ function RetentionProgram() {
                   </Flex>
                 </Box>
                 {feed.length > 0 && (
-                  <Box w="100%" minWidth="0">
+                  <Box w="100%" minWidth="0" px={{ base: 2, md: 0 }}>
                     <Box
-                      minWidth={{ base: "400px", md: "470px" }}
-                      width={{ base: "400px", md: "470px" }}
+                      w={{ base: "100%", md: "470px" }}
                       mx="auto"
                     >
                       <Tabs variant="unstyled" align="center" mb={0} mt={0}>
@@ -319,8 +318,7 @@ function RetentionProgram() {
                           overflow="hidden"
                           p={0}
                           m={0}
-                          minWidth={{ base: "400px", md: "470px" }}
-                          width={{ base: "400px", md: "470px" }}
+                          w={{ base: "100%", md: "470px" }}
                         >
                           <Tab
                             fontFamily="monospace"
@@ -367,8 +365,7 @@ function RetentionProgram() {
                         <TabPanels>
                           <TabPanel px={0} py={0}>
                             <Box
-                              minWidth={{ base: "400px", md: "470px" }}
-                              width={{ base: "400px", md: "470px" }}
+                              width="100%"
                               border="1px solid"
                               borderColor="black"
                               borderTopWidth={0}
@@ -506,7 +503,7 @@ function RetentionProgram() {
                                           whiteSpace="nowrap"
                                         >
                                           <a
-                                            href={`https://etherscan.io/tx/${row.txn_hash}`}
+                                            href={`https://etherscan.io/tx/${row.txn_hash?.startsWith('0x') ? row.txn_hash : `0x${row.txn_hash}`}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             style={{
@@ -530,13 +527,7 @@ function RetentionProgram() {
                                           whiteSpace="nowrap"
                                         >
                                           {row.amount !== undefined
-                                            ? Number(row.amount).toLocaleString(
-                                                undefined,
-                                                {
-                                                  minimumFractionDigits: 2,
-                                                  maximumFractionDigits: 2,
-                                                }
-                                              )
+                                            ? Math.round(Number(row.amount)).toLocaleString()
                                             : "-"}
                                         </Td>
                                       </Tr>

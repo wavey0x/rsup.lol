@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, useBreakpointValue } from "@chakra-ui/react";
 import { designTokens } from "../../theme";
 
 export type ChartSize = "mini" | "medium" | "large";
@@ -27,7 +27,10 @@ interface TimeSeriesChartProps {
 
 const CHART_DIMENSIONS = {
   mini: { width: 240, height: 120, padding: 20, leftPadding: 25, rightPadding: 25 },
-  medium: { width: 370, height: 240, padding: 25, leftPadding: 35, rightPadding: 35 },
+  medium: {
+    mobile: { width: 340, height: 240, padding: 25, leftPadding: 35, rightPadding: 35 },
+    desktop: { width: 440, height: 260, padding: 30, leftPadding: 40, rightPadding: 40 },
+  },
   large: { width: 700, height: 300, padding: 30, leftPadding: 50, rightPadding: 60 },
 };
 
@@ -56,6 +59,9 @@ export function TimeSeriesChart({
   }) | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
+  // Use responsive dimensions for medium size
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
   if (!data || data.length === 0) {
     return (
       <Box
@@ -70,7 +76,12 @@ export function TimeSeriesChart({
     );
   }
 
-  const dims = CHART_DIMENSIONS[size];
+  let dims;
+  if (size === "medium") {
+    dims = isMobile ? CHART_DIMENSIONS.medium.mobile : CHART_DIMENSIONS.medium.desktop;
+  } else {
+    dims = CHART_DIMENSIONS[size];
+  }
   const { width, height, padding, leftPadding, rightPadding } = dims;
   const chartWidth = width - leftPadding - rightPadding;
   const chartHeight = height - 2 * padding;

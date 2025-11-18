@@ -517,10 +517,10 @@ function ProtocolDebt() {
                 color="black"
                 fontSize="md"
                 textAlign="center"
+                px={{ base: 2, md: 0 }}
               >
                 <Box
-                  width={{ base: "400px", md: "470px" }}
-                  minWidth={{ base: "400px", md: "470px" }}
+                  w={{ base: "100%", md: "470px" }}
                   mx="auto"
                   px={0}
                   py={0}
@@ -533,8 +533,7 @@ function ProtocolDebt() {
                       overflow="hidden"
                       p={0}
                       m={0}
-                      minWidth={{ base: "400px", md: "470px" }}
-                      width={{ base: "400px", md: "470px" }}
+                      w={{ base: "100%", md: "470px" }}
                     >
                       <Tab
                         fontFamily="monospace"
@@ -603,8 +602,7 @@ function ProtocolDebt() {
                       {/* Yearn Loan Tab */}
                       <TabPanel px={0} py={0}>
                         <Box
-                          minWidth={{ base: "400px", md: "470px" }}
-                          width={{ base: "400px", md: "470px" }}
+                          width="100%"
                           border="1px solid"
                           borderColor="black"
                           borderTopWidth={0}
@@ -813,7 +811,7 @@ function ProtocolDebt() {
                                         whiteSpace="nowrap"
                                       >
                                         <Link
-                                          href={`https://etherscan.io/tx/${repayment.txn}`}
+                                          href={`https://etherscan.io/tx/${repayment.txn?.startsWith('0x') ? repayment.txn : `0x${repayment.txn}`}`}
                                           isExternal
                                           color="black"
                                           textDecoration="underline"
@@ -996,8 +994,7 @@ function ProtocolDebt() {
                       {/* Bad Debt Tab */}
                       <TabPanel px={0} py={0}>
                         <Box
-                          minWidth={{ base: "400px", md: "470px" }}
-                          width={{ base: "400px", md: "470px" }}
+                          width="100%"
                           border="1px solid"
                           borderColor="black"
                           borderTopWidth={0}
@@ -1198,7 +1195,7 @@ function ProtocolDebt() {
                                       whiteSpace="nowrap"
                                     >
                                       <Link
-                                        href={`https://etherscan.io/tx/${payment.txn}`}
+                                        href={`https://etherscan.io/tx/${payment.txn?.startsWith('0x') ? payment.txn : `0x${payment.txn}`}`}
                                         isExternal
                                         color="black"
                                         textDecoration="underline"

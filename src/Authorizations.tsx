@@ -151,10 +151,10 @@ function Authorizations() {
                 color="black"
                 fontSize="md"
                 textAlign="center"
+                px={{ base: 2, md: 0 }}
               >
                 <Box
-                  width={{ base: "380px", md: "448px" }}
-                  minWidth={{ base: "380px", md: "448px" }}
+                  w={{ base: "100%", md: "470px" }}
                   mx="auto"
                   px={0}
                   py={0}
@@ -167,8 +167,7 @@ function Authorizations() {
                       overflow="hidden"
                       p={0}
                       m={0}
-                      minWidth={{ base: "380px", md: "448px" }}
-                      width={{ base: "380px", md: "448px" }}
+                      w={{ base: "100%", md: "470px" }}
                     >
                       <Tab
                         fontFamily="monospace"
@@ -220,8 +219,6 @@ function Authorizations() {
                             overflowX="auto"
                             overflowY="visible"
                             w="100%"
-                            minWidth={{ base: "380px", md: "448px" }}
-                            width={{ base: "100%", md: "auto" }}
                             mt={0}
                           >
                             <Table
@@ -233,12 +230,15 @@ function Authorizations() {
                               borderWidth="1px"
                               borderColor="black"
                               borderTopWidth={0}
-                              minWidth={{ base: "380px", md: "448px" }}
-                              width={{ base: "100%", md: "auto" }}
                               style={{
                                 textAlign: "center",
                                 fontSize: "13px",
                                 borderSpacing: 0,
+                              }}
+                              sx={{
+                                "tbody tr td": {
+                                  borderBottom: "none",
+                                },
                               }}
                             >
                               <Thead>

@@ -52,11 +52,9 @@ function SreUSD() {
 
   return (
     <PageContainer maxWidth="wide">
-      <Flex justify="center" mb={2} direction="column" align="center">
+      <Flex justify="center" mb={2} direction="column" align="center" px={{ base: 2, md: 0 }}>
         <Box
-          display="inline-block"
-          minWidth={{ base: "400px", md: "470px" }}
-          width={{ base: "400px", md: "470px" }}
+          w={{ base: "100%", md: "470px" }}
           border="1px solid black"
           borderRadius={designTokens.borderRadius.card}
           overflow="hidden"

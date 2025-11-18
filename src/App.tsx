@@ -2,6 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Navigation } from "./Navigation";
 import Markets from "./Markets.tsx";
+import SreUSD from "./SreUSD.tsx";
 import RetentionProgram from "./RetentionProgram.tsx";
 import Authorizations from "./Authorizations.tsx";
 import ProtocolDebt from "./ProtocolDebt.tsx";
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/markets" replace />} />
           <Route path="/markets" element={<Markets />} />
+          <Route path="/sreusd" element={<SreUSD />} />
           <Route path="/retention" element={<RetentionProgram />} />
           <Route path="/authorizations" element={<Authorizations />} />
           <Route path="/protocoldebt" element={<ProtocolDebt />} />

@@ -345,7 +345,7 @@ function Markets() {
   const [showDeprecated, setShowDeprecated] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [copied, setCopied] = useState<string | null>(null);
-  
+
   // Touch device detection
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [expandedChart, setExpandedChart] = useState<string | null>(null);
@@ -361,10 +361,10 @@ function Markets() {
         "https://raw.githubusercontent.com/wavey0x/open-data/master/resupply_market_data.json"
       );
 
-      // Check if data exists and is an array
-      if (!response.data?.data || !Array.isArray(response.data.data)) {
+      // Check if data exists and has market_data object
+      if (!response.data?.data?.market_data || typeof response.data.data.market_data !== 'object') {
         throw new Error(
-          "Invalid data format: expected an array under 'data' key"
+          "Invalid data format: expected market_data object under 'data' key"
         );
       }
 
@@ -380,8 +380,11 @@ function Markets() {
         }
       }
 
+      // Convert market_data object to array
+      const marketDataArray = Object.values(response.data.data.market_data);
+
       // Validate and transform each market data object
-      const validatedData = response.data.data.map((market: any) => {
+      const validatedData = marketDataArray.map((market: any) => {
         if (!market || typeof market !== "object") {
           throw new Error("Invalid market data format");
         }
@@ -635,18 +638,18 @@ function Markets() {
       >
         {/* Resupply/Underlying Toggle and Protocol Filter - now as Tabs */}
         <Flex justify="center" mb={2} direction="column" align="center">
-          <Box
-            display="inline-block"
-            w={{ base: "100%", md: "740px" }}
-            border="1px solid black"
-            borderRadius="16px 16px 0 0"
-            overflow="hidden"
-            bg="white"
-            sx={{ boxShadow: "0 2px 8px rgba(0,0,0,0.03)" }}
-          >
-            <Box display="flex" flexDirection="column" gap={0}>
-              {/* Resupply/Underlying Tabs */}
-              <Tabs
+              <Box
+                display="inline-block"
+                w={{ base: "100%", md: "740px" }}
+                border="1px solid black"
+                borderRadius="16px 16px 0 0"
+                overflow="hidden"
+                bg="white"
+                sx={{ boxShadow: "0 2px 8px rgba(0,0,0,0.03)" }}
+              >
+                <Box display="flex" flexDirection="column" gap={0}>
+                  {/* Resupply/Underlying Tabs */}
+                  <Tabs
                 variant="unstyled"
                 align="center"
                 isFitted
@@ -1645,25 +1648,27 @@ function Markets() {
               </ModalContent>
             </Modal>
 
-            <Box
-              position="fixed"
-              bottom={0}
-              left={0}
-              right={0}
-              bg="gray.100"
-              p={1}
-              textAlign="center"
-            >
-              <Text fontSize="xs" color="gray.600" fontFamily="monospace">
-                Last updated:{" "}
-                {lastUpdateDate
-                  ? formatDistanceToNow(lastUpdateDate, { addSuffix: true })
-                  : lastUpdateFromApi ||
-                    formatDistanceToNow(lastUpdated, { addSuffix: true })}
-              </Text>
             </Box>
-          </Box>
-        </Flex>
+          </Flex>
+
+        {/* Last updated footer */}
+        <Box
+          position="fixed"
+          bottom={0}
+          left={0}
+          right={0}
+          bg="gray.100"
+          p={1}
+          textAlign="center"
+        >
+          <Text fontSize="xs" color="gray.600" fontFamily="monospace">
+            Last updated:{" "}
+            {lastUpdateDate
+              ? formatDistanceToNow(lastUpdateDate, { addSuffix: true })
+              : lastUpdateFromApi ||
+                formatDistanceToNow(lastUpdated, { addSuffix: true })}
+          </Text>
+        </Box>
       </Container>
     </ChakraProvider>
   );

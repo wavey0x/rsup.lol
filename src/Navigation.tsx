@@ -32,10 +32,16 @@ const pages = [
     name: "Protocol Debt",
     logo: "/hippo_blue.png",
   },
+  {
+    id: "sreusd",
+    name: "sreUSD",
+    logo: "/hippo_sreusd.png",
+  },
 ];
 
 const PAGE_TO_PATH: { [key: string]: string } = {
   markets: "/markets",
+  sreusd: "/sreusd",
   retention: "/retention",
   authorizations: "/authorizations",
   protocoldebt: "/protocoldebt",
@@ -43,6 +49,7 @@ const PAGE_TO_PATH: { [key: string]: string } = {
 const PATH_TO_PAGE: { [key: string]: string } = {
   "/": "markets",
   "/markets": "markets",
+  "/sreusd": "sreusd",
   "/retention": "retention",
   "/authorizations": "authorizations",
   "/protocoldebt": "protocoldebt",

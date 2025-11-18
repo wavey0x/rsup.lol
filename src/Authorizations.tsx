@@ -95,7 +95,7 @@ function Authorizations() {
           }
         }
 
-        setData(response.data);
+        setData(response.data.data);
         setLastUpdated(new Date());
         setError(null);
       } catch (e) {

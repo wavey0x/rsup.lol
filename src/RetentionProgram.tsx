@@ -93,7 +93,7 @@ function RetentionProgram() {
           }
         }
 
-        setData(response.data?.retention_program || null);
+        setData(response.data?.data?.retention_program || null);
         setLastUpdated(new Date());
         setError(null);
       } catch (e) {

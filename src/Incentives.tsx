@@ -1,4 +1,4 @@
-import { Box, Text, Flex, Stack, HStack, Button, Table, Thead, Tbody, Tr, Th, Td, Tooltip } from "@chakra-ui/react";
+import { Box, Text, Flex, Stack, Button, Table, Thead, Tbody, Tr, Th, Td, Tooltip } from "@chakra-ui/react";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
@@ -433,22 +433,6 @@ function Incentives() {
             </g>
           )}
         </svg>
-
-        {/* Legend */}
-        <HStack spacing={6} justify="center" mt={2}>
-          <HStack spacing={2}>
-            <Box w="20px" h="2px" bg="#A3A3A3" />
-            <Text fontSize="xs" fontFamily="monospace" color="gray.600">
-              Votium
-            </Text>
-          </HStack>
-          <HStack spacing={2}>
-            <Box w="20px" h="2px" bg="#262626" />
-            <Text fontSize="xs" fontFamily="monospace" color="gray.600">
-              VoteMarket
-            </Text>
-          </HStack>
-        </HStack>
       </Box>
     );
   };
@@ -692,8 +676,26 @@ function Incentives() {
                 </Box>
               </Box>
 
+              {/* Separator */}
+              <Box
+                w="100%"
+                h="1px"
+                bg="gray.200"
+                my={4}
+              />
+
               {/* Historical Chart */}
               <Box>
+                <Text
+                  fontSize="xs"
+                  fontFamily="monospace"
+                  color="gray.600"
+                  textAlign="center"
+                  mb={3}
+                  fontWeight="500"
+                >
+                  veCRV Per Vote: Votium vs VoteMarket
+                </Text>
                 <Flex justify="center">
                   {renderChart()}
                 </Flex>

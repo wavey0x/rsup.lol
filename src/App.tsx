@@ -6,6 +6,7 @@ import SreUSD from "./SreUSD.tsx";
 import RetentionProgram from "./RetentionProgram.tsx";
 import Authorizations from "./Authorizations.tsx";
 import ProtocolDebt from "./ProtocolDebt.tsx";
+import Incentives from "./Incentives.tsx";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/retention" element={<RetentionProgram />} />
           <Route path="/authorizations" element={<Authorizations />} />
           <Route path="/protocoldebt" element={<ProtocolDebt />} />
+          <Route path="/incentives" element={<Incentives />} />
           <Route path="*" element={<Navigate to="/markets" replace />} />
         </Routes>
       </BrowserRouter>

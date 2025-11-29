@@ -37,6 +37,11 @@ const pages = [
     name: "sreUSD",
     logo: "/hippo_sreusd.png",
   },
+  {
+    id: "incentives",
+    name: "Incentives",
+    logo: "/hippo_incentives.png",
+  },
 ];
 
 const PAGE_TO_PATH: { [key: string]: string } = {
@@ -45,6 +50,7 @@ const PAGE_TO_PATH: { [key: string]: string } = {
   retention: "/retention",
   authorizations: "/authorizations",
   protocoldebt: "/protocoldebt",
+  incentives: "/incentives",
 };
 const PATH_TO_PAGE: { [key: string]: string } = {
   "/": "markets",
@@ -53,6 +59,7 @@ const PATH_TO_PAGE: { [key: string]: string } = {
   "/retention": "retention",
   "/authorizations": "authorizations",
   "/protocoldebt": "protocoldebt",
+  "/incentives": "incentives",
 };
 
 export function Navigation() {

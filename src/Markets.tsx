@@ -1077,10 +1077,9 @@ function Markets() {
                               </Flex>
                             </Td>
                             <Td>
-                              {formatNumberWithAbbreviation(
-                                Number(getValue(market, "ltv", "resupply_ltv"))
+                              {formatPercentWithAbbreviation(
+                                getValue(market, "ltv", "resupply_ltv")
                               )}
-                              %
                             </Td>
                             <Td>
                               $
@@ -1424,6 +1423,42 @@ function Markets() {
                           <strong
                             style={{ minWidth: 110, fontFamily: "monospace" }}
                           >
+                            Pair:
+                          </strong>
+                          <Link
+                            href={`https://etherscan.io/address/${selectedMarket.resupplyPairAddress}`}
+                            isExternal
+                            color="blue.500"
+                            wordBreak="break-all"
+                            fontFamily="monospace"
+                          >
+                            {abbreviateAddress(
+                              selectedMarket.resupplyPairAddress
+                            )}
+                          </Link>
+                          <Box
+                            as="button"
+                            ml={1}
+                            onClick={() =>
+                              handleCopy(selectedMarket.resupplyPairAddress)
+                            }
+                            p={0.5}
+                            borderRadius="sm"
+                            bg="white"
+                            _hover={{ bg: "gray.100" }}
+                            transition="all 0.2s"
+                          >
+                            {copied === selectedMarket.resupplyPairAddress ? (
+                              <CheckIcon color="green.400" boxSize={3} />
+                            ) : (
+                              <CopyIcon boxSize={3} />
+                            )}
+                          </Box>
+                        </Flex>
+                        <Flex align="center" gap={4} w="100%">
+                          <strong
+                            style={{ minWidth: 110, fontFamily: "monospace" }}
+                          >
                             Market:
                           </strong>
                           <Link
@@ -1527,42 +1562,6 @@ function Markets() {
                             )}
                           </Box>
                         </Flex>
-                        <Flex align="center" gap={4} w="100%">
-                          <strong
-                            style={{ minWidth: 110, fontFamily: "monospace" }}
-                          >
-                            Resupply:
-                          </strong>
-                          <Link
-                            href={`https://etherscan.io/address/${selectedMarket.resupplyPairAddress}`}
-                            isExternal
-                            color="blue.500"
-                            wordBreak="break-all"
-                            fontFamily="monospace"
-                          >
-                            {abbreviateAddress(
-                              selectedMarket.resupplyPairAddress
-                            )}
-                          </Link>
-                          <Box
-                            as="button"
-                            ml={1}
-                            onClick={() =>
-                              handleCopy(selectedMarket.resupplyPairAddress)
-                            }
-                            p={0.5}
-                            borderRadius="sm"
-                            bg="white"
-                            _hover={{ bg: "gray.100" }}
-                            transition="all 0.2s"
-                          >
-                            {copied === selectedMarket.resupplyPairAddress ? (
-                              <CheckIcon color="green.400" boxSize={3} />
-                            ) : (
-                              <CopyIcon boxSize={3} />
-                            )}
-                          </Box>
-                        </Flex>
                         {selectedMarket.controller &&
                           selectedMarket.controller !==
                             "0x0000000000000000000000000000000000000000" && (
@@ -1608,7 +1607,7 @@ function Markets() {
                           <strong
                             style={{ minWidth: 110, fontFamily: "monospace" }}
                           >
-                            Rate Calc:
+                            Und. Rate:
                           </strong>
                           <Link
                             href={`https://etherscan.io/address/${selectedMarket.interestRateContract}`}

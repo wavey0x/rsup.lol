@@ -57,10 +57,7 @@ function Authorizations() {
     null
   );
   const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
-  // Track which selector tooltip is open (by row index)
-  const [openSelectorTooltip, setOpenSelectorTooltip] = useState<number | null>(
-    null
-  );
+  const [openTooltipKey, setOpenTooltipKey] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{
     x: number;
     y: number;
@@ -75,6 +72,31 @@ function Authorizations() {
     page * PAGE_SIZE,
     (page + 1) * PAGE_SIZE
   );
+
+  const tooltipAnchorStyle = {
+    fontFamily: "monospace",
+    cursor: "pointer",
+    position: "relative" as const,
+    display: "inline-block",
+  };
+
+  const handleTooltipEnter = (key: string, target: HTMLElement) => {
+    const rect = target.getBoundingClientRect();
+    setOpenTooltipKey(key);
+    setTooltipPosition({
+      x: rect.left,
+      y: rect.bottom + 2,
+    });
+  };
+
+  const handleTooltipAnchorLeave = (key: string) => {
+    setOpenTooltipKey((cur) => (cur === key ? null : cur));
+  };
+
+  const handleTooltipMenuLeave = () => {
+    setOpenTooltipKey(null);
+    setTooltipPosition(null);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -315,32 +337,24 @@ function Authorizations() {
                                       {Array.isArray(auth.selector) &&
                                       auth.selector[1] ? (
                                         <span
-                                          style={{
-                                            fontFamily: "monospace",
-                                            cursor: "pointer",
-                                            position: "relative",
-                                            display: "inline-block",
-                                          }}
+                                          style={tooltipAnchorStyle}
                                           data-selector-tooltip-anchor
                                           onMouseEnter={(e) => {
-                                            setOpenSelectorTooltip(i);
-                                            const rect =
-                                              e.currentTarget.getBoundingClientRect();
-                                            setTooltipPosition({
-                                              x: rect.left,
-                                              y: rect.bottom + 2,
-                                            });
+                                            handleTooltipEnter(
+                                              `selector-${i}`,
+                                              e.currentTarget
+                                            );
                                           }}
                                           onMouseLeave={() =>
-                                            setOpenSelectorTooltip((cur) =>
-                                              cur === i ? null : cur
+                                            handleTooltipAnchorLeave(
+                                              `selector-${i}`
                                             )
                                           }
                                         >
                                           {truncateSelectorName(
                                             getFunctionName(auth.selector[1])
                                           )}
-                                          {openSelectorTooltip === i &&
+                                          {openTooltipKey === `selector-${i}` &&
                                             tooltipPosition && (
                                               <Box
                                                 position="fixed"
@@ -360,12 +374,13 @@ function Authorizations() {
                                                 maxW="260px"
                                                 pointerEvents="auto"
                                                 onMouseEnter={() =>
-                                                  setOpenSelectorTooltip(i)
+                                                  setOpenTooltipKey(
+                                                    `selector-${i}`
+                                                  )
                                                 }
-                                                onMouseLeave={() => {
-                                                  setOpenSelectorTooltip(null);
-                                                  setTooltipPosition(null);
-                                                }}
+                                                onMouseLeave={
+                                                  handleTooltipMenuLeave
+                                                }
                                               >
                                                 {auth.selector[1] && (
                                                   <Box>{auth.selector[1]}</Box>
@@ -389,32 +404,24 @@ function Authorizations() {
                                       ) : Array.isArray(auth.selector) &&
                                         auth.selector[0] ? (
                                         <span
-                                          style={{
-                                            fontFamily: "monospace",
-                                            cursor: "pointer",
-                                            position: "relative",
-                                            display: "inline-block",
-                                          }}
+                                          style={tooltipAnchorStyle}
                                           data-selector-tooltip-anchor
                                           onMouseEnter={(e) => {
-                                            setOpenSelectorTooltip(i);
-                                            const rect =
-                                              e.currentTarget.getBoundingClientRect();
-                                            setTooltipPosition({
-                                              x: rect.left,
-                                              y: rect.bottom + 2,
-                                            });
+                                            handleTooltipEnter(
+                                              `selector-${i}`,
+                                              e.currentTarget
+                                            );
                                           }}
                                           onMouseLeave={() =>
-                                            setOpenSelectorTooltip((cur) =>
-                                              cur === i ? null : cur
+                                            handleTooltipAnchorLeave(
+                                              `selector-${i}`
                                             )
                                           }
                                         >
                                           {truncateSelectorName(
                                             auth.selector[0]
                                           )}
-                                          {openSelectorTooltip === i &&
+                                          {openTooltipKey === `selector-${i}` &&
                                             tooltipPosition && (
                                               <Box
                                                 position="fixed"
@@ -434,12 +441,13 @@ function Authorizations() {
                                                 maxW="260px"
                                                 pointerEvents="auto"
                                                 onMouseEnter={() =>
-                                                  setOpenSelectorTooltip(i)
+                                                  setOpenTooltipKey(
+                                                    `selector-${i}`
+                                                  )
                                                 }
-                                                onMouseLeave={() => {
-                                                  setOpenSelectorTooltip(null);
-                                                  setTooltipPosition(null);
-                                                }}
+                                                onMouseLeave={
+                                                  handleTooltipMenuLeave
+                                                }
                                               >
                                                 <Box>{auth.selector[0]}</Box>
                                                 <Box mt={1}>
@@ -476,21 +484,77 @@ function Authorizations() {
                                       {auth.target === ADDRESS_ZERO ? (
                                         <span>*</span>
                                       ) : (
-                                        <Link
-                                          href={`https://etherscan.io/address/${auth.target}`}
-                                          isExternal
-                                          color="black"
-                                          textDecoration="underline"
-                                          title={
-                                            auth.target_name
-                                              ? `${auth.target_name}\n${auth.target}`
-                                              : auth.target
+                                        <span
+                                          style={tooltipAnchorStyle}
+                                          onMouseEnter={(e) =>
+                                            handleTooltipEnter(
+                                              `target-${i}`,
+                                              e.currentTarget
+                                            )
+                                          }
+                                          onMouseLeave={() =>
+                                            handleTooltipAnchorLeave(
+                                              `target-${i}`
+                                            )
                                           }
                                         >
-                                          {auth.target_name
-                                            ? abbreviateName(auth.target_name)
-                                            : abbreviateAddress(auth.target)}
-                                        </Link>
+                                          <Link
+                                            href={`https://etherscan.io/address/${auth.target}`}
+                                            isExternal
+                                            color="black"
+                                            textDecoration="underline"
+                                          >
+                                            {auth.target_name
+                                              ? abbreviateName(auth.target_name)
+                                              : abbreviateAddress(auth.target)}
+                                          </Link>
+                                          {openTooltipKey === `target-${i}` &&
+                                            tooltipPosition && (
+                                              <Box
+                                                position="fixed"
+                                                left={`${tooltipPosition.x}px`}
+                                                top={`${tooltipPosition.y}px`}
+                                                zIndex={9999}
+                                                bg="gray.800"
+                                                color="white"
+                                                borderRadius="md"
+                                                px={3}
+                                                py={2}
+                                                fontFamily="monospace"
+                                                fontSize="xs"
+                                                boxShadow="lg"
+                                                textAlign="left"
+                                                minW="220px"
+                                                maxW="260px"
+                                                pointerEvents="auto"
+                                                onMouseEnter={() =>
+                                                  setOpenTooltipKey(
+                                                    `target-${i}`
+                                                  )
+                                                }
+                                                onMouseLeave={
+                                                  handleTooltipMenuLeave
+                                                }
+                                              >
+                                                {auth.target_name && (
+                                                  <Box>{auth.target_name}</Box>
+                                                )}
+                                                <Box>{auth.target}</Box>
+                                                <Box mt={1}>
+                                                  <Link
+                                                    href={`https://etherscan.io/address/${auth.target}`}
+                                                    isExternal
+                                                    color="white"
+                                                    textDecoration="underline"
+                                                    fontSize="xs"
+                                                    fontFamily="monospace"
+                                                  >
+                                                    Etherscan ↗
+                                                  </Link>
+                                                </Box>
+                                              </Box>
+                                            )}
+                                        </span>
                                       )}
                                     </Td>
                                     <Td
@@ -505,21 +569,75 @@ function Authorizations() {
                                       px={2}
                                       py={1}
                                     >
-                                      <Link
-                                        href={`https://etherscan.io/address/${auth.caller}`}
-                                        isExternal
-                                        color="black"
-                                        textDecoration="underline"
-                                        title={
-                                          auth.caller_name
-                                            ? `${auth.caller_name}\n${auth.caller}`
-                                            : auth.caller
+                                      <span
+                                        style={tooltipAnchorStyle}
+                                        onMouseEnter={(e) =>
+                                          handleTooltipEnter(
+                                            `caller-${i}`,
+                                            e.currentTarget
+                                          )
+                                        }
+                                        onMouseLeave={() =>
+                                          handleTooltipAnchorLeave(
+                                            `caller-${i}`
+                                          )
                                         }
                                       >
-                                        {auth.caller_name
-                                          ? abbreviateName(auth.caller_name)
-                                          : abbreviateAddress(auth.caller)}
-                                      </Link>
+                                        <Link
+                                          href={`https://etherscan.io/address/${auth.caller}`}
+                                          isExternal
+                                          color="black"
+                                          textDecoration="underline"
+                                        >
+                                          {auth.caller_name
+                                            ? abbreviateName(auth.caller_name)
+                                            : abbreviateAddress(auth.caller)}
+                                        </Link>
+                                        {openTooltipKey === `caller-${i}` &&
+                                          tooltipPosition && (
+                                            <Box
+                                              position="fixed"
+                                              left={`${tooltipPosition.x}px`}
+                                              top={`${tooltipPosition.y}px`}
+                                              zIndex={9999}
+                                              bg="gray.800"
+                                              color="white"
+                                              borderRadius="md"
+                                              px={3}
+                                              py={2}
+                                              fontFamily="monospace"
+                                              fontSize="xs"
+                                              boxShadow="lg"
+                                              textAlign="left"
+                                              minW="220px"
+                                              maxW="260px"
+                                              pointerEvents="auto"
+                                              onMouseEnter={() =>
+                                                setOpenTooltipKey(`caller-${i}`)
+                                              }
+                                              onMouseLeave={
+                                                handleTooltipMenuLeave
+                                              }
+                                            >
+                                              {auth.caller_name && (
+                                                <Box>{auth.caller_name}</Box>
+                                              )}
+                                              <Box>{auth.caller}</Box>
+                                              <Box mt={1}>
+                                                <Link
+                                                  href={`https://etherscan.io/address/${auth.caller}`}
+                                                  isExternal
+                                                  color="white"
+                                                  textDecoration="underline"
+                                                  fontSize="xs"
+                                                  fontFamily="monospace"
+                                                >
+                                                  Etherscan ↗
+                                                </Link>
+                                              </Box>
+                                            </Box>
+                                          )}
+                                      </span>
                                     </Td>
                                     <Td
                                       fontFamily="monospace"
@@ -538,15 +656,68 @@ function Authorizations() {
                                       {auth.auth_hook === ADDRESS_ZERO ? (
                                         <span>None</span>
                                       ) : (
-                                        <Link
-                                          href={`https://etherscan.io/address/${auth.auth_hook}`}
-                                          isExternal
-                                          color="black"
-                                          textDecoration="underline"
-                                          title={auth.auth_hook}
+                                        <span
+                                          style={tooltipAnchorStyle}
+                                          onMouseEnter={(e) =>
+                                            handleTooltipEnter(
+                                              `hook-${i}`,
+                                              e.currentTarget
+                                            )
+                                          }
+                                          onMouseLeave={() =>
+                                            handleTooltipAnchorLeave(`hook-${i}`)
+                                          }
                                         >
-                                          {abbreviateAddress(auth.auth_hook)}
-                                        </Link>
+                                          <Link
+                                            href={`https://etherscan.io/address/${auth.auth_hook}`}
+                                            isExternal
+                                            color="black"
+                                            textDecoration="underline"
+                                          >
+                                            {abbreviateAddress(auth.auth_hook)}
+                                          </Link>
+                                          {openTooltipKey === `hook-${i}` &&
+                                            tooltipPosition && (
+                                              <Box
+                                                position="fixed"
+                                                left={`${tooltipPosition.x}px`}
+                                                top={`${tooltipPosition.y}px`}
+                                                zIndex={9999}
+                                                bg="gray.800"
+                                                color="white"
+                                                borderRadius="md"
+                                                px={3}
+                                                py={2}
+                                                fontFamily="monospace"
+                                                fontSize="xs"
+                                                boxShadow="lg"
+                                                textAlign="left"
+                                                minW="220px"
+                                                maxW="260px"
+                                                pointerEvents="auto"
+                                                onMouseEnter={() =>
+                                                  setOpenTooltipKey(`hook-${i}`)
+                                                }
+                                                onMouseLeave={
+                                                  handleTooltipMenuLeave
+                                                }
+                                              >
+                                                <Box>{auth.auth_hook}</Box>
+                                                <Box mt={1}>
+                                                  <Link
+                                                    href={`https://etherscan.io/address/${auth.auth_hook}`}
+                                                    isExternal
+                                                    color="white"
+                                                    textDecoration="underline"
+                                                    fontSize="xs"
+                                                    fontFamily="monospace"
+                                                  >
+                                                    Etherscan ↗
+                                                  </Link>
+                                                </Box>
+                                              </Box>
+                                            )}
+                                        </span>
                                       )}
                                     </Td>
                                   </Tr>

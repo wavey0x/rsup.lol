@@ -107,7 +107,7 @@ export const customTheme = extendTheme({
           cursor: "pointer",
           userSelect: "none",
           transition: designTokens.transitions.fast,
-          borderBottom: "2px solid",
+          borderBottom: "none",
           borderColor: "black",
           bg: "white",
           fontWeight: 600,
@@ -150,7 +150,7 @@ export const customTheme = extendTheme({
       variants: {
         simple: {
           th: {
-            borderBottom: "2px solid",
+            borderBottom: "none",
             borderColor: "black",
           },
           td: {

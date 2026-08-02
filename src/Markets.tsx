@@ -1100,7 +1100,26 @@ function Markets() {
                                   {isCurveLendProtocol(market.protocolId) && (
                                     <Box
                                       as="span"
+                                      display={
+                                        market.protocolId === 2
+                                          ? "inline-flex"
+                                          : undefined
+                                      }
+                                      alignItems="center"
+                                      justifyContent="center"
                                       ml="1px"
+                                      boxSize={
+                                        market.protocolId === 2
+                                          ? { base: "12px", md: "15px" }
+                                          : undefined
+                                      }
+                                      border={
+                                        market.protocolId === 2
+                                          ? "0.5px solid"
+                                          : undefined
+                                      }
+                                      borderColor="green.500"
+                                      borderRadius="full"
                                       fontSize={{ base: "7px", md: "9px" }}
                                       lineHeight="1"
                                     >

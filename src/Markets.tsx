@@ -35,6 +35,7 @@ import {
   ChevronDownIcon,
   CopyIcon,
   CheckIcon,
+  TimeIcon,
 } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
@@ -284,6 +285,13 @@ const fraxlendLogo = "/Fraxlend.svg";
 
 // Protocol logos as SVG strings
 const CURVE_LOGO = crvLogo;
+const isCurveLendProtocol = (protocolId: number) =>
+  protocolId === 0 || protocolId === 2;
+const getProtocolName = (protocolId: number) => {
+  if (protocolId === 2) return "CurveLend V2";
+  if (protocolId === 0) return "CurveLend V1";
+  return "FraxLend";
+};
 
 // Theme is now imported from ./theme
 
@@ -391,13 +399,16 @@ function Markets() {
 
         const resupplyBorrowLimit = Number(market.resupply_borrow_limit) || 0;
         const deprecated = resupplyBorrowLimit <= 1;
+        const protocolId = Number(market.protocol_id) || 0;
 
         return {
           marketName: `${market.deposit_token_symbol}/${market.collateral_token_symbol}`,
-          protocolId: Number(market.protocol_id) || 0,
+          protocolId,
           depositTokenLogo: market.deposit_token_logo,
           collateralTokenLogo: market.collateral_token_logo,
-          protocolLogo: market.protocol_id === 0 ? CURVE_LOGO : fraxlendLogo,
+          protocolLogo: isCurveLendProtocol(protocolId)
+            ? CURVE_LOGO
+            : fraxlendLogo,
           utilization: Number(market.utilization) * 100 || 0,
           liquidity: Number(market.liquidity) || 0,
           borrowRate: Number(market.borrow_rate) * 100 || 0,
@@ -405,7 +416,7 @@ function Markets() {
           ltv: Number(market.global_ltv) * 100 || 0,
           contractAddress: market.market,
           protocolLink:
-            market.protocol_id === 0
+            isCurveLendProtocol(protocolId)
               ? "https://app.curve.fi/lending"
               : "https://app.frax.finance/lending",
           depositTokenAddress: market.deposit_token,
@@ -479,6 +490,15 @@ function Markets() {
         return sortConfig.direction === "asc"
           ? aTotal - bTotal
           : bTotal - aTotal;
+      }
+      if (resupplyMode && sortConfig.key === "totalDebt") {
+        const aValue =
+          Number(getValue(a, "totalDebt", "resupply_total_debt")) || 0;
+        const bValue =
+          Number(getValue(b, "totalDebt", "resupply_total_debt")) || 0;
+        return sortConfig.direction === "asc"
+          ? aValue - bValue
+          : bValue - aValue;
       }
       // Special case: sort by resupply values for utilization and liquidity in resupply mode
       if (resupplyMode && sortConfig.key === "utilization") {
@@ -588,9 +608,9 @@ function Markets() {
     }
     if (protocolFilter === "all") return data;
     if (protocolFilter === "curve")
-      return data.filter((m) => m.protocolId === 0);
+      return data.filter((m) => isCurveLendProtocol(m.protocolId));
     if (protocolFilter === "frax")
-      return data.filter((m) => m.protocolId !== 0);
+      return data.filter((m) => m.protocolId === 1);
     return data;
   };
 
@@ -1073,6 +1093,33 @@ function Markets() {
                                   fontSize={{ base: "8px", md: "sm" }}
                                 >
                                   {market.marketName}
+                                  {market.protocolId === 0 && (
+                                    <Tooltip
+                                      label="Legacy CurveLend v1 market"
+                                      hasArrow
+                                    >
+                                      <Flex
+                                        as="span"
+                                        aria-label="Legacy CurveLend v1 market"
+                                        align="center"
+                                        gap="1px"
+                                        color="gray.500"
+                                        textDecoration="none"
+                                      >
+                                        <TimeIcon
+                                          aria-hidden
+                                          boxSize={{ base: "8px", md: "10px" }}
+                                        />
+                                        <Box
+                                          as="span"
+                                          fontSize={{ base: "7px", md: "9px" }}
+                                          lineHeight="1"
+                                        >
+                                          v1
+                                        </Box>
+                                      </Flex>
+                                    </Tooltip>
+                                  )}
                                 </Text>
                               </Flex>
                             </Td>
@@ -1404,7 +1451,7 @@ function Markets() {
                           </strong>
                           <Image
                             src={
-                              selectedMarket.protocolId === 0
+                              isCurveLendProtocol(selectedMarket.protocolId)
                                 ? crvLogo
                                 : fraxlendLogo
                             }
@@ -1414,9 +1461,7 @@ function Markets() {
                             mr={0}
                           />
                           <Text mb={1} mt={0} fontFamily="monospace">
-                            {selectedMarket.protocolId === 0
-                              ? "CurveLend"
-                              : "FraxLend"}
+                            {getProtocolName(selectedMarket.protocolId)}
                           </Text>
                         </Flex>
                         <Flex align="center" gap={4} w="100%">

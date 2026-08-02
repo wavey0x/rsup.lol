@@ -1084,7 +1084,7 @@ function Markets() {
                                   }
                                   color={
                                     market.protocolId === 0
-                                      ? "gray.600"
+                                      ? "gray.700"
                                       : "black"
                                   }
                                   fontFamily="monospace"
@@ -1115,7 +1115,7 @@ function Markets() {
                                       }
                                       border={
                                         market.protocolId === 2
-                                          ? "0.5px solid"
+                                          ? "1px solid"
                                           : undefined
                                       }
                                       borderColor="green.500"

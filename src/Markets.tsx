@@ -1056,7 +1056,7 @@ function Markets() {
                                   as="button"
                                   display="inline-flex"
                                   alignItems="center"
-                                  gap={1}
+                                  gap={0}
                                   ml={3}
                                   onClick={() =>
                                     handleInfoClick({
@@ -1084,7 +1084,7 @@ function Markets() {
                                   }
                                   color={
                                     market.protocolId === 0
-                                      ? "gray.500"
+                                      ? "gray.600"
                                       : "black"
                                   }
                                   fontFamily="monospace"
@@ -1100,7 +1100,7 @@ function Markets() {
                                   {isCurveLendProtocol(market.protocolId) && (
                                     <Box
                                       as="span"
-                                      ml="3px"
+                                      ml="1px"
                                       fontSize={{ base: "7px", md: "9px" }}
                                       lineHeight="1"
                                     >

@@ -35,7 +35,6 @@ import {
   ChevronDownIcon,
   CopyIcon,
   CheckIcon,
-  TimeIcon,
 } from "@chakra-ui/icons";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
@@ -1083,8 +1082,11 @@ function Markets() {
                                         market.collateralTokenLogo,
                                     })
                                   }
-                                  textDecoration="underline"
-                                  color="black"
+                                  color={
+                                    market.protocolId === 0
+                                      ? "gray.500"
+                                      : "black"
+                                  }
                                   fontFamily="monospace"
                                   bg="transparent"
                                   border="none"
@@ -1092,33 +1094,18 @@ function Markets() {
                                   cursor="pointer"
                                   fontSize={{ base: "8px", md: "sm" }}
                                 >
-                                  {market.marketName}
-                                  {market.protocolId === 0 && (
-                                    <Tooltip
-                                      label="Legacy CurveLend v1 market"
-                                      hasArrow
+                                  <Box as="span" textDecoration="underline">
+                                    {market.marketName}
+                                  </Box>
+                                  {isCurveLendProtocol(market.protocolId) && (
+                                    <Box
+                                      as="span"
+                                      ml="3px"
+                                      fontSize={{ base: "7px", md: "9px" }}
+                                      lineHeight="1"
                                     >
-                                      <Flex
-                                        as="span"
-                                        aria-label="Legacy CurveLend v1 market"
-                                        align="center"
-                                        gap="1px"
-                                        color="gray.500"
-                                        textDecoration="none"
-                                      >
-                                        <TimeIcon
-                                          aria-hidden
-                                          boxSize={{ base: "8px", md: "10px" }}
-                                        />
-                                        <Box
-                                          as="span"
-                                          fontSize={{ base: "7px", md: "9px" }}
-                                          lineHeight="1"
-                                        >
-                                          v1
-                                        </Box>
-                                      </Flex>
-                                    </Tooltip>
+                                      {market.protocolId === 2 ? "v2" : "v1"}
+                                    </Box>
                                   )}
                                 </Text>
                               </Flex>

@@ -42,11 +42,6 @@ const pages = [
     name: "Incentives",
     logo: "/hippo_incentives.png",
   },
-  {
-    id: "positionmonitor",
-    name: "Position Monitor",
-    logo: "/hippo_positionmonitor.png",
-  },
 ];
 
 const PAGE_TO_PATH: { [key: string]: string } = {
@@ -56,7 +51,6 @@ const PAGE_TO_PATH: { [key: string]: string } = {
   authorizations: "/authorizations",
   protocoldebt: "/protocoldebt",
   incentives: "/incentives",
-  positionmonitor: "/position-monitor",
 };
 const PATH_TO_PAGE: { [key: string]: string } = {
   "/": "markets",
@@ -66,7 +60,6 @@ const PATH_TO_PAGE: { [key: string]: string } = {
   "/authorizations": "authorizations",
   "/protocoldebt": "protocoldebt",
   "/incentives": "incentives",
-  "/position-monitor": "positionmonitor",
 };
 
 export function Navigation() {

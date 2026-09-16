@@ -32,32 +32,20 @@ interface SreUsdMarketData {
   total_debt: number;
 }
 
-/**
- * sreUSD Page - Displays current and historical APR for sreUSD
- * Refactored to use shared components and hooks
- * Reduced from ~500 lines to ~120 lines
- */
 function SreUSD() {
-  // Use centralized data fetching hook for historical data
   const {
-    data: sreusdData,
+    data,
     isLoading,
     error,
-    lastUpdated,
-    lastUpdateFromApi,
     lastUpdateDate,
-  } = useResupplyData<SreUsdDataPoint[]>({
-    dataPath: "data.sreusd.historical_data",
+  } = useResupplyData<{
+    historical_data: SreUsdDataPoint[];
+    market_data: SreUsdMarketData;
+  }>({
+    dataPath: "data.sreusd",
   });
-
-  // Fetch market data
-  const {
-    data: marketData,
-    isLoading: isLoadingMarket,
-    error: marketError,
-  } = useResupplyData<SreUsdMarketData>({
-    dataPath: "data.sreusd.market_data",
-  });
+  const sreusdData = data?.historical_data;
+  const marketData = data?.market_data;
 
   // Fetch gauge APR data
   const [gaugeAprRange, setGaugeAprRange] = useState<[number, number] | null>(null);
@@ -115,9 +103,9 @@ function SreUSD() {
           boxShadow={designTokens.shadows.card}
           transition={designTokens.transitions.fast}
         >
-          {error ? (
+          {error && !sreusdData ? (
             <ErrorState message={error} />
-          ) : isLoading ? (
+          ) : isLoading && !sreusdData ? (
             <LoadingState />
           ) : !sreusdData || sreusdData.length === 0 ? (
             <Text fontFamily="monospace" textAlign="center" color="gray.500">
@@ -206,9 +194,9 @@ function SreUSD() {
           boxShadow={designTokens.shadows.card}
           transition={designTokens.transitions.fast}
         >
-          {marketError ? (
-            <ErrorState message={marketError} />
-          ) : isLoadingMarket ? (
+          {error && !marketData ? (
+            <ErrorState message={error} />
+          ) : isLoading && !marketData ? (
             <LoadingState />
           ) : !marketData ? (
             <Text fontFamily="monospace" textAlign="center" color="gray.500">
@@ -389,8 +377,7 @@ function SreUSD() {
 
       <PageFooter
         lastUpdateDate={lastUpdateDate}
-        lastUpdateFromApi={lastUpdateFromApi}
-        lastUpdated={lastUpdated}
+        error={error}
       />
     </PageContainer>
   );

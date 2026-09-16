@@ -707,8 +707,6 @@ function Incentives() {
 
       <PageFooter
         lastUpdateDate={lastUpdated}
-        lastUpdateFromApi={lastUpdated.getTime().toString()}
-        lastUpdated={lastUpdated}
       />
     </PageContainer>
   );

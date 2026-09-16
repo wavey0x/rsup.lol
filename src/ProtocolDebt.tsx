@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Text,
@@ -23,8 +23,8 @@ import {
   Button,
   Tooltip,
 } from "@chakra-ui/react";
-import { formatDistanceToNow } from "date-fns";
-import axios from "axios";
+import { useResupplyData } from "./hooks/useResupplyData";
+import { PageFooter } from "./components/layout/PageFooter";
 import { customTheme } from "./theme";
 import { formatNumberWithAbbreviation } from "./utils/format";
 import { CopyIcon, CheckIcon } from "@chakra-ui/icons";
@@ -332,14 +332,7 @@ function SimpleLineChart({ data, tabType }: { data: any[]; tabType?: string }) {
 }
 
 function ProtocolDebt() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-  const [lastUpdateFromApi, setLastUpdateFromApi] = useState<string | null>(
-    null
-  );
-  const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
+  const { data, isLoading: loading, error, lastUpdateDate } = useResupplyData({ dataPath: "data" });
   const [copied, setCopied] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 20;
@@ -375,36 +368,6 @@ function ProtocolDebt() {
     return sum + (Number(payment.amount) || 0);
   }, 0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          "https://raw.githubusercontent.com/wavey0x/open-data/master/resupply_market_data.json"
-        );
-
-        // Set last update from API if available
-        if (response.data.last_update) {
-          setLastUpdateFromApi(response.data.last_update);
-          const ts = Number(response.data.last_update);
-          if (!isNaN(ts) && ts > 1000000000) {
-            setLastUpdateDate(new Date(ts * 1000));
-          } else {
-            setLastUpdateDate(null);
-          }
-        }
-
-        setData(response.data.data);
-        setLastUpdated(new Date());
-        setError(null);
-      } catch (e) {
-        setError("Failed to load yearn loan data");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address);
@@ -502,11 +465,11 @@ function ProtocolDebt() {
             mb={0}
             style={{ marginTop: 0, marginBottom: 0 }}
           >
-            {loading ? (
+            {loading && !data ? (
               <Center py={8} w="100%">
                 <Spinner size="lg" />
               </Center>
-            ) : error ? (
+            ) : error && !data ? (
               <Text color="red.500" fontFamily="monospace" textAlign="center">
                 {error}
               </Text>
@@ -1550,23 +1513,7 @@ function ProtocolDebt() {
           </Stack>
         </Container>
 
-        <Box
-          position="fixed"
-          bottom={0}
-          left={0}
-          right={0}
-          bg="gray.100"
-          p={1}
-          textAlign="center"
-        >
-          <Text fontSize="xs" color="gray.600" fontFamily="monospace">
-            Last updated:{" "}
-            {lastUpdateDate
-              ? formatDistanceToNow(lastUpdateDate, { addSuffix: true })
-              : lastUpdateFromApi ||
-                formatDistanceToNow(lastUpdated, { addSuffix: true })}
-          </Text>
-        </Box>
+        <PageFooter lastUpdateDate={lastUpdateDate} error={error} />
       </Flex>
     </ChakraProvider>
   );

@@ -36,8 +36,8 @@ import {
   CopyIcon,
   CheckIcon,
 } from "@chakra-ui/icons";
-import { formatDistanceToNow } from "date-fns";
-import axios from "axios";
+import { useResupplyData } from "./hooks/useResupplyData";
+import { PageFooter } from "./components/layout/PageFooter";
 import type { MarketData, MarketInfo } from "./types/market";
 import {
   formatNumberWithAbbreviation,
@@ -322,18 +322,66 @@ const SORT_CONFIG_KEY = "resupply_sort_config";
 
 // Removed export to fix HMR issues
 
+function transformMarkets(markets: Record<string, any>): MarketData[] {
+  return Object.values(markets).map((market: any) => {
+    if (!market || typeof market !== "object") {
+      throw new Error("Invalid market data format");
+    }
+
+    const resupplyBorrowLimit = Number(market.resupply_borrow_limit) || 0;
+    const deprecated = resupplyBorrowLimit <= 1;
+    const protocolId = Number(market.protocol_id) || 0;
+
+    return {
+      marketName: `${market.deposit_token_symbol}/${market.collateral_token_symbol}`,
+      protocolId,
+      depositTokenLogo: market.deposit_token_logo,
+      collateralTokenLogo: market.collateral_token_logo,
+      protocolLogo: isCurveLendProtocol(protocolId)
+        ? CURVE_LOGO
+        : fraxlendLogo,
+      utilization: Number(market.utilization) * 100 || 0,
+      liquidity: Number(market.liquidity) || 0,
+      borrowRate: Number(market.borrow_rate) * 100 || 0,
+      lendRate: Number(market.lend_rate) * 100 || 0,
+      ltv: Number(market.global_ltv) * 100 || 0,
+      contractAddress: market.market,
+      protocolLink:
+        isCurveLendProtocol(protocolId)
+          ? "https://app.curve.fi/lending"
+          : "https://app.frax.finance/lending",
+      depositTokenAddress: market.deposit_token,
+      collateralTokenAddress: market.collat_token,
+      resupplyPairAddress: market.pair,
+      depositTokenSymbol: market.deposit_token_symbol,
+      collateralTokenSymbol: market.collateral_token_symbol,
+      controller: market.controller,
+      interestRateContract: market.interest_rate_contract,
+      resupplyBorrowLimit,
+      deprecated,
+      totalDebt: Number(market.total_debt) || 0,
+      resupply_ltv: Number(market.resupply_ltv) * 100 || 0,
+      resupply_total_debt: Number(market.resupply_total_debt) || 0,
+      resupply_utilization: Number(market.resupply_utilization) * 100 || 0,
+      resupply_available_liquidity:
+        Number(market.resupply_available_liquidity) || 0,
+      resupply_borrow_rate: Number(market.resupply_borrow_rate) * 100 || 0,
+      resupply_lend_rate: Number(market.resupply_lend_rate) * 100 || 0,
+      resupply_borrow_rate_history: Array.isArray(
+        market.resupply_historical_borrow_rates
+      )
+        ? market.resupply_historical_borrow_rates
+        : [],
+    };
+  });
+}
+
 function Markets() {
-  const [marketData, setMarketData] = useState<MarketData[]>([]);
+  const { data, isLoading, error, lastUpdateDate } = useResupplyData<MarketData[]>({ dataPath: "data.market_data", transform: transformMarkets });
+  const marketData = data ?? [];
   const [selectedMarket, setSelectedMarket] = useState<MarketInfoModal | null>(
     null
   );
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-  const [lastUpdateFromApi, setLastUpdateFromApi] = useState<string | null>(
-    null
-  );
-  const [lastUpdateDate, setLastUpdateDate] = useState<Date | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [sortConfig, setSortConfig] = useState<SortConfig>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(SORT_CONFIG_KEY);
@@ -359,107 +407,6 @@ function Markets() {
 
   useEffect(() => {
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get(
-        "https://raw.githubusercontent.com/wavey0x/open-data/master/resupply_market_data.json"
-      );
-
-      // Check if data exists and has market_data object
-      if (!response.data?.data?.market_data || typeof response.data.data.market_data !== 'object') {
-        throw new Error(
-          "Invalid data format: expected market_data object under 'data' key"
-        );
-      }
-
-      // Set last update from API if available
-      if (response.data.last_update) {
-        setLastUpdateFromApi(response.data.last_update);
-        // If it's a number or numeric string, treat as unix timestamp (seconds)
-        const ts = Number(response.data.last_update);
-        if (!isNaN(ts) && ts > 1000000000) {
-          setLastUpdateDate(new Date(ts * 1000));
-        } else {
-          setLastUpdateDate(null);
-        }
-      }
-
-      // Convert market_data object to array
-      const marketDataArray = Object.values(response.data.data.market_data);
-
-      // Validate and transform each market data object
-      const validatedData = marketDataArray.map((market: any) => {
-        if (!market || typeof market !== "object") {
-          throw new Error("Invalid market data format");
-        }
-
-        const resupplyBorrowLimit = Number(market.resupply_borrow_limit) || 0;
-        const deprecated = resupplyBorrowLimit <= 1;
-        const protocolId = Number(market.protocol_id) || 0;
-
-        return {
-          marketName: `${market.deposit_token_symbol}/${market.collateral_token_symbol}`,
-          protocolId,
-          depositTokenLogo: market.deposit_token_logo,
-          collateralTokenLogo: market.collateral_token_logo,
-          protocolLogo: isCurveLendProtocol(protocolId)
-            ? CURVE_LOGO
-            : fraxlendLogo,
-          utilization: Number(market.utilization) * 100 || 0,
-          liquidity: Number(market.liquidity) || 0,
-          borrowRate: Number(market.borrow_rate) * 100 || 0,
-          lendRate: Number(market.lend_rate) * 100 || 0,
-          ltv: Number(market.global_ltv) * 100 || 0,
-          contractAddress: market.market,
-          protocolLink:
-            isCurveLendProtocol(protocolId)
-              ? "https://app.curve.fi/lending"
-              : "https://app.frax.finance/lending",
-          depositTokenAddress: market.deposit_token,
-          collateralTokenAddress: market.collat_token,
-          resupplyPairAddress: market.pair,
-          depositTokenSymbol: market.deposit_token_symbol,
-          collateralTokenSymbol: market.collateral_token_symbol,
-          controller: market.controller,
-          interestRateContract: market.interest_rate_contract,
-          resupplyBorrowLimit,
-          deprecated,
-          totalDebt: Number(market.total_debt) || 0,
-          resupply_ltv: Number(market.resupply_ltv) * 100 || 0,
-          resupply_total_debt: Number(market.resupply_total_debt) || 0,
-          resupply_utilization: Number(market.resupply_utilization) * 100 || 0,
-          resupply_available_liquidity:
-            Number(market.resupply_available_liquidity) || 0,
-          resupply_borrow_rate: Number(market.resupply_borrow_rate) * 100 || 0,
-          resupply_lend_rate: Number(market.resupply_lend_rate) * 100 || 0,
-          resupply_borrow_rate_history: Array.isArray(
-            market.resupply_historical_borrow_rates
-          )
-            ? market.resupply_historical_borrow_rates
-            : [],
-        };
-      });
-
-      setMarketData(validatedData);
-      setLastUpdated(new Date());
-      setError(null);
-    } catch (error) {
-      console.error("Error fetching market data:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to fetch market data"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 5 * 60 * 1000); // Refresh every 5 minutes
-    return () => clearInterval(interval);
   }, []);
 
   const handleSort = (key: keyof MarketData) => {
@@ -847,13 +794,13 @@ function Markets() {
               </Tabs>
             </Box>
             {/* Table and rest of content remain unchanged */}
-            {error ? (
+            {error && !data ? (
               <Alert status="error" mb={4}>
                 <AlertIcon />
                 <AlertTitle>Error!</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
-            ) : isLoading ? (
+            ) : isLoading && !data ? (
               <Center py={8}>
                 <Spinner size="xl" />
               </Center>
@@ -1701,23 +1648,7 @@ function Markets() {
           </Flex>
 
         {/* Last updated footer */}
-        <Box
-          position="fixed"
-          bottom={0}
-          left={0}
-          right={0}
-          bg="gray.100"
-          p={1}
-          textAlign="center"
-        >
-          <Text fontSize="xs" color="gray.600" fontFamily="monospace">
-            Last updated:{" "}
-            {lastUpdateDate
-              ? formatDistanceToNow(lastUpdateDate, { addSuffix: true })
-              : lastUpdateFromApi ||
-                formatDistanceToNow(lastUpdated, { addSuffix: true })}
-          </Text>
-        </Box>
+        <PageFooter lastUpdateDate={lastUpdateDate} error={error} />
       </Container>
     </ChakraProvider>
   );

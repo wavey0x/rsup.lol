@@ -1,11 +1,11 @@
 import { Box, Text } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
 import { designTokens } from "../../theme";
+import { useEffect, useState } from "react";
 
 interface PageFooterProps {
   lastUpdateDate?: Date | null;
-  lastUpdateFromApi?: string | null;
-  lastUpdated: Date;
+  error?: string | null;
 }
 
 /**
@@ -14,9 +14,14 @@ interface PageFooterProps {
  */
 export function PageFooter({
   lastUpdateDate,
-  lastUpdateFromApi,
-  lastUpdated,
+  error,
 }: PageFooterProps) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+  const stale = lastUpdateDate && now - lastUpdateDate.getTime() > 15 * 60 * 1000;
   return (
     <Box
       position="fixed"
@@ -32,15 +37,15 @@ export function PageFooter({
     >
       <Text
         fontSize="xs"
-        color="gray.600"
+        color={error || stale ? "orange.800" : "gray.600"}
         fontFamily="monospace"
         {...designTokens.typography.caption}
       >
-        Last updated:{" "}
+        {stale ? "Stale data — " : "Data updated: "}
         {lastUpdateDate
           ? formatDistanceToNow(lastUpdateDate, { addSuffix: true })
-          : lastUpdateFromApi ||
-            formatDistanceToNow(lastUpdated, { addSuffix: true })}
+          : "unknown"}
+        {error && ` · ${error}`}
       </Text>
     </Box>
   );
